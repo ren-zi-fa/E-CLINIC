@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
         $rolePasien = Role::findByName('pasien');
         $roleDokter = Role::findByName('dokter');
         $roleStaf = Role::findByName('staf');
-
+        
         // pasien
         $userPasien = User::firstOrCreate([
             'email' => 'budi@example.com',
