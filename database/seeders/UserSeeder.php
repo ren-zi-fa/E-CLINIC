@@ -18,10 +18,21 @@ class UserSeeder extends Seeder
     public function run(): void
 
     {
-        $rolePasien = Role::findByName('pasien');
-        $roleDokter = Role::findByName('dokter');
+        $roleAdmin = Role::findByName('admin');
         $roleStaf = Role::findByName('staf');
-        
+        $roleDokter = Role::findByName('dokter');
+        $rolePasien = Role::findByName('pasien');
+
+
+        $admin = User::firstOrCreate([
+            'email' => 'admin@example.com',
+        ], [
+            'name' => 'Renzi',
+            'password' => Hash::make('password'),
+            'phone_number' => '01234567890'
+        ]);
+        $admin->assignRole($roleAdmin);
+
         // pasien
         $userPasien = User::firstOrCreate([
             'email' => 'budi@example.com',
@@ -75,5 +86,6 @@ class UserSeeder extends Seeder
             'phone_number' => '01234567890'
         ]);
         $userStaf->assignRole($roleStaf);
+        $this->command->info('==================User Custom berhasil dibuat.=================');
     }
 }

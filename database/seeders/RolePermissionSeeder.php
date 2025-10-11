@@ -7,6 +7,10 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
+use App\Models\Doctor;
+use App\Models\Patient;
+use App\Models\User;
+
 class RolePermissionSeeder extends Seeder
 {
     /**
@@ -51,9 +55,12 @@ class RolePermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $perm]);
         }
 
-        $rolePasien = Role::firstOrCreate(['name' => 'pasien']);
-        $roleDokter = Role::firstOrCreate(['name' => 'dokter']);
+        $adminRole =  Role::firstOrCreate(['name' => 'admin']);
         $roleStaf   = Role::firstOrCreate(['name' => 'staf']);
+        $roleDokter = Role::firstOrCreate(['name' => 'dokter']);
+        $rolePasien = Role::firstOrCreate(['name' => 'pasien']);
+
+        $adminRole->syncPermissions($permissions);
 
         $rolePasien->givePermissionTo([
             'view visits',
@@ -77,5 +84,35 @@ class RolePermissionSeeder extends Seeder
             'create visits',
             'edit visits',
         ]);
+
+        $rolePasien = Role::findByName('pasien');
+        $roleDokter = Role::findByName('dokter');
+        $roleStaf = Role::findByName('staf');
+
+        // pasien
+        for ($i = 0; $i < 50; $i++) {
+            $user = User::factory()->create();
+            $user->assignRole($rolePasien);
+
+            Patient::factory()->create([
+                'user_id' => $user->id,
+            ]);
+        }
+        // dokter
+        for ($i = 0; $i < 10; $i++) {
+            $user = User::factory()->create();
+            $user->assignRole($roleDokter);
+
+            Doctor::factory()->create([
+                'user_id' => $user->id,
+            ]);
+        }
+
+        // stafff
+        for ($i = 0; $i < 3; $i++) {
+            $user = User::factory()->create();
+            $user->assignRole($roleStaf);
+        }
+        $this->command->info('==========Role, Permission, dan Data Awal berhasil dibuat.===========');
     }
 }
