@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class MedicalRecord extends Model
+{
+    //
+    protected $table = 'medical_records';
+    protected $guarded = [];
+
+    public function visit()
+    {
+        return $this->belongsTo(Visit::class);
+    }
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class);
+    }
+    public function prescription()
+    {
+        return $this->hasOne(Prescription::class);
+    }
+}
