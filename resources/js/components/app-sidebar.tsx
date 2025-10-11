@@ -13,39 +13,58 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import {
+    BookOpen,
+    CalendarClock,
+    ClipboardList,
+    File,
+    Folder,
+    LayoutGrid,
+    Pill,
+    Stethoscope,
+    Users,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
+const navItemsUtama: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
     },
     {
-        title: 'Pendaftaran Pasien Baru',
+        title: 'Antrian Kunjungan',
         href: '#',
-        icon: LayoutGrid,
+        icon: ClipboardList,
+    },
+];
+const navItemsManajemen: NavItem[] = [
+    {
+        title: 'Data Pasien',
+        href: dashboard(),
+        icon: Users,
     },
     {
-        title: 'Manajemen Data Pasien',
+        title: 'Data Dokter',
         href: '#',
-        icon: LayoutGrid,
+        icon: Stethoscope,
     },
     {
         title: 'Jadwal Dokter',
         href: '#',
-        icon: LayoutGrid,
+        icon: CalendarClock,
     },
     {
-        title: 'Data Obat/Farmasi',
+        title: 'Data Obat',
         href: '#',
-        icon: LayoutGrid,
+        icon: Pill,
     },
+];
+const othersItem: NavItem[] = [
     {
-        title: 'Laporan',
+        title: 'laporan',
         href: '#',
-        icon: LayoutGrid,
+        icon: File,
     },
 ];
 
@@ -78,7 +97,11 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain
+                    othersItem={othersItem}
+                    itemsUtama={navItemsUtama}
+                    itemsManajemen={navItemsManajemen}
+                />
             </SidebarContent>
 
             <SidebarFooter>
