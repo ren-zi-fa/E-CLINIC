@@ -9,21 +9,27 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class DoctorFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+        $selectedDays = fake()->randomElements($days, rand(2, 4));
+        $jadwal = [];
+
+        foreach ($selectedDays as $day) {
+            $startHour = fake()->numberBetween(8, 15);
+            $startMinute = fake()->randomElement([0, 30]);
+            $endHour = $startHour + fake()->numberBetween(3, 4);
+            $endMinute = $startMinute;
+
+            $jadwal[$day] = [
+                sprintf('%02d:%02d - %02d:%02d', $startHour, $startMinute, $endHour, $endMinute)
+            ];
+        }
+
         return [
             'spesialisasi' => fake()->randomElement(['Dokter Umum', 'Gigi', 'Anak', 'THT']),
             'no_sip' => fake()->unique()->bothify('SIP-####-###'),
-            'jadwal_praktik' => json_encode([
-                'Senin' => ['08:00 - 12:00'],
-                'Rabu'  => ['13:00 - 17:00'],
-                'Jumat' => ['08:00 - 12:00'],
-            ]),
+            'jadwal_praktik' => json_encode($jadwal),
         ];
     }
 }
