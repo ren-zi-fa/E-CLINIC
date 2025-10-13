@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Doctor extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'doctors';
     protected $guarded = [];
 
@@ -17,8 +17,4 @@ class Doctor extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function visits()
-    {
-        return $this->hasMany(Visit::class);
-    }
 }

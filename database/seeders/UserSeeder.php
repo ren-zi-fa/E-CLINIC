@@ -21,7 +21,6 @@ class UserSeeder extends Seeder
         $roleAdmin = Role::findByName('admin');
         $roleStaf = Role::findByName('staf');
         $roleDokter = Role::findByName('dokter');
-        $rolePasien = Role::findByName('pasien');
 
 
         $admin = User::firstOrCreate([
@@ -33,26 +32,6 @@ class UserSeeder extends Seeder
         ]);
         $admin->assignRole($roleAdmin);
 
-        // pasien
-        $userPasien = User::firstOrCreate([
-            'email' => 'budi@example.com',
-        ], [
-            'name' => 'Budi Santoso',
-            'password' => Hash::make('password'),
-            'phone_number' => '01234567890'
-        ]);
-        $userPasien->assignRole($rolePasien);
-
-        Patient::firstOrCreate([
-            'user_id' => $userPasien->id,
-        ], [
-            'no_rm' => 'RM001',
-            'nik' => '3210987654321001',
-            'tanggal_lahir' => '1990-05-10',
-            'jenis_kelamin' => 'L',
-            'alamat' => 'Jl. Melati No. 10',
-
-        ]);
 
         // dokter
         $userDokter = User::firstOrCreate([
