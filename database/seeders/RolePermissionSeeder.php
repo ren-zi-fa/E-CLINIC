@@ -42,16 +42,9 @@ class RolePermissionSeeder extends Seeder
         $roleDokter = Role::firstOrCreate(['name' => 'dokter']);
 
         $adminRole->syncPermissions($permissions);
-        $roleDokter->givePermissionTo([
-            'create medical records',
-            'edit medical records',
-            'view prescriptions',
-        ]);
 
         $roleStaf->givePermissionTo([
             'view doctors',
-            'create visits',
-            'edit visits',
         ]);
         $roleDokter = Role::findByName('dokter');
         $roleStaf = Role::findByName('staf');

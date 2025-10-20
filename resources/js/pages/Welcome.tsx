@@ -1,4 +1,3 @@
-import { BugReportForm } from '@/components/common/FormPatientEksternal';
 import Navbar from '@/components/common/Navbar';
 import { type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
@@ -19,9 +18,7 @@ export default function Welcome() {
                 {/* navbar */}
                 <Navbar auth={auth} />
                 <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-                    <main className="flex w-full max-w-[335px] flex-col-reverse lg:max-w-4xl lg:flex-row">
-                        <BugReportForm />
-                    </main>
+                    <main className="flex w-full max-w-[335px] flex-col-reverse lg:max-w-4xl lg:flex-row"></main>
                 </div>
                 <div className="hidden h-14.5 lg:block"></div>
             </div>

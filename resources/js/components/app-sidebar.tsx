@@ -20,6 +20,7 @@ import {
     File,
     Folder,
     LayoutGrid,
+    NotebookPen,
     Pill,
     Stethoscope,
     Users,
@@ -35,13 +36,18 @@ const navItemsUtama: NavItem[] = [
     {
         title: 'Antrian Kunjungan',
         href: '#',
-        icon: ClipboardList,
+    icon: ClipboardList,
+    },
+    {
+        title: 'Pendaftaran Pasien',
+        href: '#',
+        icon: NotebookPen,
     },
 ];
 const navItemsManajemen: NavItem[] = [
     {
         title: 'Data Pasien',
-        href: dashboard(),
+        href:"#",
         icon: Users,
     },
     {
