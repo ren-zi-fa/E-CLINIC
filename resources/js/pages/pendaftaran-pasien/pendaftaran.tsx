@@ -2,14 +2,15 @@ import RegisterPasienBaru from '@/components/form/pasien-baru';
 import RegisterPasienLama from '@/components/form/pasien-lama';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { pasienDaftar } from '@/routes';
+import pasienDaftar from '@/routes/pasienDaftar';
+
 import { BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Pendaftaran Pasien',
-        href: pasienDaftar().url,
+        href: pasienDaftar.index().url,
     },
 ];
 

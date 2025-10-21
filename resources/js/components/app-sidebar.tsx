@@ -10,7 +10,8 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard, pasienDaftar } from '@/routes';
+import { dashboard } from '@/routes';
+import pasienDaftar from '@/routes/pasienDaftar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import {
@@ -40,7 +41,7 @@ const navItemsUtama: NavItem[] = [
     },
     {
         title: 'Pendaftaran Pasien',
-        href: pasienDaftar().url,
+        href: pasienDaftar.index.url(),
         icon: NotebookPen,
     },
 ];

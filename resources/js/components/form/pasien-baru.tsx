@@ -59,7 +59,7 @@ export default function RegisterPasienBaru({ flash }: { flash?: string }) {
     };
 
     return (
-        <div className="mx-auto max-w-4xl space-y-6">
+        <div className="mx-auto mb-10 max-w-4xl space-y-6">
             <HeadingSmall
                 title="Pendaftaran Pasien Baru"
                 description="Isi data berikut untuk mendaftarkan pasien baru"
@@ -70,9 +70,9 @@ export default function RegisterPasienBaru({ flash }: { flash?: string }) {
                 </div>
             )}
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Grid utama 2 kolom */}
+
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    {/* Nama Pendaftar */}
+
                     <div className="grid gap-2">
                         <Label htmlFor="nama_pendaftar">Nama Pendaftar</Label>
                         <Input

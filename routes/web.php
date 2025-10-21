@@ -12,11 +12,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
-    Route::get('pendaftaran-pasien', function () {
-        return Inertia::render('pendaftaran-pasien/pendaftaran');
-    })->name('pasienDaftar');
-    Route::post('register-pasien-lama', [PasienController::class, 'storeOld'])->name('pasien-old.store');
-    Route::post('register-pasien-baru', [PasienController::class, 'storeNew'])->name('pasien-new.store');
+
+    Route::prefix('pasien-daftar')->name('pasienDaftar.')->group(function () {
+        Route::get('/', [PasienController::class, 'index'])->name('index');
+        Route::get('search', [PasienController::class, 'search'])->name('search');
+    });
+
+    Route::prefix('pasien')->name('pasien.')->group(function () {
+        Route::post('baru', [PasienController::class, 'storeNew'])->name('baru.store');
+        Route::patch('lama', [PasienController::class, 'storeOld'])->name('lama.store');
+    });
 });
 
 require __DIR__ . '/settings.php';
