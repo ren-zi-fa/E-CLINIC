@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
+            $table->string('nama_pasien');
+            $table->string('nama_pendaftar');
+            $table->text('keluhan_sakit');
             $table->string('no_rm')->unique();
-            $table->string('nik', 16)->nullable();
-            $table->date('tanggal_lahir');
-            $table->enum('jenis_kelamin', ['L', 'P']);
+            $table->string('no_nik', 16)->nullable();
+            $table->string('no_telp', 15)->nullable();
             $table->text('alamat')->nullable();
+            $table->enum('pembayaran', ['umum', 'bpjs']);
+            $table->string('no_bpjs')->nullable();
+            $table->enum('poliklinik', ['umum', 'gigi', 'anak', 'kandungan']);
             $table->timestamps();
         });
     }

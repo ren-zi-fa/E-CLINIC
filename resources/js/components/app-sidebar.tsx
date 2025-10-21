@@ -10,7 +10,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, pasienDaftar } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import {
@@ -30,24 +30,24 @@ import AppLogo from './app-logo';
 const navItemsUtama: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: dashboard().url,
         icon: LayoutGrid,
     },
     {
         title: 'Antrian Kunjungan',
         href: '#',
-    icon: ClipboardList,
+        icon: ClipboardList,
     },
     {
         title: 'Pendaftaran Pasien',
-        href: '#',
+        href: pasienDaftar().url,
         icon: NotebookPen,
     },
 ];
 const navItemsManajemen: NavItem[] = [
     {
         title: 'Data Pasien',
-        href:"#",
+        href: '#',
         icon: Users,
     },
     {
