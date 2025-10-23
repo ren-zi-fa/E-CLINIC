@@ -4,12 +4,18 @@ namespace App\Http\Controllers\Pasien;
 
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
+use App\Services\PatientRegistrationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PasienController extends Controller
 {
-    //
+    protected $registrationService;
+
+    public function __construct(PatientRegistrationService $registrationService)
+    {
+        $this->registrationService = $registrationService;
+    }
     public function index()
     {
         return Inertia::render('pendaftaran-pasien/pendaftaran');
@@ -17,7 +23,6 @@ class PasienController extends Controller
 
     public function storeNew(Request $request)
     {
-
         $validated = $request->validate([
             'nama_pasien' => 'required|string|max:100',
             'nama_pendaftar' => 'required|string|max:100',
@@ -28,23 +33,19 @@ class PasienController extends Controller
             'pembayaran' => 'required|in:umum,bpjs',
             'no_bpjs' => 'required_if:pembayaran,bpjs|string|nullable',
             'poliklinik' => 'required|in:umum,gigi,anak,kandungan',
+            'jenis_kelamin' => 'required|in:P,L',
+            'usia' => 'required|integer|min:0|max:120',
         ]);
 
+        try {
+            $result = $this->registrationService->registerNew($validated);
 
-        $lastNoRm = Patient::whereYear('created_at', date('Y'))->max('no_rm');
-
-        $number = 1;
-        if ($lastNoRm) {
-            // Contoh: RM-2025-0012 → ambil 0012 lalu ubah ke int +1
-            $number = ((int) substr($lastNoRm, -4)) + 1;
+            return to_route('pasienDaftar.index')
+                ->with('success', "Pasien baru berhasil disimpan. No. RM {$result['no_rm']}, Nomor Antrian {$result['nomor_antrian']}.");
+        } catch (\Exception $e) {
+            return to_route('pasienDaftar.index')
+                ->with('error', 'Gagal menyimpan pasien baru: ' . $e->getMessage());
         }
-
-        $nextNoRm = 'RM-' . date('Y') . '-' . str_pad($number, 4, '0', STR_PAD_LEFT);
-        $validated['no_rm'] = $nextNoRm;
-
-        Patient::create($validated);
-
-        return to_route('pasienDaftar.index')->with('success', "Data pasien berhasil disimpan dengan nomor rekam medis {$nextNoRm}");
     }
 
     public function storeOld(Request $request)
@@ -53,32 +54,25 @@ class PasienController extends Controller
             'nama_pasien' => 'required|string|max:100',
             'nama_pendaftar' => 'required|string|max:100',
             'keluhan_sakit' => 'required|string|max:255',
-            'no_nik' => 'required|numeric|digits:5|exists:patients,no_nik', 
+            'no_nik' => 'required|numeric|digits:5|exists:patients,no_nik',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'pembayaran' => 'required|in:umum,bpjs',
             'no_bpjs' => 'required_if:pembayaran,bpjs|string|nullable',
             'poliklinik' => 'required|in:umum,gigi,anak,kandungan',
+            'jenis_kelamin' => 'required|in:P,L',
+            'usia' => 'required|integer|min:0|max:120',
         ]);
 
-        $pasien = Patient::where('no_nik', $validated['no_nik'])->first();
+        try {
+            $result = $this->registrationService->registerOld($validated);
 
-        if (!$pasien) {
-            return back()->withErrors(['no_nik' => 'Data pasien tidak ditemukan.']);
+            return to_route('pasienDaftar.index')
+                ->with('success', "Pasien lama berhasil diperbarui. No. RM {$result['no_rm']}, Nomor Antrian {$result['nomor_antrian']}.");
+        } catch (\Exception $e) {
+            return to_route('pasienDaftar.index')
+                ->with('error', 'Gagal memperbarui pasien lama: ' . $e->getMessage());
         }
-        $pasien->update([
-            'nama_pasien' => $validated['nama_pasien'],
-            'nama_pendaftar' => $validated['nama_pendaftar'],
-            'keluhan_sakit' => $validated['keluhan_sakit'],
-            'alamat' => $validated['alamat'],
-            'no_telp' => $validated['no_telp'],
-            'pembayaran' => $validated['pembayaran'],
-            'no_bpjs' => $validated['no_bpjs'] ?? null,
-            'poliklinik' => $validated['poliklinik'],
-        ]);
-
-        return to_route('pasienDaftar.index')
-            ->with('success', "Data pasien lama berhasil diperbarui: {$pasien->nama_pasien}");
     }
 
 
@@ -104,7 +98,9 @@ class PasienController extends Controller
                 'no_rm' => $pasien->no_rm,
                 'no_bpjs' => $pasien->no_bpjs,
                 'pembayaran' => $pasien->pembayaran,
-                'nama_pendaftar' => $pasien->nama_pendaftar
+                'nama_pendaftar' => $pasien->nama_pendaftar,
+                'jenis_kelamin' => $pasien->jenis_kelamin,
+                'usia' => $pasien->usia,
             ]
         ]);
     }

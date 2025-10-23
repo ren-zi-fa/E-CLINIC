@@ -33,6 +33,8 @@ type RegisterPasien = {
     no_telp: string;
     pembayaran: PembayaranType;
     poliklinik: PoliklinikType;
+    jenis_kelamin: string;
+    usia: number;
 };
 
 export default function RegisterPasienLama({ flash }: { flash?: string }) {
@@ -51,6 +53,8 @@ export default function RegisterPasienLama({ flash }: { flash?: string }) {
         keluhan_sakit: '',
         no_nik: '',
         alamat: '',
+        usia: 0,
+        jenis_kelamin: '',
         no_telp: '',
         poliklinik: '' as PoliklinikType,
         pembayaran: '' as PembayaranType,
@@ -176,10 +180,9 @@ export default function RegisterPasienLama({ flash }: { flash?: string }) {
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-
                     {[
-                        ['Nama Pendaftar','nama_pendaftar'],
-                        ['Nomor Rekam Medis','no_rm'],
+                        ['Nama Pendaftar', 'nama_pendaftar'],
+                        ['Nomor Rekam Medis', 'no_rm'],
                         ['Nama Pasien', 'nama_pasien'],
                         ['Nomor KTP / NIK', 'no_nik'],
                         ['Nomor Telepon', 'no_telp'],
@@ -206,6 +209,76 @@ export default function RegisterPasienLama({ flash }: { flash?: string }) {
                             <InputError message={(errors as any)[key]} />
                         </div>
                     ))}
+                    <div className="grid gap-2">
+                        <Label htmlFor="usia">Usia</Label>
+                        <div className="flex items-center gap-2">
+                            <Input
+                                id="usia"
+                                name="usia"
+                                type="number"
+                                value={data.usia ?? ''}
+                                placeholder="Usia pasien"
+                                className="w-24 bg-muted"
+                            />
+                            <span className="text-sm text-muted-foreground">
+                                Tahun
+                            </span>
+                        </div>
+                        <InputError className="mt-2" message={errors.usia} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label>Jenis Kelamin</Label>
+                        <div className="flex items-center gap-4">
+                            <label className="flex items-center space-x-2">
+                                <input
+                                    type="radio"
+                                    name="jenis_kelamin"
+                                    value="L"
+                                    checked={data.jenis_kelamin === 'L'}
+                                    onChange={(e) =>
+                                        setData('jenis_kelamin', e.target.value)
+                                    }
+                                    className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                                    required
+                                    disabled={pasienFound}
+                                />
+                                <span
+                                    className={
+                                        pasienFound ? 'text-neutral-500' : ''
+                                    }
+                                >
+                                    Laki-laki
+                                </span>
+                            </label>
+
+                            <label className="flex items-center space-x-2">
+                                <input
+                                    type="radio"
+                                    name="jenis_kelamin"
+                                    value="P"
+                                    checked={data.jenis_kelamin === 'P'}
+                                    onChange={(e) =>
+                                        setData('jenis_kelamin', e.target.value)
+                                    }
+                                    className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                                    disabled={pasienFound}
+                                />
+                                <span
+                                    className={
+                                        pasienFound ? 'text-neutral-500' : ''
+                                    }
+                                >
+                                    Perempuan
+                                </span>
+                            </label>
+                        </div>
+
+                        <InputError
+                            className="mt-2"
+                            message={errors.jenis_kelamin}
+                        />
+                    </div>
                 </div>
 
                 <div className="grid gap-2">
@@ -228,7 +301,6 @@ export default function RegisterPasienLama({ flash }: { flash?: string }) {
                         value={data.alamat}
                         onChange={(e) => setData('alamat', e.target.value)}
                         placeholder="Masukkan alamat lengkap"
-
                         className={
                             pasienFound ? 'bg-neutral-100 text-neutral-500' : ''
                         }
@@ -289,12 +361,7 @@ export default function RegisterPasienLama({ flash }: { flash?: string }) {
                                 setData('no_bpjs', e.target.value || '')
                             }
                             placeholder="Masukkan nomor BPJS"
-                            readOnly={pasienFound}
-                            className={
-                                pasienFound
-                                    ? 'bg-neutral-100 text-neutral-500'
-                                    : ''
-                            }
+                            className='bg-neutral-100 text-neutral-500'
                         />
                         <InputError message={errors.no_bpjs} />
                     </div>

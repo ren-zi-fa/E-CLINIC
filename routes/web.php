@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Antrian\AntrianController;
 use App\Http\Controllers\Pasien\PasienController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('baru', [PasienController::class, 'storeNew'])->name('baru.store');
         Route::patch('lama', [PasienController::class, 'storeOld'])->name('lama.store');
     });
+    Route::get('antrian', [AntrianController::class, 'index'])->name('antrian.index');
 });
 
 require __DIR__ . '/settings.php';

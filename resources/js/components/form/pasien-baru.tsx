@@ -27,6 +27,8 @@ type RegisterPasien = {
     no_telp: string;
     pembayaran: PembayaranType;
     poliklinik: PoliklinikType;
+    jenis_kelamin: string;
+    usia: number;
 };
 export default function RegisterPasienBaru({ flash }: { flash?: string }) {
     const {
@@ -43,8 +45,10 @@ export default function RegisterPasienBaru({ flash }: { flash?: string }) {
         nama_pendaftar: '',
         keluhan_sakit: '',
         no_nik: '',
+        usia: 0,
         alamat: '',
         no_telp: '',
+        jenis_kelamin: '',
         poliklinik: '' as PoliklinikType,
         pembayaran: '' as PembayaranType,
     });
@@ -65,14 +69,25 @@ export default function RegisterPasienBaru({ flash }: { flash?: string }) {
                 description="Isi data berikut untuk mendaftarkan pasien baru"
             />
             {flash && (
-                <div className="rounded bg-green-100 p-2 text-green-800">
-                    {flash}
+                <div
+                    id="flash-message"
+                    className="relative mb-4 rounded bg-green-100 p-3 text-green-800"
+                >
+                    <span>{flash}</span>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            document.getElementById('flash-message')?.remove()
+                        }
+                        className="absolute top-2 right-2 rounded p-1 text-green-700 hover:bg-green-200"
+                    >
+                        ✕
+                    </button>
                 </div>
             )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
-
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-
                     <div className="grid gap-2">
                         <Label htmlFor="nama_pendaftar">Nama Pendaftar</Label>
                         <Input
@@ -107,6 +122,69 @@ export default function RegisterPasienBaru({ flash }: { flash?: string }) {
                         <InputError
                             className="mt-2"
                             message={errors.nama_pasien}
+                        />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="usia">Usia</Label>
+                        <div className="flex items-center gap-2">
+                            <Input
+                                id="usia"
+                                name="usia"
+                                type="number"
+                                value={data.usia}
+                                onChange={(e) =>
+                                    setData('usia', Number(e.target.value))
+                                }
+                                placeholder="Masukkan usia pasien"
+                                min={0}
+                                max={120}
+                                required
+                                className="w-24"
+                            />
+                            <span className="text-sm text-muted-foreground">
+                                Tahun
+                            </span>
+                        </div>
+                        <InputError className="mt-2" message={errors.usia} />
+                    </div>
+
+                    {/* jenis kelamin */}
+                    <div className="grid gap-2">
+                        <Label>Jenis Kelamin</Label>
+                        <div className="flex items-center gap-4">
+                            <label className="flex items-center space-x-2">
+                                <input
+                                    type="radio"
+                                    name="jenis_kelamin"
+                                    value="L"
+                                    checked={data.jenis_kelamin === 'L'}
+                                    onChange={(e) =>
+                                        setData('jenis_kelamin', e.target.value)
+                                    }
+                                    className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                                    required
+                                />
+                                <span>Laki-laki</span>
+                            </label>
+
+                            <label className="flex items-center space-x-2">
+                                <input
+                                    type="radio"
+                                    name="jenis_kelamin"
+                                    value="P"
+                                    checked={data.jenis_kelamin === 'P'}
+                                    onChange={(e) =>
+                                        setData('jenis_kelamin', e.target.value)
+                                    }
+                                    className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                                />
+                                <span>Perempuan</span>
+                            </label>
+                        </div>
+
+                        <InputError
+                            className="mt-2"
+                            message={errors.jenis_kelamin}
                         />
                     </div>
 
