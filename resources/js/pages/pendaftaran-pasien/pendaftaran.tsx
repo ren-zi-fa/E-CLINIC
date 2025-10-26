@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/app-layout';
 import pasienDaftar from '@/routes/pasienDaftar';
 
 import { BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,7 +16,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function PendaftaranPasienIndex() {
     const [activeTab, setActiveTab] = useState<'baru' | 'lama'>('baru');
-    const { props } = usePage<{ flash: { success?: string } }>();
 
     return (
         <>
@@ -45,9 +44,7 @@ export default function PendaftaranPasienIndex() {
                     </div>
 
                     <div className="w-full max-w-2xl">
-                        {activeTab === 'baru' && (
-                            <RegisterPasienBaru flash={props.flash.success} />
-                        )}
+                        {activeTab === 'baru' && <RegisterPasienBaru />}
                         {activeTab === 'lama' && <RegisterPasienLama />}
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienController';
 import { Transition } from '@headlessui/react';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import HeadingSmall from '../heading-small';
 import InputError from '../input-error';
 import { Button } from '../ui/button';
@@ -30,7 +30,12 @@ type RegisterPasien = {
     jenis_kelamin: string;
     usia: number;
 };
-export default function RegisterPasienBaru({ flash }: { flash?: string }) {
+type FlashPasienNew = {
+    success_pasien_new: string;
+    error_pasien_new: string;
+};
+export default function RegisterPasienBaru() {
+    const { props } = usePage<{ flash: FlashPasienNew }>();
     const {
         data,
         setData,
@@ -53,33 +58,51 @@ export default function RegisterPasienBaru({ flash }: { flash?: string }) {
         pembayaran: '' as PembayaranType,
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         submit(PasienController.storeNew(), {
             onSuccess: () => {
                 reset();
             },
         });
+        console.log(data);
     };
 
     return (
-        <div className="mx-auto mb-10 max-w-4xl space-y-6">
+        <div className="max-w-4x l mx-auto mb-10 space-y-6">
             <HeadingSmall
                 title="Pendaftaran Pasien Baru"
                 description="Isi data berikut untuk mendaftarkan pasien baru"
             />
-            {flash && (
+            {props.flash.success_pasien_new && (
                 <div
                     id="flash-message"
                     className="relative mb-4 rounded bg-green-100 p-3 text-green-800"
                 >
-                    <span>{flash}</span>
+                    <span>{props.flash.success_pasien_new}</span>
                     <button
                         type="button"
                         onClick={() =>
                             document.getElementById('flash-message')?.remove()
                         }
                         className="absolute top-2 right-2 rounded p-1 text-green-700 hover:bg-green-200"
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
+            {props.flash.error_pasien_new && (
+                <div
+                    id="flash-error"
+                    className="relative mb-4 rounded bg-green-100 p-3 text-red-800"
+                >
+                    <span>{props.flash.error_pasien_new}</span>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            document.getElementById('flash-error')?.remove()
+                        }
+                        className="absolute top-2 right-2 rounded p-1 text-red-700 hover:bg-green-200"
                     >
                         ✕
                     </button>

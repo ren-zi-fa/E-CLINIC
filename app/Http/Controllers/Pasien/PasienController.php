@@ -27,7 +27,7 @@ class PasienController extends Controller
             'nama_pasien' => 'required|string|max:100',
             'nama_pendaftar' => 'required|string|max:100',
             'keluhan_sakit' => 'required|string|max:255',
-            'no_nik' => 'required|numeric|digits:5|unique:patients,no_nik',
+            'no_nik' => 'required|numeric|unique:patients,no_nik',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'pembayaran' => 'required|in:umum,bpjs',
@@ -41,10 +41,10 @@ class PasienController extends Controller
             $result = $this->registrationService->registerNew($validated);
 
             return to_route('pasienDaftar.index')
-                ->with('success', "Pasien baru berhasil disimpan. No. RM {$result['no_rm']}, Nomor Antrian {$result['nomor_antrian']}.");
+                ->with('success_pasien_new', "Pasien baru berhasil disimpan. No. RM {$result['no_rm']}, Nomor Antrian {$result['nomor_antrian']}.");
         } catch (\Exception $e) {
             return to_route('pasienDaftar.index')
-                ->with('error', 'Gagal menyimpan pasien baru: ' . $e->getMessage());
+                ->with('error_pasien_new', 'Gagal menyimpan pasien baru: ' . $e->getMessage());
         }
     }
 
@@ -68,10 +68,10 @@ class PasienController extends Controller
             $result = $this->registrationService->registerOld($validated);
 
             return to_route('pasienDaftar.index')
-                ->with('success', "Pasien lama berhasil diperbarui. No. RM {$result['no_rm']}, Nomor Antrian {$result['nomor_antrian']}.");
+                ->with('success_pasien_old', "Pasien lama berhasil diperbarui. No. RM {$result['no_rm']}, Nomor Antrian {$result['nomor_antrian']}.");
         } catch (\Exception $e) {
             return to_route('pasienDaftar.index')
-                ->with('error', 'Gagal memperbarui pasien lama: ' . $e->getMessage());
+                ->with('error_pasien_old', 'Gagal memperbarui pasien lama: ' . $e->getMessage());
         }
     }
 

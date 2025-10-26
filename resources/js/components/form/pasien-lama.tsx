@@ -2,7 +2,7 @@
 
 import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienController';
 import { Transition } from '@headlessui/react';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { Loader2, Search } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -36,8 +36,13 @@ type RegisterPasien = {
     jenis_kelamin: string;
     usia: number;
 };
+type FlashPasienOld = {
+    success_pasien_old :string;
+    error_pasien_old: string;
+};
+export default function RegisterPasienLama() {
+    const { props } = usePage<{ flash: FlashPasienOld }>();
 
-export default function RegisterPasienLama({ flash }: { flash?: string }) {
     const {
         data,
         setData,
@@ -141,9 +146,14 @@ export default function RegisterPasienLama({ flash }: { flash?: string }) {
                 description="Isi data berikut untuk mendaftarkan pasien lama"
             />
 
-            {flash && (
+            {props.flash.success_pasien_old && (
                 <div className="rounded bg-green-100 p-2 text-green-800">
-                    {flash}
+                    {props.flash.success_pasien_old}
+                </div>
+            )}
+            {props.flash.error_pasien_old && (
+                <div className="rounded bg-green-100 p-2 text-red-800">
+                    {props.flash.error_pasien_old}
                 </div>
             )}
 
@@ -361,7 +371,7 @@ export default function RegisterPasienLama({ flash }: { flash?: string }) {
                                 setData('no_bpjs', e.target.value || '')
                             }
                             placeholder="Masukkan nomor BPJS"
-                            className='bg-neutral-100 text-neutral-500'
+                            className="bg-neutral-100 text-neutral-500"
                         />
                         <InputError message={errors.no_bpjs} />
                     </div>

@@ -24,6 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('lama', [PasienController::class, 'storeOld'])->name('lama.store');
     });
     Route::get('antrian', [AntrianController::class, 'index'])->name('antrian.index');
+    Route::get('antrian-now', [AntrianController::class, 'antrianNow'])->name('antrian.now');
 });
 
 require __DIR__ . '/settings.php';

@@ -42,5 +42,7 @@ class AntrianController extends Controller
         ]);
     }
 
-    
+    public function antrianNow() {
+        
+    }
 }
