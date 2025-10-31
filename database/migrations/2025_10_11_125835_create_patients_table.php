@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama_pasien');
             $table->string('nama_pendaftar');
             $table->text('keluhan_sakit');
-            $table->text('usia');
+            $table->unsignedTinyInteger('usia');
             $table->enum('jenis_kelamin', ['L', 'P']);
             $table->string('no_rm')->unique();
             $table->string('no_nik', 16)->nullable();
@@ -24,7 +24,6 @@ return new class extends Migration
             $table->text('alamat')->nullable();
             $table->enum('pembayaran', ['umum', 'bpjs']);
             $table->string('no_bpjs')->nullable();
-            $table->enum('poliklinik', ['umum', 'gigi', 'anak', 'kandungan']);
             $table->timestamp('waktu_daftar');
         });
     }

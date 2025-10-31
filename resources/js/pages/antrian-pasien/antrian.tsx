@@ -4,6 +4,8 @@ import antrian from '@/routes/antrian';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { Activity, CheckCircle, Clock, Users } from 'lucide-react';
+import ListPoliklnik from './partials/list-poliklinik';
+import DataTable from './partials/table-antrian';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -51,6 +53,14 @@ export default function AntrianPasienIndex({
                         icon={CheckCircle}
                         color="text-green-600"
                     />
+                </div>
+                <div className="grid grid-cols-12 gap-4 p-4 items-center">
+                    <div className="col-span-3 flex justify-center">
+                        <ListPoliklnik />
+                    </div>
+                    <div className="col-span-9">
+                        <DataTable />
+                    </div>
                 </div>
             </AppLayout>
         </>

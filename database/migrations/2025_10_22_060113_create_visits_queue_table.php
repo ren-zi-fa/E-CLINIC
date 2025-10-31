@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('visits_queue', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pasien_id')->constrained('patients')->onDelete('cascade');
+            $table->foreignId('poliklinik_id')->constrained('polikliniks')->onDelete('cascade');
             $table->integer('nomor_antrian');
-            $table->enum('status', ['menunggu', 'proses', 'selesai'])->default('menunggu');
+            $table->enum('status', ['menunggu', 'proses', 'selesai', 'skip'])->default('menunggu');
             $table->date('tanggal');
             $table->timestamps();
         });

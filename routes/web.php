@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Antrian\AntrianController;
 use App\Http\Controllers\Pasien\PasienController;
+use App\Http\Controllers\Poliklinik\PoliklinikController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -24,7 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('lama', [PasienController::class, 'storeOld'])->name('lama.store');
     });
     Route::get('antrian', [AntrianController::class, 'index'])->name('antrian.index');
-    Route::get('antrian-now', [AntrianController::class, 'antrianNow'])->name('antrian.now');
+    Route::get('poliklinik', PoliklinikController::class)->name('poliklinik.list');
 });
 
 require __DIR__ . '/settings.php';

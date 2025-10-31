@@ -57,7 +57,7 @@ function SidebarProvider({
   onOpenChange: setOpenProp,
   className,
   style,
-  children,
+children,
   ...props
 }: React.ComponentProps<"div"> & {
   defaultOpen?: boolean

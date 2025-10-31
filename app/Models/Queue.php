@@ -12,11 +12,6 @@ class Queue extends Model
     protected $table = 'visits_queue';
     protected $guarded = [];
 
-    public function pasien()
-    {
-        return $this->belongsTo(Patient::class, 'pasien_id');
-    }
-
     public static function boot()
     {
         parent::boot();
@@ -31,5 +26,15 @@ class Queue extends Model
 
             $queue->tanggal = $today;
         });
+    }
+
+    public function poliklinik()
+    {
+        return $this->belongsTo(Poliklinik::class, 'poliklinik_id');
+    }
+
+    public function pasien()
+    {
+        return $this->belongsTo(Patient::class, 'pasien_id');
     }
 }

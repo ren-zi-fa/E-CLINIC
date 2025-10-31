@@ -17,11 +17,23 @@ class PatientFactory extends Factory
     public function definition(): array
     {
         return [
-            'no_rm' => fake()->unique()->numerify('RM###'),
-            'nik' => fake()->numerify('3210############'),
-            'tanggal_lahir' => fake()->date('Y-m-d', '2000-01-01'),
-            'jenis_kelamin' => fake()->randomElement(['L', 'P']),
-            'alamat' => fake()->address(),
+            'nama_pasien' => $this->faker->name(),
+            'nama_pendaftar' => $this->faker->name(),
+            'keluhan_sakit' => $this->faker->sentence(10),
+            'usia' => $this->faker->numberBetween(1, 100),
+            'jenis_kelamin' => $this->faker->randomElement(['L', 'P']),
+            'no_rm' => 'RM' . $this->faker->unique()->numerify('####'),
+            'no_nik' => $this->faker->optional()->numerify('################'),
+            'no_telp' => $this->faker->optional()->numerify('08##########'),
+            'alamat' => $this->faker->optional()->address(),
+            'pembayaran' => $this->faker->randomElement(['umum', 'bpjs']),
+            'no_bpjs' => function (array $attributes) {
+                return $attributes['pembayaran'] === 'bpjs'
+                    ? $this->faker->numerify('################')
+                    : null;
+            },
+            'waktu_daftar' => $this->faker->dateTimeBetween('-1 month', 'now'),
         ];
+
     }
 }
