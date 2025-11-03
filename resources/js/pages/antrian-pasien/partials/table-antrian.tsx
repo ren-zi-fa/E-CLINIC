@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     Table,
     TableBody,
@@ -85,7 +84,7 @@ export default function DataTable() {
                 <Table className="w-full table-fixed">
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-28">
+                            <TableHead className="w-32">
                                 <TableSortHeader
                                     title="No. Antrian"
                                     sort={

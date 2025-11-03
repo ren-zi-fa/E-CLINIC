@@ -15,6 +15,12 @@ export type PaginationLink = {
     active: boolean;
 };
 
+export type InitParam = {
+    search: string;
+    limit: number;
+    col: string;
+    sort: string;
+};
 export type AntrianResponse = {
     current_page: number;
     data: AntrianItem[];

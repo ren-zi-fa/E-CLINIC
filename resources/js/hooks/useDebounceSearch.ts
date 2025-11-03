@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { router } from '@inertiajs/react';
 import { debounce, pickBy } from 'lodash';
 
+import { InitParam } from '@/types/data';
 import { useCallback, useEffect, useState } from 'react';
 import usePrevious from './usePrevious';
 
 const useDebouncedSearch = (
     url: string,
-    initialParams: any,
+    initialParams: InitParam,
     initialTimeDebounce = 50,
 ) => {
     const [params, setParams] = useState(initialParams);

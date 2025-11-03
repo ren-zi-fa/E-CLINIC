@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
+import { InitParam } from '@/types/data';
 import { useEffect, useRef } from 'react';
 
-export default function usePrevious(value: any) {
-    const ref = useRef(null);
+export default function usePrevious(value: InitParam) {
+    const ref = useRef<InitParam | null>(null);
 
     useEffect(() => {
         ref.current = value;
