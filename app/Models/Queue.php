@@ -8,25 +8,9 @@ use Illuminate\Support\Facades\DB;
 
 class Queue extends Model
 {
-    use HasFactory;
+
     protected $table = 'visits_queue';
     protected $guarded = [];
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($queue) {
-            $today = now()->toDateString();
-            $last = DB::table('visits_queue')
-                ->whereDate('tanggal', $today)
-                ->max('nomor_antrian');
-
-            $queue->nomor_antrian = $last ? $last + 1 : 1;
-
-            $queue->tanggal = $today;
-        });
-    }
 
     public function poliklinik()
     {

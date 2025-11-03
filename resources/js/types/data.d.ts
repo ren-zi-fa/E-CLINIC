@@ -1,6 +1,6 @@
 export type AntrianItem = {
     id: number;
-    nomor_antrian: number;
+    nomor_antrian: string;
     status: 'menunggu' | 'proses' | 'selesai';
     tanggal: string;
     created_at: string;
