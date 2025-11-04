@@ -8,28 +8,34 @@ use Illuminate\Support\Facades\DB;
 
 class PatientRegistrationService
 {
+    public function generateNoRm(): string
+    {
+        $year = date('Y');
+        // Ambil no_rm terakhir di tahun berjalan
+        $lastRm = Patient::whereYear('waktu_daftar', $year)->orderByDesc('id')->value('no_rm');
+
+        // Jika ada pasien sebelumnya, ambil nomor terakhir
+        $lastNumber = $lastRm ? (int) substr($lastRm, -4) : 0;
+        // Tambahkan +1
+        $nextNumber = $lastNumber + 1;
+        // Format RM-YYYY-XXXX
+        return 'RM-' . $year . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+    }
 
     public function registerNew(array $data): array
     {
         return DB::transaction(function () use ($data) {
-
-            $lastNoRm = Patient::whereYear('waktu_daftar', date('Y'))->max('no_rm');
-            $number = $lastNoRm ? ((int) substr($lastNoRm, -4)) + 1 : 1;
-
-            $nextNoRm = 'RM-' . date('Y') . '-' . str_pad($number, 4, '0', STR_PAD_LEFT);
-            $data['no_rm'] = $nextNoRm;
-
-
+            $data['no_rm'] = $this->generateNoRm();
             $patient = Patient::create($data);
             $queue = Queue::create([
                 'pasien_id' => $patient->id,
                 'status' => 'menunggu',
+                'nomor_antrian' => '',
+                'tanggal' => now()->toDateString()
             ]);
 
             return [
-                'patient' => $patient,
-                'queue' => $queue,
-                'no_rm' => $nextNoRm,
+                'no_rm' => $queue->no_rm,
                 'nomor_antrian' => $queue->nomor_antrian,
             ];
         });

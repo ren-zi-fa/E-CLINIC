@@ -32,7 +32,7 @@ class PasienController extends Controller
             'no_telp' => 'required|string|max:15',
             'pembayaran' => 'required|in:umum,bpjs',
             'no_bpjs' => 'required_if:pembayaran,bpjs|string|nullable',
-            'poliklinik' => 'required|in:umum,gigi,anak,kandungan',
+            'poliklinik_id' => 'required|exists:polikliniks,id',
             'jenis_kelamin' => 'required|in:P,L',
             'usia' => 'required|integer|min:0|max:120',
         ]);
