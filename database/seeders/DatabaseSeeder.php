@@ -48,6 +48,7 @@ class DatabaseSeeder extends Seeder
                     'status' => 'menunggu',
                     'tanggal' => now()->toDateString(),
                 ]);
+                
             }
         }
         $this->call([

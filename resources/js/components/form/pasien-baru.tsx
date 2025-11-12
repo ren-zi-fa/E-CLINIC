@@ -14,9 +14,11 @@ import {
     SelectValue,
 } from '../ui/select';
 import { Textarea } from '../ui/textarea';
+import { useEffect, useState } from 'react';
+import { Poliklinik } from '@/types/data';
 type PembayaranType = 'umum' | 'bpjs';
 
-type PoliklinikType = 'umum' | 'gigi' | 'anak' | 'mata' | 'tht';
+
 type RegisterPasien = {
     no_nik: string;
     nama_pasien: string;
@@ -26,7 +28,7 @@ type RegisterPasien = {
     no_bpjs?: string | null;
     no_telp: string;
     pembayaran: PembayaranType;
-    poliklinik: PoliklinikType;
+    poliklinik_id: number;
     jenis_kelamin: string;
     usia: number;
 };
@@ -34,7 +36,10 @@ type FlashPasienNew = {
     success_pasien_new: string;
     error_pasien_new: string;
 };
+
+
 export default function RegisterPasienBaru() {
+    const [poli,setPoli] = useState<Poliklinik[]>([])
     const { props } = usePage<{ flash: FlashPasienNew }>();
     const {
         data,
@@ -54,7 +59,7 @@ export default function RegisterPasienBaru() {
         alamat: '',
         no_telp: '',
         jenis_kelamin: '',
-        poliklinik: '' as PoliklinikType,
+        poliklinik_id:0 ,
         pembayaran: '' as PembayaranType,
     });
 
@@ -65,8 +70,16 @@ export default function RegisterPasienBaru() {
                 reset();
             },
         });
-        console.log(data);
     };
+
+    useEffect(()=>{
+    const fetchPoli = async()=>{
+        const response = await fetch("/poliklinik")
+        const res = await response.json()
+     setPoli(res.polikliniks)
+    }
+    fetchPoli()
+    },[])
 
     return (
         <div className="max-w-4x l mx-auto mb-10 space-y-6">
@@ -240,32 +253,30 @@ export default function RegisterPasienBaru() {
                     </div>
 
                     {/* Poliklinik */}
-                    <div className="grid gap-2">
-                        <Label htmlFor="poliklinik">Tujuan Poliklinik</Label>
-                        <Select
-                            value={data.poliklinik}
-                            onValueChange={(val) =>
-                                setData('poliklinik', val as PoliklinikType)
-                            }
-                            required
-                        >
-                            <SelectTrigger id="poliklinik">
-                                <SelectValue placeholder="Pilih poliklinik" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="umum">Umum</SelectItem>
-                                <SelectItem value="gigi">Gigi</SelectItem>
-                                <SelectItem value="anak">Anak</SelectItem>
-                                <SelectItem value="kandungan">
-                                    Kandungan
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <InputError
-                            className="mt-2"
-                            message={errors.poliklinik}
-                        />
+
+                   <div className="grid gap-2">
+                    <Label htmlFor="poliklinik">Tujuan Poliklinik</Label>
+                    <Select
+                        value={data.poliklinik_id ? data.poliklinik_id.toString() : ""}
+                        onValueChange={(val) => setData("poliklinik_id", Number(val))}
+                        required
+                    >
+                        <SelectTrigger id="poliklinik">
+                        <SelectValue placeholder="Pilih poliklinik" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                        {poli.map((row) => (
+                            <SelectItem key={row.id} value={row.id.toString()}>
+                            {row.nama}
+                            </SelectItem>
+                        ))}
+                        </SelectContent>
+                    </Select>
+
+                    <InputError className="mt-2" message={errors.poliklinik_id} />
                     </div>
+
 
                     {/* Pembayaran */}
                     <div className="grid gap-2">

@@ -20,7 +20,8 @@ return new class extends Migration
             $table->date('tanggal');
             $table->timestamps();
 
-            $table->unique(['poliklinik_id', 'nomor_antrian']);
+           $table->unique(['poliklinik_id', 'tanggal', 'nomor_antrian']);
+
         });
     }
 

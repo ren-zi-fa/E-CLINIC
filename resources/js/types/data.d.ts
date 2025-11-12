@@ -36,3 +36,10 @@ export type AntrianResponse = {
     to: number | null;
     total: number;
 };
+
+export type Poliklinik = {
+    id:number,
+    nama:string,
+    kode:string,
+    isOpen:boolean
+}

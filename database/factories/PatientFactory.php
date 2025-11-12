@@ -23,9 +23,9 @@ class PatientFactory extends Factory
             'usia' => $this->faker->numberBetween(1, 100),
             'jenis_kelamin' => $this->faker->randomElement(['L', 'P']),
             'no_rm' => 'RM' . $this->faker->unique()->numerify('####'),
-            'no_nik' => $this->faker->optional()->numerify('################'),
-            'no_telp' => $this->faker->optional()->numerify('08##########'),
-            'alamat' => $this->faker->optional()->address(),
+            'no_nik' => $this->faker->numerify('################'),
+            'no_telp' => $this->faker->numerify('08##########'),
+            'alamat' => $this->faker->address(),
             'pembayaran' => $this->faker->randomElement(['umum', 'bpjs']),
             'no_bpjs' => function (array $attributes) {
                 return $attributes['pembayaran'] === 'bpjs'

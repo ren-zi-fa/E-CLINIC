@@ -19,9 +19,9 @@ return new class extends Migration
             $table->unsignedTinyInteger('usia');
             $table->enum('jenis_kelamin', ['L', 'P']);
             $table->string('no_rm')->unique();
-            $table->string('no_nik', 16)->nullable();
-            $table->string('no_telp', 15)->nullable();
-            $table->text('alamat')->nullable();
+            $table->string('no_nik', 16);
+            $table->string('no_telp', 15);
+            $table->text('alamat');
             $table->enum('pembayaran', ['umum', 'bpjs']);
             $table->string('no_bpjs')->nullable();
             $table->timestamp('waktu_daftar');
