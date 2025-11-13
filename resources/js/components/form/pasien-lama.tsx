@@ -4,7 +4,7 @@ import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienContro
 import { Transition } from '@headlessui/react';
 import { useForm, usePage } from '@inertiajs/react';
 import { Loader2, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import HeadingSmall from '../heading-small';
 import InputError from '../input-error';
@@ -19,9 +19,9 @@ import {
     SelectValue,
 } from '../ui/select';
 import { Textarea } from '../ui/textarea';
+import { Poliklinik } from '@/types/data';
 
 type PembayaranType = 'umum' | 'bpjs';
-type PoliklinikType = 'umum' | 'gigi' | 'anak' | 'mata' | 'tht';
 
 type RegisterPasien = {
     no_nik: string;
@@ -32,7 +32,7 @@ type RegisterPasien = {
     no_bpjs?: string | null;
     no_telp: string;
     pembayaran: PembayaranType;
-    poliklinik: PoliklinikType;
+    poliklinik_id: number;
     jenis_kelamin: string;
     usia: number;
 };
@@ -42,7 +42,7 @@ type FlashPasienOld = {
 };
 export default function RegisterPasienLama() {
     const { props } = usePage<{ flash: FlashPasienOld }>();
-
+    const [poli,setPoli] = useState<Poliklinik[]>([])
     const {
         data,
         setData,
@@ -61,7 +61,7 @@ export default function RegisterPasienLama() {
         usia: 0,
         jenis_kelamin: '',
         no_telp: '',
-        poliklinik: '' as PoliklinikType,
+        poliklinik_id: 0,
         pembayaran: '' as PembayaranType,
     });
 
@@ -99,7 +99,7 @@ export default function RegisterPasienLama() {
                     no_bpjs: pasien.no_bpjs ?? '',
                     keluhan_sakit: '',
                     pembayaran: '' as PembayaranType,
-                    poliklinik: '' as PoliklinikType,
+                    poliklinik_id:pasien.poliklinik_id ?? 0,
                 });
 
                 setPasienFound(true);
@@ -139,6 +139,14 @@ export default function RegisterPasienLama() {
         });
     };
 
+        useEffect(()=>{
+        const fetchPoli = async()=>{
+            const response = await fetch("/poliklinik")
+            const res = await response.json()
+         setPoli(res.polikliniks)
+        }
+        fetchPoli()
+        },[])
     return (
         <div className="mx-auto mb-10 max-w-4xl space-y-6">
             <HeadingSmall
@@ -318,28 +326,28 @@ export default function RegisterPasienLama() {
                     <InputError message={errors.alamat} />
                 </div>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="poliklinik">Tujuan Poliklinik</Label>
-                    <Select
-                        value={data.poliklinik}
-                        onValueChange={(val) =>
-                            setData('poliklinik', val as PoliklinikType)
-                        }
-                        required
-                    >
-                        <SelectTrigger id="poliklinik">
-                            <SelectValue placeholder="Pilih poliklinik" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="umum">Umum</SelectItem>
-                            <SelectItem value="gigi">Gigi</SelectItem>
-                            <SelectItem value="anak">Anak</SelectItem>
-                            <SelectItem value="mata">Mata</SelectItem>
-                            <SelectItem value="tht">THT</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <InputError message={errors.poliklinik} />
-                </div>
+                    <div className="grid gap-2">
+                                  <Label htmlFor="poliklinik">Tujuan Poliklinik</Label>
+                                  <Select
+                                      value={data.poliklinik_id ? data.poliklinik_id.toString() : ""}
+                                      onValueChange={(val) => setData("poliklinik_id", Number(val))}
+                                      required
+                                  >
+                                      <SelectTrigger id="poliklinik">
+                                      <SelectValue placeholder="Pilih poliklinik" />
+                                      </SelectTrigger>
+              
+                                      <SelectContent>
+                                      {poli.map((row) => (
+                                          <SelectItem key={row.id} value={row.id.toString()}>
+                                          {row.nama}
+                                          </SelectItem>
+                                      ))}
+                                      </SelectContent>
+                                  </Select>
+              
+                                  <InputError className="mt-2" message={errors.poliklinik_id} />
+                                  </div>
 
                 <div className="grid gap-2">
                     <Label htmlFor="pembayaran">Pembayaran</Label>

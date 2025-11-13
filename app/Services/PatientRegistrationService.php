@@ -88,7 +88,7 @@ class PatientRegistrationService
         return DB::transaction(function () use ($data) {
 
             $patient = Patient::where('no_nik', $data['no_nik'])->firstOrFail();
-
+            $data['no_rm'] = $this->generateNoRm();
             $patient->update([
                 'nama_pasien'    => $data['nama_pasien'],
                 'nama_pendaftar' => $data['nama_pendaftar'],
@@ -97,7 +97,6 @@ class PatientRegistrationService
                 'no_telp'        => $data['no_telp'],
                 'pembayaran'     => $data['pembayaran'],
                 'no_bpjs'        => $data['no_bpjs'] ?? null,
-                'poliklinik'     => $data['poliklinik'],
                 'jenis_kelamin'  => $data['jenis_kelamin'],
                 'usia'           => $data['usia'],
             ]);
@@ -105,11 +104,12 @@ class PatientRegistrationService
             $queue = Queue::create([
                 'pasien_id' => $patient->id,
                 'status' => 'menunggu',
+                'nomor_antrian' =>$this->generateAntrian($data['poliklinik_id']),
+                'tanggal' => now()->toDateString(),
+                'poliklinik_id'=>$data['poliklinik_id']
             ]);
 
             return [
-                'patient' => $patient,
-                'queue' => $queue,
                 'no_rm' => $patient->no_rm,
                 'nomor_antrian' => $queue->nomor_antrian,
             ];
