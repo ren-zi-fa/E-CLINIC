@@ -13,7 +13,13 @@ class PatientRegistrationService
     {
         $year = date('Y');
         // Ambil no_rm terakhir di tahun berjalan
-        $lastRm = Patient::whereYear('waktu_daftar', $year)->orderByDesc('id')->value('no_rm');
+       $lastRm = Queue::from('visits_queue as vq')
+        ->whereYear('vq.waktu_daftar', $year)
+        ->join('patients as p', 'vq.pasien_id', '=', 'p.id')
+        ->orderByDesc('vq.id')
+        ->value('p.no_rm');
+
+
 
         // Jika ada pasien sebelumnya, ambil nomor terakhir
         $lastNumber = $lastRm ? (int) substr($lastRm, -4) : 0;

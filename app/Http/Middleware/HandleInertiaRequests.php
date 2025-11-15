@@ -48,13 +48,6 @@ class HandleInertiaRequests extends Middleware
                 'error_pasien_new'   => fn() => $request->session()->get('error_pasien_new'),
                 'error_pasien_old'   => fn() => $request->session()->get('error_pasien_old'),
             ],
-            'filters' => [
-                'search'  => $request->query('search'),
-                'limit'   => $request->query('limit'),
-                'col'     => $request->query('col'),
-                'sort'    => $request->query('sort'),
-                'filters' => $request->query('filters'),
-            ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

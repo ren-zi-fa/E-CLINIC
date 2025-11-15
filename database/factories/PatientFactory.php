@@ -32,7 +32,6 @@ class PatientFactory extends Factory
                     ? $this->faker->numerify('################')
                     : null;
             },
-            'waktu_daftar' => $this->faker->dateTimeBetween('-1 month', 'now'),
         ];
 
     }

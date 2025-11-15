@@ -24,8 +24,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('baru', [PasienController::class, 'storeNew'])->name('baru.store');
         Route::patch('lama', [PasienController::class, 'storeOld'])->name('lama.store');
     });
-    Route::get('antrian', [AntrianController::class, 'index'])->name('antrian.index');
     Route::get('poliklinik', PoliklinikController::class)->name('poliklinik.list');
+
+/* antrian poliklinik */
+    Route::get('antrian', [AntrianController::class, 'index'])->name('antrian.index');
+    Route::get('antrian/poliklinik/{name_poli}', [AntrianController::class, 'showByPoli'])->name('antrian.byPoli');
+
 });
 
 require __DIR__ . '/settings.php';

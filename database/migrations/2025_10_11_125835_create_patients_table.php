@@ -24,7 +24,7 @@ return new class extends Migration
             $table->text('alamat');
             $table->enum('pembayaran', ['umum', 'bpjs']);
             $table->string('no_bpjs')->nullable();
-            $table->timestamp('waktu_daftar');
+         
         });
     }
 

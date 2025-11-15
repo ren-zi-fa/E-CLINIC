@@ -1,3 +1,4 @@
+import { usePoli } from '@/hooks/useCatgeoryPoli';
 import poliklinik from '@/routes/poliklinik';
 import { useEffect, useState } from 'react';
 
@@ -6,36 +7,41 @@ type PoliList = {
     nama: string;
     is_open: boolean;
 };
+
+
 export default function ListPoliklnik() {
-    const [polikliniks, setPolikliniks] = useState<PoliList[]>();
+    const [polikliniks, setPolikliniks] = useState<PoliList[]>([]);
+    const [selectedId, setSelectedId] = useState<number >(1);
+
     useEffect(() => {
         fetch(poliklinik.list().url)
-            .then((res) => res.json()) // ubah response ke JSON
+            .then((res) => res.json())
             .then((data) => {
                 setPolikliniks(data.polikliniks);
             })
-            .catch((err) => console.log(err));
+            .catch(console.error);
     }, []);
-
+    const { poli, setPoli } = usePoli();
+    console.log("from list btw",poli);
     return (
-        <>
-            <div className="space-y-3 w-xs">
-                {polikliniks?.map((data, i) => (
-                    <div
-                        key={i}
-                        className="rounded-xl border border-gray-200 bg-white p-4 shadow-md transition hover:shadow-lg"
+        <div className="w-xs space-y-3">
+            {polikliniks.map((data) => (
+                <div
+                    key={data.id}
+                    onClick={() => {
+                        setSelectedId(data.id);
+                        setPoli(data.nama);
+                    }}
+                    className={`cursor-pointer rounded-xl border border-gray-200 bg-white p-4 shadow-md transition hover:shadow-lg ${selectedId === data.id ? 'ring-2 ring-blue-500' : ''} `}
+                >
+                    <p className="font-medium text-gray-800">{data.nama}</p>
+                    <p
+                        className={`mt-1 text-sm ${data.is_open ? 'text-green-600' : 'text-red-600'}`}
                     >
-                        <p className="font-medium text-gray-800">{data.nama}</p>
-                        <p
-                            className={`mt-1 text-sm ${
-                                data.is_open ? 'text-green-600' : 'text-red-600'
-                            }`}
-                        >
-                            {data.is_open ? 'Buka' : 'Tutup'}
-                        </p>
-                    </div>
-                ))}
-            </div>
-        </>
+                        {data.is_open ? 'Buka' : 'Tutup'}
+                    </p>
+                </div>
+            ))}
+        </div>
     );
 }

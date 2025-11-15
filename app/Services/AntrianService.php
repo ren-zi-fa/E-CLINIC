@@ -60,54 +60,30 @@ class AntrianService
      * @param array $params
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginateAntrian(array $params = [])
-    {
-        $today = Carbon::today();
-        $query = DB::table('visits_queue')
-            ->select([
-                'visits_queue.id',
-                'visits_queue.nomor_antrian',
-                'visits_queue.status',
-                'visits_queue.tanggal',
-                'visits_queue.created_at',
-                'patients.nama_pasien',
-                'patients.no_rm',
-                'polikliniks.nama as nama_poliklinik',
-            ])
-            ->join('patients', 'visits_queue.pasien_id', '=', 'patients.id')
-            ->join('polikliniks', 'visits_queue.poliklinik_id', '=', 'polikliniks.id')
-            ->whereDate('visits_queue.tanggal', $today);
 
-        // Basic search on patient name or no_rm
-        if (!empty($params['search'])) {
-            $search = trim($params['search']);
-            $query->where(function ($q) use ($search) {
-                $q->where('patients.nama_pasien', 'like', "%{$search}%")
-                    ->orWhere('patients.no_rm', 'like', "%{$search}%")
-                    ->orWhere('polikliniks.nama', 'like', "%{$search}%");
-            });
-        }
+ public function getAntrians( string $poli_name)
+{
+    $startOfDay = now('Asia/Jakarta')->startOfDay();
+    $endOfDay = now('Asia/Jakarta')->endOfDay();
 
-        $allowed = [
-            'nomor_antrian' => 'visits_queue.nomor_antrian',
-            'status' => 'visits_queue.status',
-            'created_at' => 'visits_queue.created_at',
-            'nama_pasien' => 'patients.nama_pasien',
-            'no_rm' => 'patients.no_rm',
-            'poliklinik' => 'polikliniks.nama',
-        ];
+    $query = DB::table('visits_queue as vq')
+        ->join('patients as p', 'vq.pasien_id', '=', 'p.id')
+        ->join('polikliniks as pk', 'vq.poliklinik_id', '=', 'pk.id')
+        ->select(
+            'vq.id',
+            'vq.nomor_antrian',
+            'vq.status',
+            'vq.tanggal',
+            'vq.waktu_daftar',
+            'p.no_rm',
+            'p.nama_pasien',
+            'pk.nama as nama_poliklinik',
+        )
+        ->where('pk.nama', $poli_name)
+        ->whereBetween('vq.tanggal', [$startOfDay, $endOfDay]);
 
-        $col = $params['col'] ?? null;
-        $dir = (isset($params['sort']) && strtolower($params['sort']) === 'desc') ? 'desc' : 'asc';
+    return $query->get();
+}
 
-        if ($col && array_key_exists($col, $allowed)) {
-            $query->orderBy($allowed[$col], $dir);
-        } else {
-            $query->orderBy('visits_queue.nomor_antrian', 'asc');
-        }
 
-        $limit = isset($params['limit']) && is_numeric($params['limit']) ? (int) $params['limit'] : 10;
-
-        return $query->paginate($limit)->withQueryString();
-    }
 }

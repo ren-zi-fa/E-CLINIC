@@ -25,6 +25,7 @@ export default function AntrianPasienIndex({
     totalProses,
     totalSelesai,
 }: AntrianProps) {
+
     return (
         <>
             <AppLayout breadcrumbs={breadcrumbs}>
@@ -54,12 +55,15 @@ export default function AntrianPasienIndex({
                         color="text-green-600"
                     />
                 </div>
-                <div className="grid grid-cols-12 gap-4 p-4 items-center">
+                <div className="grid grid-cols-12 items-center gap-4 p-4">
                     <div className="col-span-3 flex justify-center">
-                        <ListPoliklnik />
+                        <ListPoliklnik
+                          
+                          
+                        />
                     </div>
                     <div className="col-span-9">
-                        <DataTable />
+                        <DataTable  />
                     </div>
                 </div>
             </AppLayout>

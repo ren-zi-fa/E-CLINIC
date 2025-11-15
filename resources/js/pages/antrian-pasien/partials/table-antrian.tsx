@@ -7,20 +7,10 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import TableFilter from '@/components/data-table/table-filter';
+import { usePoli } from '@/hooks/useCatgeoryPoli';
+import { AntrianItem } from '@/types/data';
+import { useEffect, useState } from 'react';
 
-import TablePagination from '@/components/data-table/table-pagination';
-import TableSortHeader from '@/components/data-table/table-short-header';
-import TableToolbar from '@/components/data-table/table-toolbar';
-import useDebouncedSearch from '@/hooks/useDebounceSearch';
-import useSorting from '@/hooks/useSorting';
-import antrianRoute from '@/routes/antrian';
-import { AntrianItem, AntrianResponse } from '@/types/data';
-import { usePage } from '@inertiajs/react';
-
-type PageProps = {
-    antrian: AntrianResponse;
-};
 const getStatusBadgeClass = (status: string) => {
     switch (status) {
         case 'menunggu':
@@ -35,88 +25,29 @@ const getStatusBadgeClass = (status: string) => {
 };
 
 export default function DataTable() {
-    const { antrian } = usePage<PageProps>().props;
+    const [antrian, setAntrian] = useState<AntrianItem[]>();
+    const { poli: poliCatgeory } = usePoli();
+
     console.log(antrian);
-    // initial params from server-provided paginator
-    const initialParams = {
-        search: '',
-        limit: antrian.per_page || 10,
-        col: '',
-        sort: '',
-    };
-
-    const { params, setParams, setTimeDebounce } = useDebouncedSearch(
-        antrianRoute.index().url,
-        initialParams,
-    );
-
-    const { sort } = useSorting(params, setParams);
-    const statusOptions = [
-        { value: 'menunggu', label: 'Menunggu' },
-        { value: 'proses', label: 'Proses' },
-        { value: 'selesai', label: 'Selesai' },
-    ];
-
+    useEffect(() => {
+        const fetchAntrianByPoli = async () => {
+            const result = await fetch(`/antrian/poliklinik/${poliCatgeory}`);
+            const response = await result.json();
+            setAntrian(response.antrian);
+        };
+        fetchAntrianByPoli();
+    }, [poliCatgeory]);
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <TableToolbar
-                        placeholder="Cari pasien..."
-                        params={params}
-                        setParams={setParams}
-                        setTimeDebounce={setTimeDebounce}
-                        search={params.search}
-                    />
-
-                    <TableFilter
-                        title="Status"
-                        params={params}
-                        setParams={setParams}
-                        setTimeDebounce={setTimeDebounce}
-                        filter="status"
-                        options={statusOptions}
-                    />
-                </div>
-            </div>
-
             <div className="overflow-hidden rounded-md border">
                 <Table className="w-full table-fixed">
                     <TableHeader>
                         <TableRow>
+                            <TableHead className="w-32">No.Antrian</TableHead>
                             <TableHead className="w-32">
-                                <TableSortHeader
-                                    title="No. Antrian"
-                                    sort={
-                                        params.col === 'nomor_antrian'
-                                            ? params.sort
-                                            : ''
-                                    }
-                                    onClick={() => sort('nomor_antrian')}
-                                />
+                                No. Rekam Medis
                             </TableHead>
-                            <TableHead className="w-32">
-                                <TableSortHeader
-                                    title="No. RM"
-                                    sort={
-                                        params.col === 'no_rm'
-                                            ? params.sort
-                                            : ''
-                                    }
-                                    onClick={() => sort('no_rm')}
-                                />
-                            </TableHead>
-                            <TableHead className="w-42">
-                                <TableSortHeader
-                                    title="Nama Pasien"
-                                    sort={
-                                        params.col === 'nama_pasien'
-                                            ? params.sort
-                                            : ''
-                                    }
-                                    onClick={() => sort('nama_pasien')}
-                                />
-                            </TableHead>
+                            <TableHead className="w-42">Nama Pasien</TableHead>
                             <TableHead>Poliklinik</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead className="w-20">Waktu Daftar</TableHead>
@@ -124,8 +55,8 @@ export default function DataTable() {
                     </TableHeader>
 
                     <TableBody>
-                        {antrian?.data && antrian.data.length > 0 ? (
-                            antrian.data.map((item: AntrianItem) => (
+                        {antrian && antrian.length > 0 ? (
+                            antrian.map((item: AntrianItem) => (
                                 <TableRow key={item.id}>
                                     <TableCell className="font-semibold">
                                         {item.nomor_antrian}
@@ -148,7 +79,7 @@ export default function DataTable() {
                                             {item.status.toUpperCase()}
                                         </span>
                                     </TableCell>
-                                    <TableCell>{item.created_at}</TableCell>
+                                    <TableCell>{item.waktu_daftar}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center justify-end gap-2">
                                             {/* Action buttons can go here */}
@@ -168,7 +99,6 @@ export default function DataTable() {
                         )}
                     </TableBody>
                 </Table>
-                {antrian?.links && <TablePagination links={antrian.links} />}
             </div>
         </div>
     );

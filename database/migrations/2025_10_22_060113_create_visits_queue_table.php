@@ -18,9 +18,8 @@ return new class extends Migration
             $table->string('nomor_antrian');
             $table->enum('status', ['menunggu', 'proses', 'selesai', 'skip'])->default('menunggu');
             $table->date('tanggal');
-            $table->timestamps();
-
-           $table->unique(['poliklinik_id', 'tanggal', 'nomor_antrian']);
+            $table->timestamp('waktu_daftar');
+            $table->unique(['poliklinik_id', 'tanggal', 'nomor_antrian']);
 
         });
     }
