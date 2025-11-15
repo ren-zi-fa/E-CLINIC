@@ -8,21 +8,34 @@ type PoliList = {
     is_open: boolean;
 };
 
-
 export default function ListPoliklnik() {
     const [polikliniks, setPolikliniks] = useState<PoliList[]>([]);
-    const [selectedId, setSelectedId] = useState<number >(1);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+
+    const { poli, setPoli } = usePoli();
 
     useEffect(() => {
-        fetch(poliklinik.list().url)
-            .then((res) => res.json())
-            .then((data) => {
-                setPolikliniks(data.polikliniks);
-            })
-            .catch(console.error);
-    }, []);
-    const { poli, setPoli } = usePoli();
-    console.log("from list btw",poli);
+        const fetchPoli = async () => {
+            try {
+                const res = await fetch(poliklinik.list().url);
+                const data = await res.json();
+
+                const list: PoliList[] = data.polikliniks;
+                setPolikliniks(list);
+
+                // Default: pilih item pertama
+                if (list.length > 0) {
+                    setSelectedId(list[0].id);
+                    setPoli(list[0].nama);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchPoli();
+    }, [setPoli]);
+
     return (
         <div className="w-xs space-y-3">
             {polikliniks.map((data) => (
@@ -35,8 +48,11 @@ export default function ListPoliklnik() {
                     className={`cursor-pointer rounded-xl border border-gray-200 bg-white p-4 shadow-md transition hover:shadow-lg ${selectedId === data.id ? 'ring-2 ring-blue-500' : ''} `}
                 >
                     <p className="font-medium text-gray-800">{data.nama}</p>
+
                     <p
-                        className={`mt-1 text-sm ${data.is_open ? 'text-green-600' : 'text-red-600'}`}
+                        className={`mt-1 text-sm ${
+                            data.is_open ? 'text-green-600' : 'text-red-600'
+                        }`}
                     >
                         {data.is_open ? 'Buka' : 'Tutup'}
                     </p>

@@ -25,7 +25,7 @@ export default function AntrianPasienIndex({
     totalProses,
     totalSelesai,
 }: AntrianProps) {
-
+   
     return (
         <>
             <AppLayout breadcrumbs={breadcrumbs}>
@@ -35,35 +35,37 @@ export default function AntrianPasienIndex({
                         title="Total Antrian Hari Ini"
                         value={totalAntrian}
                         icon={Users}
+                        bg="bg-blue-300"
+                        color="text-yellow-600"
                     />
                     <StatCard
                         title="Menunggu"
                         value={totalMenunggu}
-                        color="text-yellow-600"
+                       color="text-red-600"
                         icon={Clock}
+                        bg="bg-orange-300"
                     />
                     <StatCard
                         title="Proses"
                         value={totalProses}
                         color="text-blue-600"
                         icon={Activity}
+                        bg="bg-purple-300"
                     />
                     <StatCard
                         title="Selesai"
                         value={totalSelesai}
                         icon={CheckCircle}
                         color="text-green-600"
+                        bg="bg-green-300"
                     />
                 </div>
                 <div className="grid grid-cols-12 items-center gap-4 p-4">
                     <div className="col-span-3 flex justify-center">
-                        <ListPoliklnik
-                          
-                          
-                        />
+                        <ListPoliklnik />
                     </div>
                     <div className="col-span-9">
-                        <DataTable  />
+                        <DataTable />
                     </div>
                 </div>
             </AppLayout>

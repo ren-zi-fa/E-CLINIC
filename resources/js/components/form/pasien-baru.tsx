@@ -1,6 +1,10 @@
 import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienController';
+import { Poliklinik } from '@/types/data';
 import { Transition } from '@headlessui/react';
 import { useForm, usePage } from '@inertiajs/react';
+
+import { useEffect, useState } from 'react';
+import QRCode from 'react-qr-code';
 import HeadingSmall from '../heading-small';
 import InputError from '../input-error';
 import { Button } from '../ui/button';
@@ -14,10 +18,7 @@ import {
     SelectValue,
 } from '../ui/select';
 import { Textarea } from '../ui/textarea';
-import { useEffect, useState } from 'react';
-import { Poliklinik } from '@/types/data';
 type PembayaranType = 'umum' | 'bpjs';
-
 
 type RegisterPasien = {
     no_nik: string;
@@ -37,9 +38,13 @@ type FlashPasienNew = {
     error_pasien_new: string;
 };
 
-
 export default function RegisterPasienBaru() {
-    const [poli,setPoli] = useState<Poliklinik[]>([])
+    const jsonData = {
+        nomor: 'A012',
+        nama: 'Budi',
+        poli: 'Umum',
+    };
+    const [poli, setPoli] = useState<Poliklinik[]>([]);
     const { props } = usePage<{ flash: FlashPasienNew }>();
     const {
         data,
@@ -59,7 +64,7 @@ export default function RegisterPasienBaru() {
         alamat: '',
         no_telp: '',
         jenis_kelamin: '',
-        poliklinik_id:0 ,
+        poliklinik_id: 0,
         pembayaran: '' as PembayaranType,
     });
 
@@ -72,305 +77,410 @@ export default function RegisterPasienBaru() {
         });
     };
 
-    useEffect(()=>{
-    const fetchPoli = async()=>{
-        const response = await fetch("/poliklinik")
-        const res = await response.json()
-     setPoli(res.polikliniks)
-    }
-    fetchPoli()
-    },[])
-
+    useEffect(() => {
+        const fetchPoli = async () => {
+            const response = await fetch('/poliklinik');
+            const res = await response.json();
+            setPoli(res.polikliniks);
+        };
+        fetchPoli();
+    }, []);
+    const link = `https://klinikkamu.com/antrian/12`;
     return (
-        <div className="max-w-4x l mx-auto mb-10 space-y-6">
-            <HeadingSmall
-                title="Pendaftaran Pasien Baru"
-                description="Isi data berikut untuk mendaftarkan pasien baru"
-            />
-            {props.flash.success_pasien_new && (
-                <div
-                    id="flash-message"
-                    className="relative mb-4 rounded bg-green-100 p-3 text-green-800"
-                >
-                    <span>{props.flash.success_pasien_new}</span>
-                    <button
-                        type="button"
-                        onClick={() =>
-                            document.getElementById('flash-message')?.remove()
-                        }
-                        className="absolute top-2 right-2 rounded p-1 text-green-700 hover:bg-green-200"
+        <div className="mx-auto flex max-w-fit flex-row gap-4">
+            <div className="rounded-2xl border p-5 shadow-2xl">
+                <HeadingSmall
+                    title="Pendaftaran Pasien Baru"
+                    description="Isi data berikut untuk mendaftarkan pasien baru"
+                />
+                {props.flash.success_pasien_new && (
+                    <div
+                        id="flash-message"
+                        className="relative mb-4 rounded bg-green-100 p-3 text-green-800"
                     >
-                        ✕
-                    </button>
-                </div>
-            )}
-            {props.flash.error_pasien_new && (
-                <div
-                    id="flash-error"
-                    className="relative mb-4 rounded bg-green-100 p-3 text-red-800"
-                >
-                    <span>{props.flash.error_pasien_new}</span>
-                    <button
-                        type="button"
-                        onClick={() =>
-                            document.getElementById('flash-error')?.remove()
-                        }
-                        className="absolute top-2 right-2 rounded p-1 text-red-700 hover:bg-green-200"
-                    >
-                        ✕
-                    </button>
-                </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div className="grid gap-2">
-                        <Label htmlFor="nama_pendaftar">Nama Pendaftar</Label>
-                        <Input
-                            id="nama_pendaftar"
-                            name="nama_pendaftar"
-                            value={data.nama_pendaftar}
-                            onChange={(e) =>
-                                setData('nama_pendaftar', e.target.value)
+                        <span>{props.flash.success_pasien_new}</span>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                document
+                                    .getElementById('flash-message')
+                                    ?.remove()
                             }
-                            placeholder="Masukkan nama pendaftar"
-                            required
-                        />
-                        <InputError
-                            className="mt-2"
-                            message={errors.nama_pendaftar}
-                        />
-                    </div>
-
-                    {/* Nama Pasien */}
-                    <div className="grid gap-2">
-                        <Label htmlFor="nama_pasien">Nama Pasien</Label>
-                        <Input
-                            id="nama_pasien"
-                            name="nama_pasien"
-                            value={data.nama_pasien}
-                            onChange={(e) =>
-                                setData('nama_pasien', e.target.value)
-                            }
-                            placeholder="Masukkan nama pasien"
-                            required
-                        />
-                        <InputError
-                            className="mt-2"
-                            message={errors.nama_pasien}
-                        />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="usia">Usia</Label>
-                        <div className="flex items-center gap-2">
-                            <Input
-                                id="usia"
-                                name="usia"
-                                type="number"
-                                value={data.usia}
-                                onChange={(e) =>
-                                    setData('usia', Number(e.target.value))
-                                }
-                                placeholder="Masukkan usia pasien"
-                                min={0}
-                                max={120}
-                                required
-                                className="w-24"
-                            />
-                            <span className="text-sm text-muted-foreground">
-                                Tahun
-                            </span>
-                        </div>
-                        <InputError className="mt-2" message={errors.usia} />
-                    </div>
-
-                    {/* jenis kelamin */}
-                    <div className="grid gap-2">
-                        <Label>Jenis Kelamin</Label>
-                        <div className="flex items-center gap-4">
-                            <label className="flex items-center space-x-2">
-                                <input
-                                    type="radio"
-                                    name="jenis_kelamin"
-                                    value="L"
-                                    checked={data.jenis_kelamin === 'L'}
-                                    onChange={(e) =>
-                                        setData('jenis_kelamin', e.target.value)
-                                    }
-                                    className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
-                                    required
-                                />
-                                <span>Laki-laki</span>
-                            </label>
-
-                            <label className="flex items-center space-x-2">
-                                <input
-                                    type="radio"
-                                    name="jenis_kelamin"
-                                    value="P"
-                                    checked={data.jenis_kelamin === 'P'}
-                                    onChange={(e) =>
-                                        setData('jenis_kelamin', e.target.value)
-                                    }
-                                    className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
-                                />
-                                <span>Perempuan</span>
-                            </label>
-                        </div>
-
-                        <InputError
-                            className="mt-2"
-                            message={errors.jenis_kelamin}
-                        />
-                    </div>
-
-                    {/* Nomor NIK */}
-                    <div className="grid gap-2">
-                        <Label htmlFor="no_nik">Nomor KTP/ NIK Pasien</Label>
-                        <Input
-                            id="no_nik"
-                            name="no_nik"
-                            value={data.no_nik}
-                            onChange={(e) => setData('no_nik', e.target.value)}
-                            placeholder="Masukkan nomor KTP"
-                            required
-                        />
-                        <InputError className="mt-2" message={errors.no_nik} />
-                    </div>
-
-                    {/* Nomor Telepon */}
-                    <div className="grid gap-2">
-                        <Label htmlFor="no_telp">Nomor Telepon</Label>
-                        <Input
-                            id="no_telp"
-                            name="no_telp"
-                            value={data.no_telp}
-                            onChange={(e) => setData('no_telp', e.target.value)}
-                            placeholder="08xxxxxxxxxx"
-                            required
-                        />
-                        <InputError className="mt-2" message={errors.no_telp} />
-                    </div>
-
-                    {/* Poliklinik */}
-
-                   <div className="grid gap-2">
-                    <Label htmlFor="poliklinik">Tujuan Poliklinik</Label>
-                    <Select
-                        value={data.poliklinik_id ? data.poliklinik_id.toString() : ""}
-                        onValueChange={(val) => setData("poliklinik_id", Number(val))}
-                        required
-                    >
-                        <SelectTrigger id="poliklinik">
-                        <SelectValue placeholder="Pilih poliklinik" />
-                        </SelectTrigger>
-
-                        <SelectContent>
-                        {poli.map((row) => (
-                            <SelectItem key={row.id} value={row.id.toString()}>
-                            {row.nama}
-                            </SelectItem>
-                        ))}
-                        </SelectContent>
-                    </Select>
-
-                    <InputError className="mt-2" message={errors.poliklinik_id} />
-                    </div>
-
-
-                    {/* Pembayaran */}
-                    <div className="grid gap-2">
-                        <Label htmlFor="pembayaran">Pembayaran</Label>
-                        <Select
-                            value={data.pembayaran}
-                            onValueChange={(val) =>
-                                setData('pembayaran', val as PembayaranType)
-                            }
-                            required
+                            className="absolute top-2 right-2 rounded p-1 text-green-700 hover:bg-green-200"
                         >
-                            <SelectTrigger id="pembayaran">
-                                <SelectValue placeholder="Pilih jenis pembayaran" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="umum">Umum</SelectItem>
-                                <SelectItem value="bpjs">BPJS</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <InputError
-                            className="mt-2"
-                            message={errors.pembayaran}
-                        />
+                            ✕
+                        </button>
                     </div>
-                </div>
-
-                {/* Full width fields */}
-                <div className="grid gap-2">
-                    <Label htmlFor="keluhan_sakit">Keluhan Sakit</Label>
-                    <Textarea
-                        id="keluhan_sakit"
-                        name="keluhan_sakit"
-                        value={data.keluhan_sakit}
-                        onChange={(e) =>
-                            setData('keluhan_sakit', e.target.value)
-                        }
-                        placeholder="Keluhan Sakit"
-                        required
-                    />
-                    <InputError
-                        className="mt-2"
-                        message={errors.keluhan_sakit}
-                    />
-                </div>
-
-                <div className="grid gap-2">
-                    <Label htmlFor="alamat">Alamat Saat Ini</Label>
-                    <Textarea
-                        id="alamat"
-                        name="alamat"
-                        value={data.alamat}
-                        onChange={(e) => setData('alamat', e.target.value)}
-                        placeholder="Masukkan alamat lengkap"
-                        required
-                    />
-                    <InputError className="mt-2" message={errors.alamat} />
-                </div>
-
-                {/* BPJS */}
-                {data.pembayaran === 'bpjs' && (
-                    <div className="grid gap-2 duration-200 animate-in fade-in">
-                        <Label htmlFor="no_bpjs">Nomor BPJS</Label>
-                        <Input
-                            id="no_bpjs"
-                            type="text"
-                            placeholder="Masukkan nomor BPJS"
-                            value={data.no_bpjs ?? ''}
-                            onChange={(e) =>
-                                setData('no_bpjs', e.target.value || null)
+                )}
+                {props.flash.error_pasien_new && (
+                    <div
+                        id="flash-error"
+                        className="relative mb-4 rounded bg-green-100 p-3 text-red-800"
+                    >
+                        <span>{props.flash.error_pasien_new}</span>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                document.getElementById('flash-error')?.remove()
                             }
-                            required={data.pembayaran === 'bpjs'}
-                        />
-                        <InputError className="mt-2" message={errors.no_bpjs} />
+                            className="absolute top-2 right-2 rounded p-1 text-red-700 hover:bg-green-200"
+                        >
+                            ✕
+                        </button>
                     </div>
                 )}
 
-                {/* Submit */}
-                <div className="flex items-center gap-4">
-                    <Button disabled={processing}>
-                        {processing ? 'Menyimpan...' : 'Daftarkan'}
-                    </Button>
-                    <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-neutral-600">
-                            Data tersimpan
-                        </p>
-                    </Transition>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div className="grid gap-2">
+                            <Label htmlFor="nama_pendaftar">
+                                Nama Pendaftar
+                            </Label>
+                            <Input
+                                id="nama_pendaftar"
+                                name="nama_pendaftar"
+                                value={data.nama_pendaftar}
+                                onChange={(e) =>
+                                    setData('nama_pendaftar', e.target.value)
+                                }
+                                placeholder="Masukkan nama pendaftar"
+                                required
+                            />
+                            <InputError
+                                className="mt-2"
+                                message={errors.nama_pendaftar}
+                            />
+                        </div>
+
+                        {/* Nama Pasien */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="nama_pasien">Nama Pasien</Label>
+                            <Input
+                                id="nama_pasien"
+                                name="nama_pasien"
+                                value={data.nama_pasien}
+                                onChange={(e) =>
+                                    setData('nama_pasien', e.target.value)
+                                }
+                                placeholder="Masukkan nama pasien"
+                                required
+                            />
+                            <InputError
+                                className="mt-2"
+                                message={errors.nama_pasien}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="usia">Usia</Label>
+                            <div className="flex items-center gap-2">
+                                <Input
+                                    id="usia"
+                                    name="usia"
+                                    type="number"
+                                    value={data.usia}
+                                    onChange={(e) =>
+                                        setData('usia', Number(e.target.value))
+                                    }
+                                    placeholder="Masukkan usia pasien"
+                                    min={0}
+                                    max={120}
+                                    required
+                                    className="w-24"
+                                />
+                                <span className="text-sm text-muted-foreground">
+                                    Tahun
+                                </span>
+                            </div>
+                            <InputError
+                                className="mt-2"
+                                message={errors.usia}
+                            />
+                        </div>
+
+                        {/* jenis kelamin */}
+                        <div className="grid gap-2">
+                            <Label>Jenis Kelamin</Label>
+                            <div className="flex items-center gap-4">
+                                <label className="flex items-center space-x-2">
+                                    <input
+                                        type="radio"
+                                        name="jenis_kelamin"
+                                        value="L"
+                                        checked={data.jenis_kelamin === 'L'}
+                                        onChange={(e) =>
+                                            setData(
+                                                'jenis_kelamin',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                                        required
+                                    />
+                                    <span>Laki-laki</span>
+                                </label>
+
+                                <label className="flex items-center space-x-2">
+                                    <input
+                                        type="radio"
+                                        name="jenis_kelamin"
+                                        value="P"
+                                        checked={data.jenis_kelamin === 'P'}
+                                        onChange={(e) =>
+                                            setData(
+                                                'jenis_kelamin',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                                    />
+                                    <span>Perempuan</span>
+                                </label>
+                            </div>
+
+                            <InputError
+                                className="mt-2"
+                                message={errors.jenis_kelamin}
+                            />
+                        </div>
+
+                        {/* Nomor NIK */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="no_nik">
+                                Nomor KTP/ NIK Pasien
+                            </Label>
+                            <Input
+                                id="no_nik"
+                                name="no_nik"
+                                value={data.no_nik}
+                                onChange={(e) =>
+                                    setData('no_nik', e.target.value)
+                                }
+                                placeholder="Masukkan nomor KTP"
+                                required
+                            />
+                            <InputError
+                                className="mt-2"
+                                message={errors.no_nik}
+                            />
+                        </div>
+
+                        {/* Nomor Telepon */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="no_telp">Nomor Telepon</Label>
+                            <Input
+                                id="no_telp"
+                                name="no_telp"
+                                value={data.no_telp}
+                                onChange={(e) =>
+                                    setData('no_telp', e.target.value)
+                                }
+                                placeholder="08xxxxxxxxxx"
+                                required
+                            />
+                            <InputError
+                                className="mt-2"
+                                message={errors.no_telp}
+                            />
+                        </div>
+
+                        {/* Poliklinik */}
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="poliklinik">
+                                Tujuan Poliklinik
+                            </Label>
+                            <Select
+                                value={
+                                    data.poliklinik_id
+                                        ? data.poliklinik_id.toString()
+                                        : ''
+                                }
+                                onValueChange={(val) =>
+                                    setData('poliklinik_id', Number(val))
+                                }
+                                required
+                            >
+                                <SelectTrigger id="poliklinik">
+                                    <SelectValue placeholder="Pilih poliklinik" />
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                    {poli.map((row) => (
+                                        <SelectItem
+                                            key={row.id}
+                                            value={row.id.toString()}
+                                        >
+                                            {row.nama}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            <InputError
+                                className="mt-2"
+                                message={errors.poliklinik_id}
+                            />
+                        </div>
+
+                        {/* Pembayaran */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="pembayaran">Pembayaran</Label>
+                            <Select
+                                value={data.pembayaran}
+                                onValueChange={(val) =>
+                                    setData('pembayaran', val as PembayaranType)
+                                }
+                                required
+                            >
+                                <SelectTrigger id="pembayaran">
+                                    <SelectValue placeholder="Pilih jenis pembayaran" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="umum">Umum</SelectItem>
+                                    <SelectItem value="bpjs">BPJS</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <InputError
+                                className="mt-2"
+                                message={errors.pembayaran}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Full width fields */}
+                    <div className="grid gap-2">
+                        <Label htmlFor="keluhan_sakit">Keluhan Sakit</Label>
+                        <Textarea
+                            id="keluhan_sakit"
+                            name="keluhan_sakit"
+                            value={data.keluhan_sakit}
+                            onChange={(e) =>
+                                setData('keluhan_sakit', e.target.value)
+                            }
+                            placeholder="Keluhan Sakit"
+                            required
+                        />
+                        <InputError
+                            className="mt-2"
+                            message={errors.keluhan_sakit}
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="alamat">Alamat Saat Ini</Label>
+                        <Textarea
+                            id="alamat"
+                            name="alamat"
+                            value={data.alamat}
+                            onChange={(e) => setData('alamat', e.target.value)}
+                            placeholder="Masukkan alamat lengkap"
+                            required
+                        />
+                        <InputError className="mt-2" message={errors.alamat} />
+                    </div>
+
+                    {/* BPJS */}
+                    {data.pembayaran === 'bpjs' && (
+                        <div className="grid gap-2 duration-200 animate-in fade-in">
+                            <Label htmlFor="no_bpjs">Nomor BPJS</Label>
+                            <Input
+                                id="no_bpjs"
+                                type="text"
+                                placeholder="Masukkan nomor BPJS"
+                                value={data.no_bpjs ?? ''}
+                                onChange={(e) =>
+                                    setData('no_bpjs', e.target.value || null)
+                                }
+                                required={data.pembayaran === 'bpjs'}
+                            />
+                            <InputError
+                                className="mt-2"
+                                message={errors.no_bpjs}
+                            />
+                        </div>
+                    )}
+
+                    {/* Submit */}
+                    <div className="flex items-center gap-4">
+                        <Button
+                            disabled={processing}
+                            className="mt-10 w-full"
+                            size="lg"
+                        >
+                            {processing ? 'Menyimpan...' : 'Daftarkan'}
+                        </Button>
+                        <Transition
+                            show={recentlySuccessful}
+                            enter="transition ease-in-out"
+                            enterFrom="opacity-0"
+                            leave="transition ease-in-out"
+                            leaveTo="opacity-0"
+                        >
+                            <p className="text-sm text-neutral-600">
+                                Data tersimpan
+                            </p>
+                        </Transition>
+                    </div>
+                </form>
+            </div>
+            <div className="mx-auto w-[380px] rounded-xl border border-neutral-300 bg-white p-8 shadow-xl print:w-full">
+                {/* Header Klinik */}
+                <div className="mb-6 text-center">
+                    <h1 className="text-xl font-extrabold tracking-wide">
+                        KLINIK SEHAT SENTOSA
+                    </h1>
+                    <p className="text-xs text-neutral-600">
+                        Jl. Merpati No. 12, Jakarta
+                    </p>
+                    <p className="text-xs text-neutral-600">
+                        Telp: 0812-3456-7890
+                    </p>
                 </div>
-            </form>
+
+                <div className="mx-auto mb-6 h-[1px] w-3/4 bg-neutral-200" />
+
+                {/* Poli */}
+                <div className="mb-6 text-center">
+                    <h2 className="text-lg font-semibold tracking-wide">
+                        Poli Umum
+                    </h2>
+                    <p className="text-sm text-neutral-700">
+                        Scan untuk memonitor antrian
+                    </p>
+                </div>
+
+                {/* QR */}
+                <div className="mb-4 flex justify-center">
+                    <QRCode value={link} size={170} />
+                </div>
+
+                {/* Nomor Antrian */}
+                <div className="mb-3 text-center">
+                    <h1 className="text-6xl font-extrabold tracking-wider">
+                        A023
+                    </h1>
+                </div>
+
+                {/* Detail Pasien */}
+                <div className="mb-6 text-center">
+                    <p className="text-base font-medium">Siti Nurhaliza</p>
+                    <p className="text-sm text-neutral-600">
+                        Rabu, 2025-11-15 • 10:42
+                    </p>
+                </div>
+
+                <div className="mx-auto mb-6 h-px w-3/4 bg-neutral-200" />
+
+                {/* Catatan */}
+                <p className="px-2 text-center text-xs leading-relaxed text-neutral-600 italic">
+                    Terima kasih telah mengantri. Harap tetap berada di area
+                    klinik sampai nomor Anda dipanggil. Semoga lekas sehat.
+                </p>
+
+                <Button className="mt-10 w-full" size="lg">
+                    Cetak
+                </Button>
+            </div>
         </div>
     );
 }

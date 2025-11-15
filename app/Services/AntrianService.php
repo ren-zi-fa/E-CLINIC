@@ -30,28 +30,31 @@ class AntrianService
             ->get();
     }
 
-    public function getAntrianStats()
-    {
-        $today = Carbon::today();
+public function getAntrianStats()
+{
+    $start = now()->startOfDay();
+    $end   = now()->endOfDay();
 
-        return [
-            'total' => DB::table('visits_queue')
-                ->whereDate('tanggal', $today)
-                ->count(),
-            'menunggu' => DB::table('visits_queue')
-                ->whereDate('tanggal', $today)
-                ->where('status', 'menunggu')
-                ->count(),
-            'proses' => DB::table('visits_queue')
-                ->whereDate('tanggal', $today)
-                ->where('status', 'proses')
-                ->count(),
-            'selesai' => DB::table('visits_queue')
-                ->whereDate('tanggal', $today)
-                ->where('status', 'selesai')
-                ->count()
-        ];
-    }
+    $stats = DB::table('visits_queue')
+        ->selectRaw("
+            COUNT(*) AS total,
+            SUM(CASE WHEN status = 'menunggu' THEN 1 ELSE 0 END) AS menunggu,
+            SUM(CASE WHEN status = 'proses' THEN 1 ELSE 0 END) AS proses,
+            SUM(CASE WHEN status = 'selesai' THEN 1 ELSE 0 END) AS selesai
+        ")
+        ->whereBetween('waktu_daftar', [$start, $end])
+        ->first();
+
+
+    return [
+        'total' => (int) $stats->total,
+        'menunggu' => (int) $stats->menunggu,
+        'proses' => (int) $stats->proses,
+        'selesai' => (int) $stats->selesai,
+    ];
+}
+
+
 
     /**
      * Return a paginated list of antrian (today) with basic search and sorting.

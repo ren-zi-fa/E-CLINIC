@@ -21,7 +21,6 @@ export default function PendaftaranPasienIndex() {
         <>
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Pendaftaran Pasien" />
-
                 <div className="flex flex-col items-center gap-8">
                     <div className="mt-10 flex gap-4">
                         <Button
@@ -43,7 +42,7 @@ export default function PendaftaranPasienIndex() {
                         </Button>
                     </div>
 
-                    <div className="w-full max-w-2xl">
+                    <div className="w-full">
                         {activeTab === 'baru' && <RegisterPasienBaru />}
                         {activeTab === 'lama' && <RegisterPasienLama />}
                     </div>
