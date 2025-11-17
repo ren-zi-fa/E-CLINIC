@@ -22,7 +22,7 @@ export default function PendaftaranPasienIndex() {
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Pendaftaran Pasien" />
                 <div className="flex flex-col items-center gap-8">
-                    <div className="mt-10 flex gap-4">
+                    <div className="mt-2 flex gap-4">
                         <Button
                             variant={
                                 activeTab === 'baru' ? 'default' : 'outline'

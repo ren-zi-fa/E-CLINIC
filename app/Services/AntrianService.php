@@ -2,33 +2,11 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AntrianService
 {
-    public function getAntrianHariIni()
-    {
-        $today = Carbon::today();
 
-        return DB::table('visits_queue')
-            ->select([
-                'visits_queue.id',
-                'visits_queue.poliklinik_id',
-                'visits_queue.nomor_antrian',
-                'visits_queue.status',
-                'visits_queue.tanggal',
-                'visits_queue.created_at',
-                'patients.nama_pasien',
-                'patients.no_rm',
-                'polikliniks.nama as nama_poliklinik',
-            ])
-            ->join('patients', 'visits_queue.pasien_id', '=', 'patients.id')
-            ->join('polikliniks', 'visits_queue.poliklinik_id', '=', 'polikliniks.id')
-            ->whereDate('visits_queue.tanggal', $today)
-            ->orderBy('visits_queue.nomor_antrian', 'asc')
-            ->get();
-    }
 
 public function getAntrianStats()
 {

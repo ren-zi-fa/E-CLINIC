@@ -38,8 +38,8 @@ export default function DataTable() {
         fetchAntrianByPoli();
     }, [poliCatgeory]);
     return (
-        <div className="space-y-4">
-            <div className="overflow-hidden rounded-md border">
+        <div className="space-y-4 ">
+            <div className="overflow-hidden rounded-md border shadow-lg">
                 <Table className="w-full table-fixed">
                     <TableHeader>
                         <TableRow>

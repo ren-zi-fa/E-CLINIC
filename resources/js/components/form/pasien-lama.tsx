@@ -148,7 +148,7 @@ export default function RegisterPasienLama() {
         fetchPoli();
     }, []);
     return (
-        <div className="mx-auto flex max-w-3xl flex-row gap-4 mb-10">
+        <div className="mx-auto mb-10 flex max-w-3xl flex-row gap-4">
             <div className="rounded-2xl border p-5 shadow-2xl">
                 <HeadingSmall
                     title="Pendaftaran Pasien Lama"

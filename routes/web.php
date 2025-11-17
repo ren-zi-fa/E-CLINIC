@@ -17,6 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('pasien-daftar')->name('pasienDaftar.')->group(function () {
         Route::get('/', [PasienController::class, 'index'])->name('index');
+        Route::get('success/{pasien_id}', [PasienController::class, 'success'])->name('success');
         Route::get('search', [PasienController::class, 'search'])->name('search');
     });
 

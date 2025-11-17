@@ -39,14 +39,19 @@ class PasienController extends Controller
 
         try {
             $result = $this->registrationService->registerNew($validated);
+            $flashMessage = "Pasien baru berhasil disimpan. No.{$result['no_rm']}, {$result['nomor_antrian']}.";
 
-            return to_route('pasienDaftar.index')
-                ->with('success_pasien_new', "Pasien baru berhasil disimpan. No. RM {$result['no_rm']}, Nomor Antrian {$result['nomor_antrian']}.");
-        } catch (\Exception $e) {
-            return to_route('pasienDaftar.index')
-                ->with('error_pasien_new', 'Gagal menyimpan pasien baru: ' . $e->getMessage());
+        // Redirect + flash + data pasien baru
+           return to_route('pasienDaftar.success', $result['pasien_id'])
+            ->with('success_pasien_new', $flashMessage)
+            ->with('pasien_print', $result);
+
+
+            } catch (\Exception $e) {
+                return to_route('pasienDaftar.index')
+                    ->with('error_pasien_new', 'Gagal menyimpan pasien baru: ' . $e->getMessage());
+            }
         }
-    }
 
     public function storeOld(Request $request)
     {
@@ -103,5 +108,10 @@ class PasienController extends Controller
                 'usia' => $pasien->usia,
             ]
         ]);
+    }
+
+    public function success(Request $request, $pasien_id) 
+    {
+        return Inertia::render("print/index");
     }
 }

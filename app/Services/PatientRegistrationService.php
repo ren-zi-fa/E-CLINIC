@@ -80,10 +80,15 @@ class PatientRegistrationService
                 'tanggal' => now()->toDateString(),
                 'poliklinik_id'=>$data['poliklinik_id']
             ]);
-
+            $queue->load('poliklinik'); 
             return [
                 'no_rm' => $patient->no_rm,
                 'nomor_antrian' => $queue->nomor_antrian,
+                'nama_pasien'=>$patient->pasien,
+                'nama_pendaftar' => $patient->nama_pendaftar,
+                'waktu_daftar' => $queue->waktu_daftar->format('l, Y-m-d • H:i'),
+                'poliklinik' => $queue->poliklinik->nama,
+                'pasien_id' => $queue->pasien_id,
             ];
         });
     }
