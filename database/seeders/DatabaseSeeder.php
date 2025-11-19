@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             ["nama" => "Gigi", "kode" => "B", "is_open" => true,],
             ["nama" => "THT", "kode" => "C", "is_open" => true],
             ["nama" => "Konseling", "kode" => "D", "is_open" => true],
-            ["nama" => "KIA-Kebidanan", "kode" => "E", "is_open" => true,]
+            ["nama" => "KIA-Kebidanan", "kode" => "E", "is_open" => false,]
         ];
 
         foreach ($polikliniks as $poli) {

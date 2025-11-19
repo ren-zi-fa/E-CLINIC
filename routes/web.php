@@ -17,15 +17,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('pasien-daftar')->name('pasienDaftar.')->group(function () {
         Route::get('/', [PasienController::class, 'index'])->name('index');
+        Route::get('step-2', [PasienController::class, 'indexStep2'])->name('indexstep2');
+        Route::post('step-2', [PasienController::class, 'handleStep1'])->name('handleStep1');
+        Route::get('step-3', [PasienController::class, 'indexStep3'])->name('indexstep3');
+        Route::post('step-3', [PasienController::class, 'handleStep2'])->name('handleStep2');
+        Route::post('final', [PasienController::class, 'handleStep3'])->name('handleStep3');
         Route::get('success/{pasien_id}', [PasienController::class, 'success'])->name('success');
         Route::get('search', [PasienController::class, 'search'])->name('search');
     });
 
-    Route::prefix('pasien')->name('pasien.')->group(function () {
-        Route::post('baru', [PasienController::class, 'storeNew'])->name('baru.store');
-        Route::patch('lama', [PasienController::class, 'storeOld'])->name('lama.store');
-    });
     Route::get('poliklinik', PoliklinikController::class)->name('poliklinik.list');
+    
 
 /* antrian poliklinik */
     Route::get('antrian', [AntrianController::class, 'index'])->name('antrian.index');

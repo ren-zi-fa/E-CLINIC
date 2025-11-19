@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pasien;
 
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
+use App\Models\Poliklinik;
 use App\Services\PatientRegistrationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,48 +17,101 @@ class PasienController extends Controller
     {
         $this->registrationService = $registrationService;
     }
+
     public function index()
     {
         return Inertia::render('pendaftaran-pasien/pendaftaran');
     }
 
-    public function storeNew(Request $request)
+    public function indexStep2()
     {
-        $validated = $request->validate([
+        $step1Data = session('pendaftaran.step1_data');
+        if (!$step1Data) {
+            return redirect()->route('pasienDaftar.index');
+        }
+        return Inertia::render('pendaftaran-pasien/pendaftaranStep2', [
+            'step1Data' => $step1Data,
+            'step'=>2
+        ]);
+    }
+    public function indexStep3()
+    {
+        $step2Data = session('pendaftaran.step2_data');
+        
+        $poli = Poliklinik::find($step2Data['poliklinik_id']);
+
+       $nomor_antrian = $this->registrationService->generateAntrian( $step2Data['poliklinik_id']);
+       $no_rm = $this->registrationService->generateNoRm();
+
+        if (!$step2Data) {
+            return redirect()->route('pasienDaftar.index');
+        }
+        return Inertia::render('pendaftaran-pasien/pendaftaranStep3', [
+            'step2Data' => $step2Data,
+            'step'=>3,
+            'nama_poli'=>$poli->nama,
+            'nomor_antrian'=>$nomor_antrian,
+            'no_rm'=>$no_rm,
+        ]);
+    }
+    public function handleStep1(Request $request)
+    {
+        $validatedData = $request->validate([
             'nama_pasien' => 'required|string|max:100',
-            'nama_pendaftar' => 'required|string|max:100',
+            'no_nik' => 'required|numeric|unique:patients,no_nik',
+            'alamat' => 'required|string|max:255',
+            'no_telp' => 'required|string|max:15',
+            'jenis_kelamin' =>'required|in:P,L',
+            'usia' => 'required|integer|min:0|max:120',
+        ]);
+
+        session()->put('pendaftaran.step1_data', $validatedData);
+        return redirect()->route('pasienDaftar.indexstep2');
+        
+    }
+     public function handleStep2(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nama_pasien' => 'required|string|max:100',
             'keluhan_sakit' => 'required|string|max:255',
             'no_nik' => 'required|numeric|unique:patients,no_nik',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
-            'pembayaran' => 'required|in:umum,bpjs',
-            'no_bpjs' => 'required_if:pembayaran,bpjs|string|nullable',
             'poliklinik_id' => 'required|exists:polikliniks,id',
             'jenis_kelamin' => 'required|in:P,L',
             'usia' => 'required|integer|min:0|max:120',
         ]);
+        session()->put('pendaftaran.step2_data', $validatedData);
+        return redirect()->route('pasienDaftar.indexstep3');
+        
+    }
+      public function handleStep3(Request $request)
+    {
 
-        try {
-            $result = $this->registrationService->registerNew($validated);
-            $flashMessage = "Pasien baru berhasil disimpan. No.{$result['no_rm']}, {$result['nomor_antrian']}.";
+         $validatedData = $request->validate([
+            'nama_pasien' => 'required|string|max:100',
+            'keluhan_sakit' => 'required|string|max:255',
+            'no_nik' => 'required|numeric|unique:patients,no_nik',
+            'alamat' => 'required|string|max:255',
+            'no_telp' => 'required|string|max:15',
+            'poliklinik_id' => 'required|exists:polikliniks,id',
+            'jenis_kelamin' => 'required|in:P,L',
+            'usia' => 'required|integer|min:0|max:120',
+            'no_rm'=>'required',
+            'nomor_antrian'=>'required',
+        ]);
+        $data =  $this->registrationService->registerNew($validatedData);
+        
+        return to_route('pasienDaftar.index')
+        ->with('success', "Berhasil mencetak antrian dengan nomor antrian {$data['nomor_antrian']} ");
 
-        // Redirect + flash + data pasien baru
-           return to_route('pasienDaftar.success', $result['pasien_id'])
-            ->with('success_pasien_new', $flashMessage)
-            ->with('pasien_print', $result);
+    }
 
-
-            } catch (\Exception $e) {
-                return to_route('pasienDaftar.index')
-                    ->with('error_pasien_new', 'Gagal menyimpan pasien baru: ' . $e->getMessage());
-            }
-        }
 
     public function storeOld(Request $request)
     {
         $validated = $request->validate([
             'nama_pasien' => 'required|string|max:100',
-            'nama_pendaftar' => 'required|string|max:100',
             'keluhan_sakit' => 'required|string|max:255',
             'no_nik' => 'required|numeric',
             'alamat' => 'required|string|max:255',
@@ -103,7 +157,6 @@ class PasienController extends Controller
                 'no_rm' => $pasien->no_rm,
                 'no_bpjs' => $pasien->no_bpjs,
                 'pembayaran' => $pasien->pembayaran,
-                'nama_pendaftar' => $pasien->nama_pendaftar,
                 'jenis_kelamin' => $pasien->jenis_kelamin,
                 'usia' => $pasien->usia,
             ]

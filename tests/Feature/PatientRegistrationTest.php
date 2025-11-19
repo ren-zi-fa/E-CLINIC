@@ -12,7 +12,7 @@ test('registration_new_pasien', function () {
 
     $data = [
         'nama_pasien' => 'Budi',
-        'nama_pendaftar' => 'Budi',
+     
         'keluhan_sakit' => 'Demam',
         'no_nik' => '1234567890123456',
         'alamat' => 'Jl. Merdeka',

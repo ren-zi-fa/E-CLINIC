@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienController';
-import { Poliklinik } from '@/types/data';
+import { PatientRegisterRequired, Poliklinik } from '@/types/data';
 import { Transition } from '@headlessui/react';
 import { useForm, usePage } from '@inertiajs/react';
 import { Loader2, Search } from 'lucide-react';
@@ -23,19 +23,6 @@ import { Textarea } from '../ui/textarea';
 
 type PembayaranType = 'umum' | 'bpjs';
 
-type RegisterPasien = {
-    no_nik: string;
-    nama_pasien: string;
-    nama_pendaftar: string;
-    keluhan_sakit: string;
-    alamat: string;
-    no_bpjs?: string | null;
-    no_telp: string;
-    pembayaran: PembayaranType;
-    poliklinik_id: number;
-    jenis_kelamin: string;
-    usia: number;
-};
 type FlashPasienOld = {
     success_pasien_old: string;
     error_pasien_old: string;
@@ -51,18 +38,15 @@ export default function RegisterPasienLama() {
         recentlySuccessful,
         reset,
         submit,
-    } = useForm<Required<RegisterPasien>>({
+    } = useForm<Required<PatientRegisterRequired>>({
         nama_pasien: '',
-        no_bpjs: '',
-        nama_pendaftar: '',
         keluhan_sakit: '',
         no_nik: '',
         alamat: '',
         usia: 0,
-        jenis_kelamin: '',
+        jenis_kelamin: 'P',
         no_telp: '',
         poliklinik_id: 0,
-        pembayaran: '' as PembayaranType,
     });
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -92,7 +76,7 @@ export default function RegisterPasienLama() {
                 setData({
                     ...pasien,
                     nama_pasien: pasien.nama_pasien,
-                    nama_pendaftar: pasien.nama_pendaftar,
+
                     no_nik: pasien.no_nik,
                     no_telp: pasien.no_telp,
                     alamat: pasien.alamat,
@@ -130,7 +114,7 @@ export default function RegisterPasienLama() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        submit(PasienController.storeOld(), {
+        submit(PasienController.indexStep2(), {
             onSuccess: () => {
                 reset();
                 setPasienFound(false);
@@ -200,7 +184,6 @@ export default function RegisterPasienLama() {
 
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                         {[
-                            ['Nama Pendaftar', 'nama_pendaftar'],
                             ['Nomor Rekam Medis', 'no_rm'],
                             ['Nama Pasien', 'nama_pasien'],
                             ['Nomor KTP / NIK', 'no_nik'],
@@ -213,7 +196,7 @@ export default function RegisterPasienLama() {
                                     value={(data as any)[key]}
                                     onChange={(e) =>
                                         setData(
-                                            key as keyof RegisterPasien,
+                                            key as keyof PatientRegisterRequired,
                                             e.target.value,
                                         )
                                     }
@@ -261,7 +244,7 @@ export default function RegisterPasienLama() {
                                         onChange={(e) =>
                                             setData(
                                                 'jenis_kelamin',
-                                                e.target.value,
+                                                e.target.value as 'P' | 'L',
                                             )
                                         }
                                         className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
@@ -288,7 +271,7 @@ export default function RegisterPasienLama() {
                                         onChange={(e) =>
                                             setData(
                                                 'jenis_kelamin',
-                                                e.target.value,
+                                                e.target.value as 'P' | 'L',
                                             )
                                         }
                                         className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
@@ -376,42 +359,6 @@ export default function RegisterPasienLama() {
                             message={errors.poliklinik_id}
                         />
                     </div>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="pembayaran">Pembayaran</Label>
-                        <Select
-                            value={data.pembayaran}
-                            onValueChange={(val) =>
-                                setData('pembayaran', val as PembayaranType)
-                            }
-                            required
-                        >
-                            <SelectTrigger id="pembayaran">
-                                <SelectValue placeholder="Pilih jenis pembayaran" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="umum">Umum</SelectItem>
-                                <SelectItem value="bpjs">BPJS</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <InputError message={errors.pembayaran} />
-                    </div>
-
-                    {data.pembayaran === 'bpjs' && (
-                        <div className="grid gap-2 duration-200 animate-in fade-in">
-                            <Label htmlFor="no_bpjs">Nomor BPJS</Label>
-                            <Input
-                                id="no_bpjs"
-                                value={data.no_bpjs ?? ''}
-                                onChange={(e) =>
-                                    setData('no_bpjs', e.target.value || '')
-                                }
-                                placeholder="Masukkan nomor BPJS"
-                                className="bg-neutral-100 text-neutral-500"
-                            />
-                            <InputError message={errors.no_bpjs} />
-                        </div>
-                    )}
 
                     <div className="flex items-center gap-4">
                         <Button disabled={processing || !pasienFound}>
