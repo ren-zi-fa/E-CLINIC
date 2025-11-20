@@ -3,7 +3,6 @@
 import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienController';
 import { calculateAge } from '@/lib/calcAge';
 import { PatientRegisterRequired } from '@/types/data';
-import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { ChevronDownIcon, Loader2, Search } from 'lucide-react';
@@ -24,7 +23,6 @@ export default function RegisterPasienLama() {
         setData,
         processing,
         errors,
-        recentlySuccessful,
         reset,
         submit,
     } = useForm<
@@ -289,29 +287,15 @@ export default function RegisterPasienLama() {
                     />
                     <InputError message={errors.alamat} />
                 </div>
-                <div className="flex items-center gap-4">
-                    <Button disabled={processing || !pasienFound}>
-                        {processing ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Menyimpan...
-                            </>
-                        ) : (
-                            'Daftarkan'
-                        )}
-                    </Button>
 
-                    <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
+                <div className="flex items-center gap-4">
+                    <Button
+                        disabled={processing}
+                        className="mt-5 w-full"
+                        size="lg"
                     >
-                        <p className="text-sm text-neutral-600">
-                            Data tersimpan
-                        </p>
-                    </Transition>
+                        {processing ? 'prosess...' : 'Lanjut'}
+                    </Button>
                 </div>
             </form>
         </div>

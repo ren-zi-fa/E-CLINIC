@@ -23,7 +23,7 @@ export default function RegisterPasienBaru() {
     const [open, setOpen] = useState(false);
     const [date, setDate] = useState<Date | undefined>(undefined);
 
-    const { data, setData, processing, errors, recentlySuccessful, submit } =
+    const { data, setData, processing, errors, submit } =
         useForm<Required<RegisterPasien>>({
             nama_pasien: '',
             no_nik: '',
@@ -185,19 +185,9 @@ export default function RegisterPasienBaru() {
                         className="mt-5 w-full"
                         size="lg"
                     >
-                        {processing ? 'Menyimpan...' : 'Lanjut'}
+                        {processing ? 'prosess...' : 'Lanjut'}
                     </Button>
-                    <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-neutral-600">
-                            Data tersimpan
-                        </p>
-                    </Transition>
+                    
                 </div>
             </form>
         </div>
