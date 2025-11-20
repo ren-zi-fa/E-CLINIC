@@ -14,4 +14,8 @@ class Poliklinik extends Model
     {
         return $this->hasMany(Queue::class, 'poliklinik_id');
     }
+
+    public function doctors() {
+        return $this->hasMany(Doctor::class);
+    }
 }

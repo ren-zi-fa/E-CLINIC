@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
             $table->string('nama_pasien');
-            $table->string('nama_pendaftar');
             $table->text('keluhan_sakit');
             $table->unsignedTinyInteger('usia');
             $table->enum('jenis_kelamin', ['L', 'P']);

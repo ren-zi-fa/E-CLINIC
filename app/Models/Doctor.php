@@ -16,5 +16,8 @@ class Doctor extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function poliklinik() {
+        return $this->belongsTo(Poliklinik::class);
+    }
 
 }

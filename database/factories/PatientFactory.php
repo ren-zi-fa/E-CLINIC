@@ -18,7 +18,6 @@ class PatientFactory extends Factory
     {
         return [
             'nama_pasien' => $this->faker->name(),
-            'nama_pendaftar' => $this->faker->name(),
             'keluhan_sakit' => $this->faker->sentence(10),
             'usia' => $this->faker->numberBetween(1, 100),
             'jenis_kelamin' => $this->faker->randomElement(['L', 'P']),

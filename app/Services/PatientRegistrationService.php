@@ -12,24 +12,18 @@ class PatientRegistrationService
     public function generateNoRm(): string
     {
         $year = date('Y');
-        // Ambil no_rm terakhir di tahun berjalan
        $lastRm = Queue::from('visits_queue as vq')
         ->whereYear('vq.waktu_daftar', $year)
         ->join('patients as p', 'vq.pasien_id', '=', 'p.id')
         ->orderByDesc('vq.id')
         ->value('p.no_rm');
 
-
-
-        // Jika ada pasien sebelumnya, ambil nomor terakhir
         $lastNumber = $lastRm ? (int) substr($lastRm, -4) : 0;
-        // Tambahkan +1
         $nextNumber = $lastNumber + 1;
-        // Format RM-YYYY-XXXX
         return 'RM-' . $year . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
     }
-        public function generateAntrian($id_poli): string
-        {
+    public function generateAntrian($id_poli): string
+    {
             $totalPoli = Poliklinik::count();
 
             $prefixes = [];
@@ -51,7 +45,7 @@ class PatientRegistrationService
             $nextNumber = str_pad($lastNumber + 1, 2, '0', STR_PAD_LEFT);
 
             return "{$prefix}-{$nextNumber}";
-        }
+    }
 
 
     public function registerNew(array $data): array
@@ -63,12 +57,9 @@ class PatientRegistrationService
             'jenis_kelamin'  => $data['jenis_kelamin'],
             'keluhan_sakit'  => $data['keluhan_sakit'],
             'nama_pasien'    => $data['nama_pasien'],
-            'nama_pendaftar' => $data['nama_pendaftar'],
-            'no_bpjs'        => $data['no_bpjs'],
             'no_nik'         => $data['no_nik'],
             'no_rm'          => $data['no_rm'],
             'no_telp'        => $data['no_telp'],
-            'pembayaran'     => $data['pembayaran'],
             'usia'           => $data['usia'],
           
         ]);
@@ -82,13 +73,7 @@ class PatientRegistrationService
             ]);
             $queue->load('poliklinik'); 
             return [
-                'no_rm' => $patient->no_rm,
-                'nomor_antrian' => $queue->nomor_antrian,
-                'nama_pasien'=>$patient->pasien,
-                'nama_pendaftar' => $patient->nama_pendaftar,
-                'waktu_daftar' => $queue->waktu_daftar->format('l, Y-m-d • H:i'),
-                'poliklinik' => $queue->poliklinik->nama,
-                'pasien_id' => $queue->pasien_id,
+                'nomor_antrian' => $queue->nomor_antrian
             ];
         });
     }
@@ -102,7 +87,7 @@ class PatientRegistrationService
             $data['no_rm'] = $this->generateNoRm();
             $patient->update([
                 'nama_pasien'    => $data['nama_pasien'],
-                'nama_pendaftar' => $data['nama_pendaftar'],
+
                 'keluhan_sakit'  => $data['keluhan_sakit'],
                 'alamat'         => $data['alamat'],
                 'no_telp'        => $data['no_telp'],

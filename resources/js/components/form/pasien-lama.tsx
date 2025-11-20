@@ -1,73 +1,48 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienController';
-import { Poliklinik } from '@/types/data';
-import { Transition } from '@headlessui/react';
-import { useForm, usePage } from '@inertiajs/react';
-import { Loader2, Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { calculateAge } from '@/lib/calcAge';
+import { PatientRegisterRequired } from '@/types/data';
+import { useForm } from '@inertiajs/react';
+import { format } from 'date-fns';
+import { ChevronDownIcon, Loader2, Search } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
-import HeadingSmall from '../heading-small';
 import InputError from '../input-error';
 import { Button } from '../ui/button';
+import { Calendar } from '../ui/calendar';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '../ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 
-type PembayaranType = 'umum' | 'bpjs';
-
-type RegisterPasien = {
-    no_nik: string;
-    nama_pasien: string;
-    nama_pendaftar: string;
-    keluhan_sakit: string;
-    alamat: string;
-    no_bpjs?: string | null;
-    no_telp: string;
-    pembayaran: PembayaranType;
-    poliklinik_id: number;
-    jenis_kelamin: string;
-    usia: number;
-};
-type FlashPasienOld = {
-    success_pasien_old: string;
-    error_pasien_old: string;
-};
 export default function RegisterPasienLama() {
-    const { props } = usePage<{ flash: FlashPasienOld }>();
-    const [poli, setPoli] = useState<Poliklinik[]>([]);
     const {
         data,
         setData,
         processing,
         errors,
-        recentlySuccessful,
         reset,
         submit,
-    } = useForm<Required<RegisterPasien>>({
+    } = useForm<
+        Required<
+            Omit<PatientRegisterRequired, 'poliklinik_id' | 'keluhan_sakit'>
+        >
+    >({
         nama_pasien: '',
-        no_bpjs: '',
-        nama_pendaftar: '',
-        keluhan_sakit: '',
         no_nik: '',
         alamat: '',
         usia: 0,
-        jenis_kelamin: '',
+        jenis_kelamin: 'P',
         no_telp: '',
-        poliklinik_id: 0,
-        pembayaran: '' as PembayaranType,
     });
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [loadingSearch, setLoadingSearch] = useState(false);
-    const [pasienFound, setPasienFound] = useState(false);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [loadingSearch, setLoadingSearch] = useState<boolean>(false);
+    const [pasienFound, setPasienFound] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+    const [date, setDate] = useState<Date | undefined>(undefined);
 
     const handleSearch = async () => {
         if (!searchQuery.trim()) {
@@ -92,14 +67,10 @@ export default function RegisterPasienLama() {
                 setData({
                     ...pasien,
                     nama_pasien: pasien.nama_pasien,
-                    nama_pendaftar: pasien.nama_pendaftar,
+
                     no_nik: pasien.no_nik,
                     no_telp: pasien.no_telp,
                     alamat: pasien.alamat,
-                    no_bpjs: pasien.no_bpjs ?? '',
-                    keluhan_sakit: '',
-                    pembayaran: '' as PembayaranType,
-                    poliklinik_id: pasien.poliklinik_id ?? 0,
                 });
 
                 setPasienFound(true);
@@ -130,315 +101,203 @@ export default function RegisterPasienLama() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        submit(PasienController.storeOld(), {
-            onSuccess: () => {
-                reset();
-                setPasienFound(false);
-                toast.success('Pendaftaran berhasil disimpan 🩺');
-            },
-        });
+        submit(PasienController.handleStep1ExistingPatient());
     };
 
-    useEffect(() => {
-        const fetchPoli = async () => {
-            const response = await fetch('/poliklinik');
-            const res = await response.json();
-            setPoli(res.polikliniks);
-        };
-        fetchPoli();
-    }, []);
     return (
-        <div className="mx-auto mb-10 flex max-w-3xl flex-row gap-4">
-            <div className="rounded-2xl border p-5 shadow-2xl">
-                <HeadingSmall
-                    title="Pendaftaran Pasien Lama"
-                    description="Isi data berikut untuk mendaftarkan pasien lama"
-                />
-
-                {props.flash.success_pasien_old && (
-                    <div className="rounded bg-green-100 p-2 text-green-800">
-                        {props.flash.success_pasien_old}
-                    </div>
-                )}
-                {props.flash.error_pasien_old && (
-                    <div className="rounded bg-green-100 p-2 text-red-800">
-                        {props.flash.error_pasien_old}
-                    </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="mb-4 grid grid-cols-1 gap-2">
-                        <Label htmlFor="search">Cari Pasien Lama</Label>
-                        <div className="flex gap-2">
-                            <Input
-                                id="search"
-                                placeholder="Masukkan No KTP atau No RM"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                disabled={loadingSearch}
-                            />
-                            <Button
-                                type="button"
-                                onClick={handleSearch}
-                                disabled={loadingSearch}
-                                variant="default"
-                            >
-                                {loadingSearch ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Mencari...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Search className="mr-2 h-4 w-4" />
-                                        Cari
-                                    </>
-                                )}
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        {[
-                            ['Nama Pendaftar', 'nama_pendaftar'],
-                            ['Nomor Rekam Medis', 'no_rm'],
-                            ['Nama Pasien', 'nama_pasien'],
-                            ['Nomor KTP / NIK', 'no_nik'],
-                            ['Nomor Telepon', 'no_telp'],
-                        ].map(([label, key]) => (
-                            <div key={key} className="grid gap-2">
-                                <Label htmlFor={key}>{label}</Label>
-                                <Input
-                                    id={key}
-                                    value={(data as any)[key]}
-                                    onChange={(e) =>
-                                        setData(
-                                            key as keyof RegisterPasien,
-                                            e.target.value,
-                                        )
-                                    }
-                                    placeholder={`Masukkan ${label.toLowerCase()}`}
-                                    readOnly={pasienFound}
-                                    className={
-                                        pasienFound
-                                            ? 'bg-neutral-100 text-neutral-500'
-                                            : ''
-                                    }
-                                />
-                                <InputError message={(errors as any)[key]} />
-                            </div>
-                        ))}
-                        <div className="grid gap-2">
-                            <Label htmlFor="usia">Usia</Label>
-                            <div className="flex items-center gap-2">
-                                <Input
-                                    id="usia"
-                                    name="usia"
-                                    type="number"
-                                    value={data.usia ?? ''}
-                                    placeholder="Usia pasien"
-                                    className="w-24 bg-muted"
-                                />
-                                <span className="text-sm text-muted-foreground">
-                                    Tahun
-                                </span>
-                            </div>
-                            <InputError
-                                className="mt-2"
-                                message={errors.usia}
-                            />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label>Jenis Kelamin</Label>
-                            <div className="flex items-center gap-4">
-                                <label className="flex items-center space-x-2">
-                                    <input
-                                        type="radio"
-                                        name="jenis_kelamin"
-                                        value="L"
-                                        checked={data.jenis_kelamin === 'L'}
-                                        onChange={(e) =>
-                                            setData(
-                                                'jenis_kelamin',
-                                                e.target.value,
-                                            )
-                                        }
-                                        className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
-                                        required
-                                        disabled={pasienFound}
-                                    />
-                                    <span
-                                        className={
-                                            pasienFound
-                                                ? 'text-neutral-500'
-                                                : ''
-                                        }
-                                    >
-                                        Laki-laki
-                                    </span>
-                                </label>
-
-                                <label className="flex items-center space-x-2">
-                                    <input
-                                        type="radio"
-                                        name="jenis_kelamin"
-                                        value="P"
-                                        checked={data.jenis_kelamin === 'P'}
-                                        onChange={(e) =>
-                                            setData(
-                                                'jenis_kelamin',
-                                                e.target.value,
-                                            )
-                                        }
-                                        className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
-                                        disabled={pasienFound}
-                                    />
-                                    <span
-                                        className={
-                                            pasienFound
-                                                ? 'text-neutral-500'
-                                                : ''
-                                        }
-                                    >
-                                        Perempuan
-                                    </span>
-                                </label>
-                            </div>
-
-                            <InputError
-                                className="mt-2"
-                                message={errors.jenis_kelamin}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="keluhan_sakit">Keluhan Sakit</Label>
-                        <Textarea
-                            id="keluhan_sakit"
-                            value={data.keluhan_sakit}
-                            onChange={(e) =>
-                                setData('keluhan_sakit', e.target.value)
-                            }
-                            placeholder="Tuliskan keluhan sakit pasien"
+        <div className="mx-auto w-2xl max-w-5xl gap-4 rounded-2xl border border-muted-foreground/20 p-5 shadow-sm lg:flex-row">
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="mb-4 grid grid-cols-1 gap-2">
+                    <Label htmlFor="search">Cari Pasien Lama</Label>
+                    <div className="flex gap-2">
+                        <Input
+                            id="search"
+                            placeholder="Masukkan No KTP atau No RM"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            disabled={loadingSearch}
                         />
-                        <InputError message={errors.keluhan_sakit} />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="alamat">Alamat Saat Ini</Label>
-                        <Textarea
-                            id="alamat"
-                            value={data.alamat}
-                            onChange={(e) => setData('alamat', e.target.value)}
-                            placeholder="Masukkan alamat lengkap"
-                            className={
-                                pasienFound
-                                    ? 'bg-neutral-100 text-neutral-500'
-                                    : ''
-                            }
-                        />
-                        <InputError message={errors.alamat} />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <Label htmlFor="poliklinik">Tujuan Poliklinik</Label>
-                        <Select
-                            value={
-                                data.poliklinik_id
-                                    ? data.poliklinik_id.toString()
-                                    : ''
-                            }
-                            onValueChange={(val) =>
-                                setData('poliklinik_id', Number(val))
-                            }
-                            required
+                        <Button
+                            type="button"
+                            onClick={handleSearch}
+                            disabled={loadingSearch}
+                            variant="default"
                         >
-                            <SelectTrigger id="poliklinik">
-                                <SelectValue placeholder="Pilih poliklinik" />
-                            </SelectTrigger>
+                            {loadingSearch ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Mencari...
+                                </>
+                            ) : (
+                                <>
+                                    <Search className="mr-2 h-4 w-4" />
+                                    Cari
+                                </>
+                            )}
+                        </Button>
+                    </div>
+                </div>
 
-                            <SelectContent>
-                                {poli.map((row) => (
-                                    <SelectItem
-                                        key={row.id}
-                                        value={row.id.toString()}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {[
+                        ['Nomor Rekam Medis', 'no_rm'],
+                        ['Nama Pasien', 'nama_pasien'],
+                        ['Nomor KTP / NIK', 'no_nik'],
+                        ['Nomor Telepon', 'no_telp'],
+                    ].map(([label, key]) => (
+                        <div key={key} className="grid gap-2">
+                            <Label htmlFor={key}>{label}</Label>
+                            <Input
+                                id={key}
+                                value={(data as any)[key]}
+                                onChange={(e) =>
+                                    setData(
+                                        key as keyof Omit<
+                                            PatientRegisterRequired,
+                                            'poliklinik_id' | 'keluhan_sakit'
+                                        >,
+                                        e.target.value,
+                                    )
+                                }
+                                placeholder={`Masukkan ${label.toLowerCase()}`}
+                                readOnly={pasienFound}
+                                className={
+                                    pasienFound
+                                        ? 'bg-neutral-100 text-neutral-500'
+                                        : ''
+                                }
+                            />
+                            <InputError message={(errors as any)[key]} />
+                        </div>
+                    ))}
+                    {/* usia */}
+                    <div className="grid gap-2">
+                        <div className="flex flex-col gap-3">
+                            <Label htmlFor="date" className="px-1">
+                                Tanggal Lahir
+                            </Label>
+                            <Popover open={open} onOpenChange={setOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        id="date"
+                                        className="w-48 justify-between font-normal"
                                     >
-                                        {row.nama}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                                        {date
+                                            ? date.toLocaleDateString('id-ID')
+                                            : 'Pilih tanggal lahir'}
+                                        <ChevronDownIcon />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                    className="w-auto overflow-hidden p-0"
+                                    align="start"
+                                >
+                                    <Calendar
+                                        mode="single"
+                                        startMonth={new Date(1970, 0)}
+                                        endMonth={new Date(2025, 5)}
+                                        selected={date}
+                                        captionLayout="dropdown"
+                                        onSelect={(selectedDate) => {
+                                            setDate(selectedDate);
+                                            setOpen(false);
+
+                                            if (selectedDate) {
+                                                const age =
+                                                    calculateAge(selectedDate);
+
+                                                setData((previousData) => ({
+                                                    ...previousData,
+                                                    usia: age,
+                                                    tanggal_lahir: format(
+                                                        selectedDate,
+                                                        'yyyy-MM-dd',
+                                                    ),
+                                                }));
+                                            }
+                                        }}
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                        <InputError className="mt-2" message={errors.usia} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label>Jenis Kelamin</Label>
+                        <RadioGroup
+                            value={data.jenis_kelamin}
+                            onValueChange={(value) =>
+                                setData('jenis_kelamin', value as 'P' | 'L')
+                            }
+                            disabled={pasienFound}
+                            className="flex items-center gap-4"
+                        >
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem
+                                    value="L"
+                                    id="jk-l"
+                                    disabled={pasienFound}
+                                />
+                                <Label
+                                    htmlFor="jk-l"
+                                    className={
+                                        pasienFound ? 'text-neutral-500' : ''
+                                    }
+                                >
+                                    Laki-laki
+                                </Label>
+                            </div>
+
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem
+                                    value="P"
+                                    id="jk-p"
+                                    disabled={pasienFound}
+                                />
+                                <Label
+                                    htmlFor="jk-p"
+                                    className={
+                                        pasienFound ? 'text-neutral-500' : ''
+                                    }
+                                >
+                                    Perempuan
+                                </Label>
+                            </div>
+                        </RadioGroup>
 
                         <InputError
                             className="mt-2"
-                            message={errors.poliklinik_id}
+                            message={errors.jenis_kelamin}
                         />
                     </div>
+                </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="pembayaran">Pembayaran</Label>
-                        <Select
-                            value={data.pembayaran}
-                            onValueChange={(val) =>
-                                setData('pembayaran', val as PembayaranType)
-                            }
-                            required
-                        >
-                            <SelectTrigger id="pembayaran">
-                                <SelectValue placeholder="Pilih jenis pembayaran" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="umum">Umum</SelectItem>
-                                <SelectItem value="bpjs">BPJS</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <InputError message={errors.pembayaran} />
-                    </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="alamat">Alamat Saat Ini</Label>
+                    <Textarea
+                        id="alamat"
+                        value={data.alamat}
+                        onChange={(e) => setData('alamat', e.target.value)}
+                        placeholder="Masukkan alamat lengkap"
+                        className={
+                            pasienFound ? 'bg-neutral-100 text-neutral-500' : ''
+                        }
+                    />
+                    <InputError message={errors.alamat} />
+                </div>
 
-                    {data.pembayaran === 'bpjs' && (
-                        <div className="grid gap-2 duration-200 animate-in fade-in">
-                            <Label htmlFor="no_bpjs">Nomor BPJS</Label>
-                            <Input
-                                id="no_bpjs"
-                                value={data.no_bpjs ?? ''}
-                                onChange={(e) =>
-                                    setData('no_bpjs', e.target.value || '')
-                                }
-                                placeholder="Masukkan nomor BPJS"
-                                className="bg-neutral-100 text-neutral-500"
-                            />
-                            <InputError message={errors.no_bpjs} />
-                        </div>
-                    )}
-
-                    <div className="flex items-center gap-4">
-                        <Button disabled={processing || !pasienFound}>
-                            {processing ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Menyimpan...
-                                </>
-                            ) : (
-                                'Daftarkan'
-                            )}
-                        </Button>
-
-                        <Transition
-                            show={recentlySuccessful}
-                            enter="transition ease-in-out"
-                            enterFrom="opacity-0"
-                            leave="transition ease-in-out"
-                            leaveTo="opacity-0"
-                        >
-                            <p className="text-sm text-neutral-600">
-                                Data tersimpan
-                            </p>
-                        </Transition>
-                    </div>
-                </form>
-            </div>
+                <div className="flex items-center gap-4">
+                    <Button
+                        disabled={processing}
+                        className="mt-5 w-full"
+                        size="lg"
+                    >
+                        {processing ? 'prosess...' : 'Lanjut'}
+                    </Button>
+                </div>
+            </form>
         </div>
     );
 }

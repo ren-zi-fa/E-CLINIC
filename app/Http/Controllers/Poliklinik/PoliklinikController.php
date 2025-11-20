@@ -12,7 +12,7 @@ class PoliklinikController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function getListPoli(Request $request)
     {
         $polikliniks = DB::table('polikliniks')->get()->map(function ($item) {
             $item->is_open = (bool) $item->is_open;
