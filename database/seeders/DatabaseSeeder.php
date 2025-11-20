@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
                     'nomor_antrian' => $nomorAntrian,
                     'status' => 'menunggu',
                     'tanggal' => now()->toDateString(),
-                    'waktu_daftar' =>$faker->dateTimeBetween('-1 month', 'now'),
+                    'waktu_daftar' => now(),
                 ]);
                 
             }

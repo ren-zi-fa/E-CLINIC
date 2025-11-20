@@ -27,8 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('search', [PasienController::class, 'search'])->name('search');
     });
 
-    Route::get('poliklinik', PoliklinikController::class)->name('poliklinik.list');
-    
+    Route::get('poliklinik', [PoliklinikController::class,'getListPoli'])->name('poliklinik.list');
 
 /* antrian poliklinik */
     Route::get('antrian', [AntrianController::class, 'index'])->name('antrian.index');

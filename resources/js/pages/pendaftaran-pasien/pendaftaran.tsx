@@ -1,6 +1,7 @@
 import StepperPendaftaran from '@/components/common/StepperPendaftaran';
 import RegisterPasienBaru from '@/components/form/pasien-baru';
 import RegisterPasienLama from '@/components/form/pasien-lama';
+
 import {
     Card,
     CardContent,
@@ -8,12 +9,17 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import pasienDaftar from '@/routes/pasienDaftar';
 import { BreadcrumbItem } from '@/types';
+
+import { PoliklinikMonitor } from '@/types/data';
+
 import { Head, usePage } from '@inertiajs/react';
 import { Activity, Clock, Stethoscope, Users } from 'lucide-react';
+
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -22,51 +28,28 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: pasienDaftar.index().url,
     },
 ];
-const mockQueueData = [
-    {
-        poli: 'Poli Umum',
-        dokter: 'dr. Rina Santoso',
-        antrian: 8,
-        status: 'Buka',
-        color: 'text-green-600',
-    },
-    {
-        poli: 'Poli Gigi',
-        dokter: 'drg. Budi Gunawan',
-        antrian: 3,
-        status: 'Buka',
-        color: 'text-blue-600',
-    },
-    {
-        poli: 'Poli Anak',
-        dokter: 'dr. Citra Melati',
-        antrian: 12,
-        status: 'Penuh',
-        color: 'text-orange-600',
-    },
-    {
-        poli: 'Poli THT',
-        dokter: '-',
-        antrian: 0,
-        status: 'Tutup',
-        color: 'text-gray-500',
-    },
-];
 
-export default function PendaftaranPasienIndex() {
+export default function PendaftaranPasienIndex({
+    data_monitor,
+}: {
+    data_monitor: PoliklinikMonitor[];
+}) {
     const { props } = usePage<{ flash: { success: string } }>();
     const [showSuccess, setShowSuccess] = useState(true);
-    const [showError, setShowError] = useState(true);
 
     useEffect(() => {
         setShowSuccess(true);
-        setShowError(true);
     }, [props.flash]);
+
+    console.log(data_monitor)
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pendaftaran Pasien" />
+
+            {/* Flash Message */}
             {props.flash.success && showSuccess && (
-                <div className="relative mb-4 w-1/2 mt-2  mx-auto rounded-2xl bg-green-100 p-3 text-green-800">
+                <div className="relative mx-auto mt-2 mb-4 w-1/2 rounded-2xl bg-green-100 p-3 text-green-800">
                     <span>{props.flash.success}</span>
                     <button
                         type="button"
@@ -77,8 +60,11 @@ export default function PendaftaranPasienIndex() {
                     </button>
                 </div>
             )}
+
             <StepperPendaftaran currentStep={1} />
+
             <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-7">
+                {/* Form Bagian Kiri */}
                 <div className="space-y-8 lg:col-span-4">
                     <Tabs
                         defaultValue="baru"
@@ -92,15 +78,18 @@ export default function PendaftaranPasienIndex() {
                                 Register Pasien Lama
                             </TabsTrigger>
                         </TabsList>
+
                         <TabsContent value="baru" className="mt-6 w-full">
                             <RegisterPasienBaru />
                         </TabsContent>
+
                         <TabsContent value="lama" className="mt-6 w-full">
                             <RegisterPasienLama />
                         </TabsContent>
                     </Tabs>
                 </div>
 
+                {/* Live Monitoring */}
                 <div className="lg:11mt-10 flex items-center lg:col-span-2">
                     <div className="mx-auto w-full items-center space-y-6 p-4">
                         <Card className="border-muted-foreground/20 shadow-sm">
@@ -118,33 +107,30 @@ export default function PendaftaranPasienIndex() {
 
                             <CardContent className="p-0">
                                 <div className="flex flex-col divide-y">
-                                    {mockQueueData.map((item, index) => (
+                                    {data_monitor.map((item) => (
                                         <div
-                                            key={index}
+                                            key={`${item.id}-${item.doctor_id}`}
                                             className="flex items-center justify-between p-4 transition-colors hover:bg-muted/30"
                                         >
-                                            {/* Info Poli & Dokter */}
                                             <div className="space-y-1">
                                                 <div className="flex items-center gap-2 text-sm font-medium">
                                                     <Stethoscope className="h-3.5 w-3.5 text-muted-foreground" />
-                                                    {item.poli}
+                                                    {item.nama}
                                                 </div>
                                                 <p className="text-xs text-muted-foreground">
-                                                    {item.dokter}
+                                                    {item.nama_doktor}
                                                 </p>
                                             </div>
 
-                                            {/* Info Jumlah Antrian */}
                                             <div className="text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
                                                     <Users className="h-3.5 w-3.5 text-muted-foreground" />
                                                     <span className="text-lg font-bold">
-                                                        {item.antrian}
+                                                        {item.total_antrian}
                                                     </span>
                                                 </div>
-                                                <span
-                                                    className={`text-[10px] font-semibold tracking-wider uppercase ${item.color}`}
-                                                >
+
+                                                <span className="text-[10px] font-semibold tracking-wider uppercase">
                                                     {item.status}
                                                 </span>
                                             </div>

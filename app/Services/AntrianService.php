@@ -33,15 +33,6 @@ public function getAntrianStats()
 }
 
 
-
-    /**
-     * Return a paginated list of antrian (today) with basic search and sorting.
-     * Accepts params: search, limit, col, sort
-     *
-     * @param array $params
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-
  public function getAntrians( string $poli_name)
 {
     $startOfDay = now('Asia/Jakarta')->startOfDay();

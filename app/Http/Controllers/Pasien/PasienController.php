@@ -6,21 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Models\Patient;
 use App\Models\Poliklinik;
 use App\Services\PatientRegistrationService;
+use App\Services\PoliklinikService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PasienController extends Controller
 {
     protected $registrationService;
+    protected  $poliklinikService;
 
-    public function __construct(PatientRegistrationService $registrationService)
+    public function __construct(PatientRegistrationService $registrationService,PoliklinikService $poliklinikService)
     {
         $this->registrationService = $registrationService;
+        $this->poliklinikService = $poliklinikService;
     }
 
     public function index()
     {
-        return Inertia::render('pendaftaran-pasien/pendaftaran');
+         $dataMonitor = $this->poliklinikService->getLiveMonitor();
+        return Inertia::render('pendaftaran-pasien/pendaftaran',[
+            'data_monitor'=>$dataMonitor
+        ]);
     }
 
     public function indexStep2()
