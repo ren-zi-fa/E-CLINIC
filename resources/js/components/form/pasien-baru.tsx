@@ -58,12 +58,11 @@ export default function RegisterPasienBaru() {
                             message={errors.nama_pasien}
                         />
                     </div>
-
                     <div className="grid gap-2">
                         <Label htmlFor="jenis_kelamin">Jenis Kelamin</Label>
 
                         <RadioGroup
-                            id="jenis_kelamin" // Tambahkan ID untuk Label
+                            id="jenis_kelamin" 
                             onValueChange={(value: 'P' | 'L') =>
                                 setData('jenis_kelamin', value)
                             }
@@ -87,7 +86,6 @@ export default function RegisterPasienBaru() {
                             message={errors.jenis_kelamin}
                         />
                     </div>
-
                     {/* Nomor NIK */}
                     <div className="grid gap-2">
                         <Label htmlFor="no_nik">Nomor KTP/ NIK Pasien</Label>

@@ -1,22 +1,25 @@
-import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienController';
 import { Button } from '@/components/ui/button';
 import { PatientRegisterRequired } from '@/types/data';
-import { router } from '@inertiajs/react';
+import html2canvas from 'html2canvas-pro';
 import { useRef, useState } from 'react';
 import QRCode from 'react-qr-code';
+// import library
+
+import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienController';
+import { router } from '@inertiajs/react';
+import jsPDF from 'jspdf';
 
 type PrintProps = PatientRegisterRequired;
-
 type Additional = {
     nomor_antrian: string;
     no_rm: string;
     nama_poli: string;
 };
-
 type FinalData = PatientRegisterRequired & {
     nomor_antrian: string;
     no_rm: string;
 };
+
 export default function PrintCard({
     data,
     addition,
@@ -24,66 +27,51 @@ export default function PrintCard({
     data: PrintProps;
     addition: Additional;
 }) {
-    const dataSend: FinalData = {
-        nama_pasien: data.nama_pasien,
-        usia: data.usia,
-        no_telp: data.no_telp,
-        alamat: data.alamat,
-        jenis_kelamin: data.jenis_kelamin,
-        keluhan_sakit: data.keluhan_sakit,
-        no_nik: data.no_nik,
-        poliklinik_id: data.poliklinik_id,
-        no_rm: addition.no_rm,
-        nomor_antrian: addition.no_rm,
-    };
     const printRef = useRef<HTMLDivElement | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const dataSend: FinalData = {
+        ...data,
+        no_rm: addition.no_rm,
+        nomor_antrian: addition.nomor_antrian,
+    };
+
     const link = `https://klinikkamu.com/antrian/12`;
 
-    const handlePrint = () => {
-        const printWindow = window.open('', '');
-        if (!printWindow) {
-            console.error('Popup diblokir browser');
-            return;
-        }
+    const handlePrint = async () => {
+        setIsLoading(true);
+        const element = printRef.current;
+        if (!element) return;
 
+        const canvas = await html2canvas(element, {
+            scale: 3,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+
+        const pdf = new jsPDF({
+            unit: 'mm',
+            format: [80, 140],
+        });
+
+        const pdfWidth = 80;
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+        // BUKA DI TAB BARU, BUKAN DOWNLOAD
+        const pdfURL = pdf.output('bloburl');
+        window.open(pdfURL);
+
+        setIsLoading(false);
         router.post(PasienController.handleStep3(), dataSend);
-
-        const content = printRef.current;
-        if (!content) return;
-
-        printWindow.document.writeln(`
-            <html>
-                <head>
-                    <title>Print</title>
-                    <style>
-                        @page {
-                            size: 80mm 140mm; /* lebar 80mm, tinggi 140mm */
-                            margin: 0;
-                        }
-                        body {
-                            width: 80mm;
-                            margin: 0;
-                            padding: 8px; /* biar tidak nempel pinggir */
-                            font-family: sans-serif;
-                        }
-                    </style>
-                </head>
-                <body>${content.innerHTML}</body>
-            </html>
-            `);
-
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
     };
 
     return (
         <div className="w-[380px] rounded-xl border p-4 print:w-full">
-            <div ref={printRef}>
-                {/* Header Klinik */}
+            <div ref={printRef} className="bg-white p-4">
                 <div className="mb-6 text-center">
                     <h1 className="text-xl font-extrabold tracking-wide">
                         KLINIK SEHAT SENTOSA
@@ -98,7 +86,6 @@ export default function PrintCard({
 
                 <div className="mx-auto mb-6 h-px w-3/4 bg-neutral-200" />
 
-                {/* Poli */}
                 <div className="mb-6 text-center">
                     <h2 className="text-lg font-semibold tracking-wide">
                         Poli {addition.nama_poli}
@@ -108,12 +95,10 @@ export default function PrintCard({
                     </p>
                 </div>
 
-                {/* QR */}
                 <div className="mb-4 flex justify-center">
                     <QRCode value={link} size={170} />
                 </div>
 
-                {/* Nomor Antrian */}
                 <div className="mb-3 text-center">
                     <h1 className="text-6xl font-extrabold tracking-wider">
                         {addition.nomor_antrian}
@@ -122,15 +107,19 @@ export default function PrintCard({
 
                 <div className="mx-auto mb-6 h-px w-3/4 bg-neutral-200" />
 
-                {/* Catatan */}
                 <p className="px-2 text-center text-xs leading-relaxed text-neutral-600 italic">
                     Terima kasih telah mengantri. Harap tetap berada di area
-                    klinik sampai nomor Anda dipanggil. Semoga lekas sehat.
+                    klinik sampai nomor Anda dipanggil.
                 </p>
             </div>
 
-            <Button className="mt-10 w-full" size="lg" onClick={handlePrint}>
-                Cetak
+            <Button
+                className="mt-10 w-full"
+                size="lg"
+                onClick={handlePrint}
+                disabled={isLoading}
+            >
+                {isLoading ? 'Mencetak...' : 'Cetak'}
             </Button>
         </div>
     );

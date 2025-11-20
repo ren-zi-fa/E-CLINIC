@@ -69,12 +69,27 @@ class PasienController extends Controller
         return redirect()->route('pasienDaftar.indexstep2');
         
     }
+      public function handleStep1ExistingPatient(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nama_pasien' => 'required|string|max:100',
+            'no_nik' => 'required|numeric',
+            'alamat' => 'required|string|max:255',
+            'no_telp' => 'required|string|max:15',
+            'jenis_kelamin' =>'required|in:P,L',
+            'usia' => 'required|integer|min:0|max:120',
+        ]);
+
+        session()->put('pendaftaran.step1_data', $validatedData);
+        return redirect()->route('pasienDaftar.indexstep2');
+        
+    }
      public function handleStep2(Request $request)
     {
         $validatedData = $request->validate([
             'nama_pasien' => 'required|string|max:100',
             'keluhan_sakit' => 'required|string|max:255',
-            'no_nik' => 'required|numeric|unique:patients,no_nik',
+            'no_nik' => 'required|numeric',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'poliklinik_id' => 'required|exists:polikliniks,id',
@@ -91,7 +106,7 @@ class PasienController extends Controller
          $validatedData = $request->validate([
             'nama_pasien' => 'required|string|max:100',
             'keluhan_sakit' => 'required|string|max:255',
-            'no_nik' => 'required|numeric|unique:patients,no_nik',
+            'no_nik' => 'required|numeric',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'poliklinik_id' => 'required|exists:polikliniks,id',
@@ -105,33 +120,6 @@ class PasienController extends Controller
         return to_route('pasienDaftar.index')
         ->with('success', "Berhasil mencetak antrian dengan nomor antrian {$data['nomor_antrian']} ");
 
-    }
-
-
-    public function storeOld(Request $request)
-    {
-        $validated = $request->validate([
-            'nama_pasien' => 'required|string|max:100',
-            'keluhan_sakit' => 'required|string|max:255',
-            'no_nik' => 'required|numeric',
-            'alamat' => 'required|string|max:255',
-            'no_telp' => 'required|string|max:15',
-            'pembayaran' => 'required|in:umum,bpjs',
-            'no_bpjs' => 'required_if:pembayaran,bpjs|string|nullable',
-            'poliklinik_id' => 'required|exists:polikliniks,id',
-            'jenis_kelamin' => 'required|in:P,L',
-            'usia' => 'required|integer|min:0|max:120',
-        ]);
-
-        try {
-            $result = $this->registrationService->registerOld($validated);
-
-            return to_route('pasienDaftar.index')
-                ->with('success_pasien_old', "Pasien lama berhasil diperbarui. No. RM {$result['no_rm']}, Nomor Antrian {$result['nomor_antrian']}.");
-        } catch (\Exception $e) {
-            return to_route('pasienDaftar.index')
-                ->with('error_pasien_old', 'Gagal memperbarui pasien lama: ' . $e->getMessage());
-        }
     }
 
 
@@ -163,8 +151,4 @@ class PasienController extends Controller
         ]);
     }
 
-    public function success(Request $request, $pasien_id) 
-    {
-        return Inertia::render("print/index");
-    }
 }

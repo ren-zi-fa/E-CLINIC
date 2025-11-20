@@ -65,7 +65,7 @@ export default function PoliklinikForm({ data }: { data: RegisterPasien }) {
                             {poliList.map((item) => {
                                 const isSelected =
                                     formData.poliklinik_id === item.id;
-                                const isDisabled = !item.is_open; // Tutup = disabled
+                                const isDisabled = !item.is_open;
 
                                 return (
                                     <label
