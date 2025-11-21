@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Antrian\AntrianController;
+use App\Http\Controllers\Dokter\DokterController;
 use App\Http\Controllers\Pasien\PasienController;
 use App\Http\Controllers\Poliklinik\PoliklinikController;
 use Illuminate\Support\Facades\Route;
@@ -27,12 +28,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('search', [PasienController::class, 'search'])->name('search');
     });
 
-    Route::get('poliklinik', [PoliklinikController::class,'getListPoli'])->name('poliklinik.list');
+    Route::get('manage-dokter', [DokterController::class, 'indexManageDokter'])->name('manage_dokter.index');
 
-/* antrian poliklinik */
+    Route::get('poliklinik', [PoliklinikController::class, 'getListPoli'])->name('poliklinik.list');
+
+    /* antrian poliklinik */
     Route::get('antrian', [AntrianController::class, 'index'])->name('antrian.index');
     Route::get('antrian/poliklinik/{name_poli}', [AntrianController::class, 'showByPoli'])->name('antrian.byPoli');
-
 });
 
 require __DIR__ . '/settings.php';

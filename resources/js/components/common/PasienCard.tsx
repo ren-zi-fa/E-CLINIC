@@ -17,6 +17,14 @@ type PasienCard = Omit<
     poliklinik_id?: PatientRegisterRequired['poliklinik_id'];
     keluhan_sakit?: PatientRegisterRequired['keluhan_sakit'];
 };
+
+type DetailRowProps = {
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    label: string;
+    value: string | number;
+};
+
+
 export default function PasienData({
     data,
     nama_poli,
@@ -24,7 +32,7 @@ export default function PasienData({
     data: PasienCard;
     nama_poli?: string;
 }) {
-    const DetailRow = ({ icon: Icon, label, value }: any) => (
+    const DetailRow = ({ icon: Icon, label, value }: DetailRowProps) => (
         <div className="flex items-center gap-3 py-1">
             <Icon className="h-4 w-4 text-muted-foreground" />
             <div className="flex flex-col">
