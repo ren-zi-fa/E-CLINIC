@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import antrian from '@/routes/antrian';
+import manage_dokter from '@/routes/manage_dokter';
 import pasienDaftar from '@/routes/pasienDaftar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
@@ -54,7 +55,7 @@ const navItemsManajemen: NavItem[] = [
     },
     {
         title: 'Data Dokter',
-        href: '#',
+        href: manage_dokter.index.url(),
         icon: Stethoscope,
     },
     {

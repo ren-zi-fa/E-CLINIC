@@ -1,7 +1,6 @@
 import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienController';
 import { calculateAge } from '@/lib/calcAge';
 import { PatientRegisterRequired } from '@/types/data';
-import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { ChevronDownIcon } from 'lucide-react';

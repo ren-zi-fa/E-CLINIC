@@ -1,4 +1,3 @@
-import { usePoli } from '@/hooks/useCatgeoryPoli';
 import poliklinik from '@/routes/poliklinik';
 import { useEffect, useState } from 'react';
 
@@ -12,8 +11,6 @@ export default function ListPoliklnik() {
     const [polikliniks, setPolikliniks] = useState<PoliList[]>([]);
     const [selectedId, setSelectedId] = useState<number | null>(null);
 
-    const { poli, setPoli } = usePoli();
-
     useEffect(() => {
         const fetchPoli = async () => {
             try {
@@ -22,19 +19,13 @@ export default function ListPoliklnik() {
 
                 const list: PoliList[] = data.polikliniks;
                 setPolikliniks(list);
-
-                // Default: pilih item pertama
-                if (list.length > 0) {
-                    setSelectedId(list[0].id);
-                    setPoli(list[0].nama);
-                }
             } catch (error) {
                 console.error(error);
             }
         };
 
         fetchPoli();
-    }, [setPoli]);
+    }, []);
 
     return (
         <div className="w-xs space-y-3">
@@ -43,7 +34,7 @@ export default function ListPoliklnik() {
                     key={data.id}
                     onClick={() => {
                         setSelectedId(data.id);
-                        setPoli(data.nama);
+                       
                     }}
                     className={`cursor-pointer rounded-xl border border-gray-200 bg-white p-4 shadow-md transition hover:shadow-lg ${selectedId === data.id ? 'ring-2 ring-blue-500' : ''} `}
                 >

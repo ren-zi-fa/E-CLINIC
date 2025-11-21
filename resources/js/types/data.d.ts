@@ -62,3 +62,10 @@ export type PoliklinikMonitor = {
     JadwalPraktik: JadwalPraktik;
     status: 'BUKA' | 'PENUH' | 'TUTUP';
 };
+
+export type Dokter = {
+    name: string;
+    spesialisasi: string;
+    no_sip: string;
+    jadwal_praktik: JadwalPraktik;
+};
