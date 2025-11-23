@@ -34,7 +34,6 @@ export default function ListPoliklnik() {
                     key={data.id}
                     onClick={() => {
                         setSelectedId(data.id);
-                       
                     }}
                     className={`cursor-pointer rounded-xl border border-gray-200 bg-white p-4 shadow-md transition hover:shadow-lg ${selectedId === data.id ? 'ring-2 ring-blue-500' : ''} `}
                 >

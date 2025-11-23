@@ -14,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-type Step1Data =  PatientRegisterRequired
+type Step1Data = PatientRegisterRequired;
 
 export default function PendaftaranPasienIndex2({
     step1Data,

@@ -2,20 +2,17 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-
 use App\Models\Doctor;
 use App\Models\User;
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-
     public function run(): void
     {
         /**
@@ -37,8 +34,8 @@ class RolePermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $perm]);
         }
 
-        $adminRole =  Role::firstOrCreate(['name' => 'admin']);
-        $roleStaf   = Role::firstOrCreate(['name' => 'staf']);
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $roleStaf = Role::firstOrCreate(['name' => 'staf']);
         $roleDokter = Role::firstOrCreate(['name' => 'dokter']);
 
         $adminRole->syncPermissions($permissions);

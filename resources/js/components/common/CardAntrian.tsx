@@ -18,7 +18,7 @@ export default function StatCard({
 }: StatCardProps) {
     return (
         <Card
-            className={`flex items-center justify-between border-b-4  border-gray-300 p-4 shadow-sm ${bg}`}
+            className={`flex items-center justify-between border-b-4 border-gray-300 p-4 shadow-sm ${bg}`}
         >
             <div>
                 <CardHeader className="mb-2 p-0">

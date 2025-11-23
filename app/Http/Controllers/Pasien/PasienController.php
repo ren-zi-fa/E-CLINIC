@@ -13,7 +13,8 @@ use Inertia\Inertia;
 class PasienController extends Controller
 {
     protected $registrationService;
-    protected  $poliklinikService;
+
+    protected $poliklinikService;
 
     public function __construct(PatientRegistrationService $registrationService, PoliklinikService $poliklinikService)
     {
@@ -24,22 +25,25 @@ class PasienController extends Controller
     public function index()
     {
         $dataMonitor = $this->poliklinikService->getLiveMonitor();
+
         return Inertia::render('pendaftaran-pasien/pendaftaran', [
-            'data_monitor' => $dataMonitor
+            'data_monitor' => $dataMonitor,
         ]);
     }
 
     public function indexStep2()
     {
         $step1Data = session('pendaftaran.step1_data');
-        if (!$step1Data) {
+        if (! $step1Data) {
             return redirect()->route('pasienDaftar.index');
         }
+
         return Inertia::render('pendaftaran-pasien/pendaftaranStep2', [
             'step1Data' => $step1Data,
-            'step' => 2
+            'step' => 2,
         ]);
     }
+
     public function indexStep3()
     {
         $step2Data = session('pendaftaran.step2_data');
@@ -49,9 +53,10 @@ class PasienController extends Controller
         $nomor_antrian = $this->registrationService->generateAntrian($step2Data['poliklinik_id']);
         $no_rm = $this->registrationService->generateNoRm();
 
-        if (!$step2Data) {
+        if (! $step2Data) {
             return redirect()->route('pasienDaftar.index');
         }
+
         return Inertia::render('pendaftaran-pasien/pendaftaranStep3', [
             'step2Data' => $step2Data,
             'step' => 3,
@@ -60,6 +65,7 @@ class PasienController extends Controller
             'no_rm' => $no_rm,
         ]);
     }
+
     public function handleStep1(Request $request)
     {
         $validatedData = $request->validate([
@@ -72,8 +78,10 @@ class PasienController extends Controller
         ]);
 
         session()->put('pendaftaran.step1_data', $validatedData);
+
         return redirect()->route('pasienDaftar.indexstep2');
     }
+
     public function handleStep1ExistingPatient(Request $request)
     {
         $validatedData = $request->validate([
@@ -86,8 +94,10 @@ class PasienController extends Controller
         ]);
 
         session()->put('pendaftaran.step1_data', $validatedData);
+
         return redirect()->route('pasienDaftar.indexstep2');
     }
+
     public function handleStep2(Request $request)
     {
         $validatedData = $request->validate([
@@ -101,8 +111,10 @@ class PasienController extends Controller
             'usia' => 'required|integer|min:0|max:120',
         ]);
         session()->put('pendaftaran.step2_data', $validatedData);
+
         return redirect()->route('pasienDaftar.indexstep3');
     }
+
     public function handleStep3(Request $request)
     {
 
@@ -118,12 +130,11 @@ class PasienController extends Controller
             'no_rm' => 'required',
             'nomor_antrian' => 'required',
         ]);
-        $data =  $this->registrationService->registerNew($validatedData);
+        $data = $this->registrationService->registerNew($validatedData);
 
         return to_route('pasienDaftar.index')
             ->with('success', "Berhasil mencetak antrian dengan nomor antrian {$data['nomor_antrian']} ");
     }
-
 
     public function search(Request $request)
     {
@@ -135,9 +146,10 @@ class PasienController extends Controller
                 ->orWhere('no_rm', $query)
                 ->first();
         }
-        if (!$pasien) {
+        if (! $pasien) {
             return response()->json(['message' => 'Pasien tidak ditemukan'], 404);
         }
+
         return response()->json([
             'pasien' => [
                 'nama_pasien' => $pasien->nama_pasien,
@@ -149,7 +161,7 @@ class PasienController extends Controller
                 'pembayaran' => $pasien->pembayaran,
                 'jenis_kelamin' => $pasien->jenis_kelamin,
                 'usia' => $pasien->usia,
-            ]
+            ],
         ]);
     }
 }

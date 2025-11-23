@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -43,12 +42,12 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'flash' => [
-                'pasien_print' => fn() => $request->session()->get('pasien_print'),
-                'success_pasien_new' => fn() => $request->session()->get('success_pasien_new'),
-                'success_pasien_old' => fn() => $request->session()->get('success_pasien_old'),
-                'error_pasien_new'   => fn() => $request->session()->get('error_pasien_new'),
-                'error_pasien_old'   => fn() => $request->session()->get('error_pasien_old'),
-                'success'  => fn() => $request->session()->get('success'),
+                'pasien_print' => fn () => $request->session()->get('pasien_print'),
+                'success_pasien_new' => fn () => $request->session()->get('success_pasien_new'),
+                'success_pasien_old' => fn () => $request->session()->get('success_pasien_old'),
+                'error_pasien_new' => fn () => $request->session()->get('error_pasien_new'),
+                'error_pasien_old' => fn () => $request->session()->get('error_pasien_old'),
+                'success' => fn () => $request->session()->get('success'),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

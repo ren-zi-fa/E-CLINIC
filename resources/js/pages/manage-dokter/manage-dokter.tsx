@@ -74,7 +74,7 @@ export default function ManageDokterPage({ dokter }: { dokter: Dokter[] }) {
                                         {i === 0 && (
                                             <TableCell
                                                 rowSpan={list.length}
-                                                className="text-center  font-semibold"
+                                                className="text-center font-semibold"
                                             >
                                                 {poli}
                                             </TableCell>
