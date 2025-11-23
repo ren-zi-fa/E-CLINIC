@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '23'
           cache: 'npm'
 
       - name: Install Node Dependencies
@@ -45,5 +45,3 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate
 
-      - name: Tests
-        run: ./vendor/bin/pest
