@@ -41,8 +41,6 @@ export default function PendaftaranPasienIndex({
         setShowSuccess(true);
     }, [props.flash]);
 
-    console.log(data_monitor)
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pendaftaran Pasien" />

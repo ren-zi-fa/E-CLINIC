@@ -60,6 +60,12 @@ class DoctorFactory extends Factory
         ];
     }
 
+        foreach ($days as $day) {
+        if (!isset($jadwal[$day])) {
+            $jadwal[$day] = ["-"];
+        }
+    }
+
     return [
         'poliklinik_id' => $poliklinik->id,
         'spesialisasi' => $spesialis,

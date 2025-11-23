@@ -40,15 +40,23 @@ export type PatientRegisterRequired = {
     keluhan_sakit: string;
 };
 export type Hari =
-    | 'Senin'
-    | 'Selasa'
-    | 'Rabu'
-    | 'Kamis'
-    | 'Jumat'
-    | 'Sabtu'
-    | 'Minggu';
+    | 'senin'
+    | 'selasa'
+    | 'rabu'
+    | 'kamis'
+    | 'jumat'
+    | 'sabtu'
+    | 'minggu';
 
-export type JadwalPraktik = Record<Hari, string[]>;
+export type JadwalPraktik = {
+    senin: string;
+    selasa: string;
+    rabu: string;
+    kamis: string;
+    jumat: string;
+    sabtu: string;
+    minggu: string;
+};
 
 export type PoliklinikMonitor = {
     id: number;
@@ -68,4 +76,5 @@ export type Dokter = {
     spesialisasi: string;
     no_sip: string;
     jadwal_praktik: JadwalPraktik;
+    nama_poli: string;
 };

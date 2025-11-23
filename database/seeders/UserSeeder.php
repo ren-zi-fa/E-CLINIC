@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
     {
         $roleAdmin = Role::findByName('admin');
         $roleStaf = Role::findByName('staf');
-        $roleDokter = Role::findByName('dokter');
+      
 
         // ===================== ADMIN ======================
         $admin = User::firstOrCreate(
@@ -33,35 +33,6 @@ class UserSeeder extends Seeder
             ]
         );
         $admin->assignRole($roleAdmin);
-
-        // ===================== DOKTER =====================
-        $userDokter = User::firstOrCreate(
-            ['email' => 'dr.sari@example.com'],
-            [
-                'name' => 'Dr. Sari Putri',
-                'password' => Hash::make('password'),
-                'phone_number' => '01234567890',
-                'email_verified_at' => new DateTime()
-            ]
-        );
-        $userDokter->assignRole($roleDokter);
-
-        // Ambil poliklinik "Umum" → id = 1
-        $poliUmum = Poliklinik::where('nama', 'Umum')->first();
-
-        Doctor::firstOrCreate(
-            ['user_id' => $userDokter->id],
-            [
-                'poliklinik_id' => $poliUmum->id,  
-                'spesialisasi' => 'Dokter Umum',
-                'no_sip' => 'SIP-2025-001',
-                'jadwal_praktik' => json_encode([
-                    'Senin' => ['08:00 - 12:00'],
-                    'Rabu'  => ['13:00 - 17:00'],
-                    'Jumat' => ['08:00 - 12:00'],
-                ]),
-            ]
-        );
 
         // ===================== STAF ======================
         $userStaf = User::firstOrCreate(

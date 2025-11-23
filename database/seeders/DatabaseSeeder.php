@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     */
     public function run(): void
     {
-        $faker = Faker::create('id_ID'); 
+ 
         $polikliniks = [
             ["nama" => "Umum", "kode" => "A", "is_open" => true,],
             ["nama" => "Gigi", "kode" => "B", "is_open" => true,],
