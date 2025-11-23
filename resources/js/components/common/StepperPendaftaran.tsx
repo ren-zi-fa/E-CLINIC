@@ -1,7 +1,10 @@
-import { Check } from 'lucide-react'; 
+import { Check } from 'lucide-react';
 
-export default function StepperPendaftaran({currentStep}:{currentStep:number}) {
- 
+export default function StepperPendaftaran({
+    currentStep,
+}: {
+    currentStep: number;
+}) {
     const steps = [
         { id: 1, name: 'Data Pasien' },
         { id: 2, name: 'Tujuan Poliklinik' },
@@ -13,7 +16,6 @@ export default function StepperPendaftaran({currentStep}:{currentStep:number}) {
             <div className="flex items-center justify-center space-x-4">
                 {steps.map((step, index) => (
                     <div key={step.id} className="flex items-center">
-         
                         {index !== 0 && (
                             <div
                                 className={`mr-4 h-0.5 w-10 sm:w-20 ${
@@ -28,10 +30,10 @@ export default function StepperPendaftaran({currentStep}:{currentStep:number}) {
                             <div
                                 className={`flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm font-semibold transition-colors ${
                                     step.id < currentStep
-                                        ? 'border-primary bg-primary text-primary-foreground' 
+                                        ? 'border-primary bg-primary text-primary-foreground'
                                         : step.id === currentStep
-                                          ? 'border-primary text-primary' 
-                                          : 'border-muted text-muted-foreground' 
+                                          ? 'border-primary text-primary'
+                                          : 'border-muted text-muted-foreground'
                                 }`}
                             >
                                 {step.id < currentStep ? (

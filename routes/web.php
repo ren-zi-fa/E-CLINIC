@@ -37,5 +37,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('antrian/poliklinik/{name_poli}', [AntrianController::class, 'showByPoli'])->name('antrian.byPoli');
 });
 
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';

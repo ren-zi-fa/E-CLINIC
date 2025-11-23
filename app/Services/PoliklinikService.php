@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 class PoliklinikService
 {
-      public function getLiveMonitor()
+    public function getLiveMonitor()
     {
         $startOfDay = now()->startOfDay();
-        $endOfDay   = now()->endOfDay();
+        $endOfDay = now()->endOfDay();
 
         $rawData = DB::table('polikliniks')
             ->leftJoin('doctors', 'doctors.poliklinik_id', '=', 'polikliniks.id')
@@ -43,17 +43,17 @@ class PoliklinikService
             ->get();
 
         $hari = strtolower(now()->locale('id')->dayName);
-        $now  = now();
+        $now = now();
 
         $filtered = $rawData->filter(function ($item) use ($hari, $now) {
 
-            if (!$item->doctor_id) {
+            if (! $item->doctor_id) {
                 return false;
             }
 
             $jadwal = json_decode($item->jadwal_praktik, true);
 
-            if (!$jadwal || !isset($jadwal[$hari])) {
+            if (! $jadwal || ! isset($jadwal[$hari])) {
                 return false;
             }
 
@@ -63,7 +63,7 @@ class PoliklinikService
                 [$start, $end] = array_map('trim', explode('-', $range));
 
                 $startTime = Carbon::parse($start);
-                $endTime   = Carbon::parse($end);
+                $endTime = Carbon::parse($end);
 
                 if ($now->between($startTime, $endTime)) {
                     return true;
@@ -74,7 +74,7 @@ class PoliklinikService
         });
 
         return $filtered->map(function ($item) {
-            if (!$item->is_open) {
+            if (! $item->is_open) {
                 $item->status = 'TUTUP';
             } elseif ($item->total_antrian >= 15) {
                 $item->status = 'PENUH';
@@ -85,5 +85,4 @@ class PoliklinikService
             return $item;
         })->values();
     }
-
 }

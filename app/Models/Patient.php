@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Patient extends Model
 {
     use HasFactory;
-    protected $table = 'patients';
-    protected $guarded = [];
-    public $timestamps = false;
 
+    protected $table = 'patients';
+
+    protected $guarded = [];
+
+    public $timestamps = false;
 
     public function antrian()
     {

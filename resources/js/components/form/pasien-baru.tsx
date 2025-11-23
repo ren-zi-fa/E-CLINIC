@@ -22,15 +22,16 @@ export default function RegisterPasienBaru() {
     const [open, setOpen] = useState(false);
     const [date, setDate] = useState<Date | undefined>(undefined);
 
-    const { data, setData, processing, errors, submit } =
-        useForm<Required<RegisterPasien>>({
-            nama_pasien: '',
-            no_nik: '',
-            usia: 0,
-            alamat: '',
-            no_telp: '',
-            jenis_kelamin: 'L',
-        });
+    const { data, setData, processing, errors, submit } = useForm<
+        Required<RegisterPasien>
+    >({
+        nama_pasien: '',
+        no_nik: '',
+        usia: 0,
+        alamat: '',
+        no_telp: '',
+        jenis_kelamin: 'L',
+    });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -61,7 +62,7 @@ export default function RegisterPasienBaru() {
                         <Label htmlFor="jenis_kelamin">Jenis Kelamin</Label>
 
                         <RadioGroup
-                            id="jenis_kelamin" 
+                            id="jenis_kelamin"
                             onValueChange={(value: 'P' | 'L') =>
                                 setData('jenis_kelamin', value)
                             }
@@ -186,7 +187,6 @@ export default function RegisterPasienBaru() {
                     >
                         {processing ? 'prosess...' : 'Lanjut'}
                     </Button>
-                    
                 </div>
             </form>
         </div>

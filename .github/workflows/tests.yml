@@ -2,18 +2,16 @@ name: tests
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - develop
-  #     - main
-  # pull_request:
-  #   branches:
-  #     - develop
-  #     - main
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -22,7 +20,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: 8.3
           tools: composer:v2
           coverage: xdebug
 

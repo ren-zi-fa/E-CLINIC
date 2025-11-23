@@ -18,14 +18,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Textarea } from '../ui/textarea';
 
 export default function RegisterPasienLama() {
-    const {
-        data,
-        setData,
-        processing,
-        errors,
-        reset,
-        submit,
-    } = useForm<
+    const { data, setData, processing, errors, reset, submit } = useForm<
         Required<
             Omit<PatientRegisterRequired, 'poliklinik_id' | 'keluhan_sakit'>
         >

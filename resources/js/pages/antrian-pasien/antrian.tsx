@@ -29,9 +29,9 @@ export default function AntrianPasienIndex({
         <>
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Kunjungan Pasien" />
-                <div className="px-8 space-y-8">
+                <div className="space-y-8 px-8">
                     <h1 className="mt-5 border-l-4 border-purple-500 pl-4 text-2xl font-bold">
-                        Statistik Antrian 
+                        Statistik Antrian
                     </h1>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                         <StatCard

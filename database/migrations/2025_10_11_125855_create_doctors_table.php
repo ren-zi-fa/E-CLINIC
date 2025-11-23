@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('poliklinik_id') ->constrained('polikliniks')->onDelete('cascade');
+            $table->foreignId('poliklinik_id')->constrained('polikliniks')->onDelete('cascade');
             $table->string('spesialisasi');
             $table->string('no_sip')->unique();
             $table->json('jadwal_praktik')->nullable();
             $table->timestamps();
         });
     }
+
     /**
      * Reverse the migrations.
      */

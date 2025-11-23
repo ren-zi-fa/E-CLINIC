@@ -21,7 +21,7 @@ class PatientFactory extends Factory
             'keluhan_sakit' => $this->faker->sentence(10),
             'usia' => $this->faker->numberBetween(1, 100),
             'jenis_kelamin' => $this->faker->randomElement(['L', 'P']),
-            'no_rm' => 'RM' . $this->faker->unique()->numerify('####'),
+            'no_rm' => 'RM'.$this->faker->unique()->numerify('####'),
             'no_nik' => $this->faker->numerify('################'),
             'no_telp' => $this->faker->numerify('08##########'),
             'alamat' => $this->faker->address(),

@@ -49,12 +49,12 @@ const navItemsUtama: NavItem[] = [
 ];
 const navItemsManajemen: NavItem[] = [
     {
-        title: 'Data Pasien',
+        title: 'Pasien',
         href: '#',
         icon: Users,
     },
     {
-        title: 'Data Dokter',
+        title: 'Poli & Dokter',
         href: manage_dokter.index.url(),
         icon: Stethoscope,
     },

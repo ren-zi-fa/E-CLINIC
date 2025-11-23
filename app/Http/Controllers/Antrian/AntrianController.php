@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Antrian;
 use App\Http\Controllers\Controller;
 use App\Services\AntrianService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class AntrianController extends Controller
@@ -21,6 +20,7 @@ class AntrianController extends Controller
     {
 
         $stats = $this->antrianService->getAntrianStats();
+
         return Inertia::render('antrian-pasien/antrian', [
             'totalAntrian' => $stats['total'],
             'totalMenunggu' => $stats['menunggu'],
@@ -29,16 +29,15 @@ class AntrianController extends Controller
         ]);
     }
 
+    public function showByPoli(Request $request, $name_poli)
+    {
 
-public function showByPoli(Request $request, $name_poli)
-{
-   
-    $antrian = $this->antrianService->getAntrians($name_poli);
-    return response()->json(
-        [
-            'antrian'=>$antrian
-        ]
-    );
-}
+        $antrian = $this->antrianService->getAntrians($name_poli);
 
+        return response()->json(
+            [
+                'antrian' => $antrian,
+            ]
+        );
+    }
 }

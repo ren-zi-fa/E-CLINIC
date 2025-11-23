@@ -24,7 +24,6 @@ type DetailRowProps = {
     value: string | number;
 };
 
-
 export default function PasienData({
     data,
     nama_poli,

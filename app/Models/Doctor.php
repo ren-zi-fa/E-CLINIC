@@ -10,14 +10,16 @@ class Doctor extends Model
     use HasFactory;
 
     protected $table = 'doctors';
+
     protected $guarded = [];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    public function poliklinik() {
+
+    public function poliklinik()
+    {
         return $this->belongsTo(Poliklinik::class);
     }
-
 }
