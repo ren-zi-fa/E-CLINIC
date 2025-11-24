@@ -29,6 +29,7 @@ import {
     Users,
 } from 'lucide-react';
 import AppLogo from './app-logo';
+import manage_pasien from '@/routes/manage_pasien';
 
 const navItemsUtama: NavItem[] = [
     {
@@ -50,7 +51,7 @@ const navItemsUtama: NavItem[] = [
 const navItemsManajemen: NavItem[] = [
     {
         title: 'Pasien',
-        href: '#',
+        href: manage_pasien.index.url(),
         icon: Users,
     },
     {
