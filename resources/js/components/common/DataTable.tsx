@@ -49,7 +49,7 @@ export function DataTable<TData, TValue>({
         debugColumns: true,
         debugHeaders: true,
         debugTable: true,
-        
+
         getPaginationRowModel: getPaginationRowModel(),
         getCoreRowModel: getCoreRowModel(),
     });
@@ -110,7 +110,7 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
 
-            <div className="flex items-center justify-between px-4 space-x-2 py-4">
+            <div className="flex items-center justify-between space-x-2 px-4 py-4">
                 <div className="space-x-2">
                     {links
                         .filter((link) => link.label.match(/^\d+$/)) // hanya label yang angka

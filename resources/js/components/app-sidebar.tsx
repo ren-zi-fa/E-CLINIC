@@ -13,6 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import antrian from '@/routes/antrian';
 import manage_dokter from '@/routes/manage_dokter';
+import manage_pasien from '@/routes/manage_pasien';
 import pasienDaftar from '@/routes/pasienDaftar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
@@ -29,7 +30,6 @@ import {
     Users,
 } from 'lucide-react';
 import AppLogo from './app-logo';
-import manage_pasien from '@/routes/manage_pasien';
 
 const navItemsUtama: NavItem[] = [
     {

@@ -8,7 +8,6 @@ use App\Models\Poliklinik;
 use App\Services\PatientRegistrationService;
 use App\Services\PoliklinikService;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -32,20 +31,22 @@ class PasienController extends Controller
             'data_monitor' => $dataMonitor,
         ]);
     }
-    
-        public function indexManagepasien(Request $request) {
-            $data = DB::table('patients')
-                ->select('no_rm','nama_pasien','jenis_kelamin','usia','no_telp','alamat')
-                ->paginate(20); 
-            $data->getCollection()->transform(function ($item, $key) use ($data) {
-                $item->no = ($data->currentPage() - 1) * $data->perPage() + $key + 1;
-                return $item;
-            });
 
-            return Inertia::render('manage-pasien/manage-pasien', [
-                'data' => $data
-            ]);
-        }
+    public function indexManagepasien(Request $request)
+    {
+        $data = DB::table('patients')
+            ->select('no_rm', 'nama_pasien', 'jenis_kelamin', 'usia', 'no_telp', 'alamat')
+            ->paginate(20);
+        $data->getCollection()->transform(function ($item, $key) use ($data) {
+            $item->no = ($data->currentPage() - 1) * $data->perPage() + $key + 1;
+
+            return $item;
+        });
+
+        return Inertia::render('manage-pasien/manage-pasien', [
+            'data' => $data,
+        ]);
+    }
 
     public function indexStep2()
     {
