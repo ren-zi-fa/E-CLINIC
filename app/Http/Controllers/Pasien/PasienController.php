@@ -8,7 +8,6 @@ use App\Models\Poliklinik;
 use App\Services\PatientRegistrationService;
 use App\Services\PoliklinikService;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -32,20 +31,48 @@ class PasienController extends Controller
             'data_monitor' => $dataMonitor,
         ]);
     }
-    
-        public function indexManagepasien(Request $request) {
-            $data = DB::table('patients')
-                ->select('no_rm','nama_pasien','jenis_kelamin','usia','no_telp','alamat')
-                ->paginate(20); 
-            $data->getCollection()->transform(function ($item, $key) use ($data) {
-                $item->no = ($data->currentPage() - 1) * $data->perPage() + $key + 1;
-                return $item;
-            });
+    public function indexManagepasien(Request $request) {
+        $perPage = $request->input('per_page', 20);
+        $search = $request->input('search');
+        $sortGender = $request->input('sort_gender');
 
-            return Inertia::render('manage-pasien/manage-pasien', [
-                'data' => $data
+        $data = DB::table('patients')
+            ->select('id','no_rm','nama_pasien','jenis_kelamin','usia','no_telp','alamat')
+            
+        
+            ->when($sortGender, function ($q) {
+            
+                $q->orderByRaw("FIELD(jenis_kelamin, 'P', 'L') ASC");
+            })
+            ->orderBy('id', 'asc')
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('nama_pasien', 'like', "%{$search}%")
+                        ->orWhere('no_rm', 'like', "%{$search}%")
+                        ->orWhere('alamat', 'like', "%{$search}%");
+                });
+            })
+
+            ->paginate($perPage)
+            ->appends([
+                'search'      => $search,
+                'per_page'    => $perPage,
+                'sort_gender' => $sortGender
             ]);
-        }
+
+        $data->getCollection()->transform(function ($item, $key) use ($data) {
+            $first = $data->firstItem() ?: 0;
+            $item->no = $first + $key;
+            return $item;
+        });
+
+        return Inertia::render('manage-pasien/manage-pasien', [
+            'data'        => $data,
+            'search'      => $search,
+            'sort_gender' => $sortGender
+        ]);
+    }
+
 
     public function indexStep2()
     {
