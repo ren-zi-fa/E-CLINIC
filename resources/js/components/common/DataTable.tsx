@@ -32,7 +32,6 @@ import {
 } from '../ui/select';
 import SearchBar from './Search';
 
-
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
@@ -43,7 +42,7 @@ interface DataTableProps<TData, TValue> {
     prev_page: string | null;
     links: PaginationLink[];
     per_page: number;
-   
+
     lastPageUrl: string;
     firstPageUrl: string;
 }
@@ -56,7 +55,7 @@ export function DataTable<TData, TValue>({
     data,
     next_page,
     prev_page,
-  
+
     currentPage,
     firstPageUrl,
     lastPageUrl,
@@ -115,7 +114,7 @@ export function DataTable<TData, TValue>({
                     </Select>
                 </div>
                 <div className="w-xl">
-                    <SearchBar/>
+                    <SearchBar />
                 </div>
             </div>
 

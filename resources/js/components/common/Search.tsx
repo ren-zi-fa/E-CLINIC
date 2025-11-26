@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Input } from '../ui/input';
 
 export default function SearchBar() {
-    const [value, setValue] = useState<string>(  '');
+    const [value, setValue] = useState<string>('');
     const isInitialMount = useRef(true);
 
     useEffect(() => {
@@ -34,9 +34,8 @@ export default function SearchBar() {
 
     return (
         <Input
-
             type="text"
-            className="rounded border px-3 py-1 w-full"
+            className="w-full rounded border px-3 py-1"
             placeholder="Masukkan Nama, Alamat, No RM Pasien"
             value={value}
             onChange={(e) => setValue(e.target.value)}

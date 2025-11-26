@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Pasien;
 
 use App\Http\Controllers\Controller;
-use App\Models\Patient;
 use App\Models\Poliklinik;
 use App\Services\PatientRegistrationService;
 use App\Services\PatientService;
@@ -15,15 +14,17 @@ use Inertia\Inertia;
 class PasienController extends Controller
 {
     protected $registrationService;
+
     protected $patientService;
+
     protected $poliklinikService;
 
-    public function __construct(PatientRegistrationService $registrationService, PoliklinikService $poliklinikService,PatientService $patientService)
+    public function __construct(PatientRegistrationService $registrationService, PoliklinikService $poliklinikService, PatientService $patientService)
     {
         $this->registrationService = $registrationService;
         $this->poliklinikService = $poliklinikService;
         $this->patientService = $patientService;
-    
+
     }
 
     public function index()
@@ -34,17 +35,18 @@ class PasienController extends Controller
             'data_monitor' => $dataMonitor,
         ]);
     }
-    public function indexManagepasien(Request $request) {
+
+    public function indexManagepasien(Request $request)
+    {
         $perPage = $request->input('per_page', 20);
         $search = $request->input('search');
         $sortGender = $request->input('sort_gender');
 
         $data = DB::table('patients')
-            ->select('id','no_rm','nama_pasien','jenis_kelamin','usia','no_telp','alamat')
-            
-        
+            ->select('id', 'no_rm', 'nama_pasien', 'jenis_kelamin', 'usia', 'no_telp', 'alamat')
+
             ->when($sortGender, function ($q) {
-            
+
                 $q->orderByRaw("FIELD(jenis_kelamin, 'P', 'L') ASC");
             })
             ->orderBy('id', 'asc')
@@ -58,28 +60,29 @@ class PasienController extends Controller
 
             ->paginate($perPage)
             ->appends([
-                'search'      => $search,
-                'per_page'    => $perPage,
-                'sort_gender' => $sortGender
+                'search' => $search,
+                'per_page' => $perPage,
+                'sort_gender' => $sortGender,
             ]);
 
         $data->getCollection()->transform(function ($item, $key) use ($data) {
             $first = $data->firstItem() ?: 0;
             $item->no = $first + $key;
+
             return $item;
         });
         $stats = $this->patientService->getPasienStats();
         $data_stats = [
-        'total_pasien' => $stats['total_pasien'],
-        'perempuan'    => $stats['perempuan'],
-        'laki_laki'    => $stats['laki_laki'],
-        'dewasa'       => $stats['dewasa'],
-        'anak_anak'    => $stats['anak_anak'],
+            'total_pasien' => $stats['total_pasien'],
+            'perempuan' => $stats['perempuan'],
+            'laki_laki' => $stats['laki_laki'],
+            'dewasa' => $stats['dewasa'],
+            'anak_anak' => $stats['anak_anak'],
         ];
 
         return Inertia::render('manage-pasien/manage-pasien', [
-            'data'        => $data,
-            'stats'       => $data_stats,
+            'data' => $data,
+            'stats' => $data_stats,
         ]);
     }
 
@@ -187,5 +190,4 @@ class PasienController extends Controller
         return to_route('pasienDaftar.index')
             ->with('success', "Berhasil mencetak antrian dengan nomor antrian {$data['nomor_antrian']} ");
     }
-
 }

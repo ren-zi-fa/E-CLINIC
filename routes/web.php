@@ -27,7 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('success/{pasien_id}', [PasienController::class, 'success'])->name('success');
     });
 
-    Route::get('manage-pasien',[PasienController::class,'indexManagePasien'])->name('manage_pasien.index');
+    Route::get('manage-pasien', [PasienController::class, 'indexManagePasien'])->name('manage_pasien.index');
     Route::get('manage-dokter', [DokterController::class, 'indexManageDokter'])->name('manage_dokter.index');
 
     Route::get('poliklinik', [PoliklinikController::class, 'getListPoli'])->name('poliklinik.list');
