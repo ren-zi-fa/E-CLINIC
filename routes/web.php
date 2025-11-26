@@ -25,7 +25,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('step-3', [PasienController::class, 'handleStep2'])->name('handleStep2');
         Route::post('final', [PasienController::class, 'handleStep3'])->name('handleStep3');
         Route::get('success/{pasien_id}', [PasienController::class, 'success'])->name('success');
-        Route::get('search', [PasienController::class, 'search'])->name('search');
     });
 
     Route::get('manage-pasien',[PasienController::class,'indexManagePasien'])->name('manage_pasien.index');

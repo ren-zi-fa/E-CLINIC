@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Patient;
 use App\Models\Poliklinik;
 use App\Services\PatientRegistrationService;
+use App\Services\PatientService;
 use App\Services\PoliklinikService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,13 +15,15 @@ use Inertia\Inertia;
 class PasienController extends Controller
 {
     protected $registrationService;
-
+    protected $patientService;
     protected $poliklinikService;
 
-    public function __construct(PatientRegistrationService $registrationService, PoliklinikService $poliklinikService)
+    public function __construct(PatientRegistrationService $registrationService, PoliklinikService $poliklinikService,PatientService $patientService)
     {
         $this->registrationService = $registrationService;
         $this->poliklinikService = $poliklinikService;
+        $this->patientService = $patientService;
+    
     }
 
     public function index()
@@ -65,14 +68,20 @@ class PasienController extends Controller
             $item->no = $first + $key;
             return $item;
         });
+        $stats = $this->patientService->getPasienStats();
+        $data_stats = [
+        'total_pasien' => $stats['total_pasien'],
+        'perempuan'    => $stats['perempuan'],
+        'laki_laki'    => $stats['laki_laki'],
+        'dewasa'       => $stats['dewasa'],
+        'anak_anak'    => $stats['anak_anak'],
+        ];
 
         return Inertia::render('manage-pasien/manage-pasien', [
             'data'        => $data,
-            'search'      => $search,
-            'sort_gender' => $sortGender
+            'stats'       => $data_stats,
         ]);
     }
-
 
     public function indexStep2()
     {
@@ -179,32 +188,4 @@ class PasienController extends Controller
             ->with('success', "Berhasil mencetak antrian dengan nomor antrian {$data['nomor_antrian']} ");
     }
 
-    public function search(Request $request)
-    {
-        $query = $request->query('query');
-
-        $pasien = null;
-        if ($query) {
-            $pasien = Patient::where('no_nik', $query)
-                ->orWhere('no_rm', $query)
-                ->first();
-        }
-        if (! $pasien) {
-            return response()->json(['message' => 'Pasien tidak ditemukan'], 404);
-        }
-
-        return response()->json([
-            'pasien' => [
-                'nama_pasien' => $pasien->nama_pasien,
-                'no_nik' => $pasien->no_nik,
-                'alamat' => $pasien->alamat,
-                'no_telp' => $pasien->no_telp,
-                'no_rm' => $pasien->no_rm,
-                'no_bpjs' => $pasien->no_bpjs,
-                'pembayaran' => $pasien->pembayaran,
-                'jenis_kelamin' => $pasien->jenis_kelamin,
-                'usia' => $pasien->usia,
-            ],
-        ]);
-    }
 }
