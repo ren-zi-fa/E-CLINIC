@@ -1,3 +1,4 @@
+import StatCard from '@/components/common/CardAntrian';
 import { DataTable } from '@/components/common/DataTable';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
@@ -6,13 +7,21 @@ import { BreadcrumbItem } from '@/types';
 import { PaginateData } from '@/types/data';
 import { Head, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
+import {
+    ArrowDown,
+    ArrowUp,
+    ArrowUpDown,
+    Baby,
+    User,
+    UserRound,
+    Users2,
+} from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Manage Pasien', href: manage_dokter.index().url },
 ];
 
-export const columns: ColumnDef<Pasien, any>[] = [
+export const columns: ColumnDef<Pasien>[] = [
     {
         accessorKey: 'no',
         header: 'No',
@@ -20,7 +29,7 @@ export const columns: ColumnDef<Pasien, any>[] = [
     },
     {
         accessorKey: 'no_rm',
-        header: 'No RM',
+        header: 'No rumah sakit',
     },
     {
         accessorKey: 'nama_pasien',
@@ -88,6 +97,13 @@ export const columns: ColumnDef<Pasien, any>[] = [
     },
 ];
 
+type Stats = {
+    total_pasien: number;
+    perempuan: number;
+    laki_laki: number;
+    dewasa: number;
+    anak_anak: number;
+};
 type Pasien = {
     id?: number;
     nama_pasien: string;
@@ -100,30 +116,77 @@ type Pasien = {
 };
 export default function ManagePasienPage({
     data,
-    search,
+    stats,
 }: {
     data: PaginateData<Pasien>;
-    search: string;
+    stats: Stats;
 }) {
-    console.log(search);
+    console.log(stats);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pasien" />
+            <div className="space-y-5 px-4">
+                <h1 className="mt-5 border-l-4 border-purple-500 pl-4 text-2xl font-bold">
+                    Statistik Pasien
+                </h1>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
+                    <StatCard
+                        title="Total Pasien"
+                        value={stats.total_pasien}
+                        icon={Users2}
+                        bg="bg-blue-300"
+                        color="text-yellow-600"
+                    />
 
-            <DataTable
-                firstPageUrl={data.first_page_url}
-                lastPageUrl={data.last_page_url}
-                per_page={data.per_page}
-                resultSearch={search}
-                next_page={data.next_page_url}
-                prev_page={data.prev_page_url}
-                links={data.links}
-                rowCount={data.last_page}
-                columns={columns}
-                data={data.data}
-                currentPage={data.current_page}
-                pageCount={data.per_page}
-            />
+                    <StatCard
+                        title="Laki-laki"
+                        value={stats.laki_laki}
+                        icon={User}
+                        bg="bg-blue-200"
+                        color="text-blue-700"
+                    />
+
+                    <StatCard
+                        title="Perempuan"
+                        value={stats.perempuan}
+                        icon={UserRound}
+                        bg="bg-pink-200"
+                        color="text-pink-700"
+                    />
+
+                    <StatCard
+                        title="Dewasa"
+                        value={stats.dewasa}
+                        icon={User}
+                        bg="bg-purple-200"
+                        color="text-purple-700"
+                    />
+
+                    <StatCard
+                        title="Anak-anak"
+                        value={stats.anak_anak}
+                        icon={Baby}
+                        bg="bg-green-200"
+                        color="text-green-700"
+                    />
+                </div>
+                <h1 className="mt-4 border-l-4 border-blue-500 pl-4 text-2xl font-bold">
+                    Daftar Pasien
+                </h1>
+                <DataTable
+                    firstPageUrl={data.first_page_url}
+                    lastPageUrl={data.last_page_url}
+                    per_page={data.per_page}
+                    next_page={data.next_page_url}
+                    prev_page={data.prev_page_url}
+                    links={data.links}
+                    rowCount={data.last_page}
+                    columns={columns}
+                    data={data.data}
+                    currentPage={data.current_page}
+                    pageCount={data.per_page}
+                />
+            </div>
         </AppLayout>
     );
 }

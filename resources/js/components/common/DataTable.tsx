@@ -43,7 +43,7 @@ interface DataTableProps<TData, TValue> {
     prev_page: string | null;
     links: PaginationLink[];
     per_page: number;
-    resultSearch: string;
+   
     lastPageUrl: string;
     firstPageUrl: string;
 }
@@ -56,7 +56,7 @@ export function DataTable<TData, TValue>({
     data,
     next_page,
     prev_page,
-    resultSearch,
+  
     currentPage,
     firstPageUrl,
     lastPageUrl,
@@ -115,7 +115,7 @@ export function DataTable<TData, TValue>({
                     </Select>
                 </div>
                 <div className="w-xl">
-                    <SearchBar search={resultSearch} />
+                    <SearchBar/>
                 </div>
             </div>
 

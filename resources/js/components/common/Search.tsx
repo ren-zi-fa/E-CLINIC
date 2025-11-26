@@ -2,8 +2,8 @@ import { router } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import { Input } from '../ui/input';
 
-export default function SearchBar({ search }: { search: string }) {
-    const [value, setValue] = useState<string>(search ?? '');
+export default function SearchBar() {
+    const [value, setValue] = useState<string>(  '');
     const isInitialMount = useRef(true);
 
     useEffect(() => {
