@@ -30,7 +30,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('manage-pasien', [PasienController::class, 'indexManagePasien'])->name('manage_pasien.index');
     Route::get('manage-dokter', [DokterController::class, 'indexManageDokter'])->name('manage_dokter.index');
 
+
     Route::get('poliklinik', [PoliklinikController::class, 'getListPoli'])->name('poliklinik.list');
+    Route::put('/poliklinik/update_status', [PoliklinikController::class, 'updateStatus'])->name('poliklinik.status');
 
     /* antrian poliklinik */
     Route::get('antrian', [AntrianController::class, 'index'])->name('antrian.index');
