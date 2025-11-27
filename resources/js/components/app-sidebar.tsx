@@ -14,6 +14,8 @@ import { dashboard } from '@/routes';
 import antrian from '@/routes/antrian';
 import manage_dokter from '@/routes/manage_dokter';
 import manage_pasien from '@/routes/manage_pasien';
+
+import jadwal_praktik from '@/routes/jadwal_praktik';
 import pasienDaftar from '@/routes/pasienDaftar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
@@ -60,10 +62,11 @@ const navItemsManajemen: NavItem[] = [
         icon: Stethoscope,
     },
     {
-        title: 'Jadwal Dokter',
-        href: '#',
+        title: 'Jadwal Praktik',
+        href: jadwal_praktik.index.url(),
         icon: CalendarClock,
     },
+
     {
         title: 'Data Obat',
         href: '#',
