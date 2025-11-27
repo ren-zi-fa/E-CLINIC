@@ -80,8 +80,8 @@ export function DataTable<TData, TValue>({
             : pageCount;
 
     return (
-        <div className="p-4">
-            <div className="flex items-center justify-between py-4">
+        <div className="p-4 shadow-sm border mb-2">
+            <div className="flex items-center justify-between py-4 ">
                 <div className="flex items-center gap-2">
                     <span className="text-sm whitespace-nowrap text-muted-foreground">
                         Show:
