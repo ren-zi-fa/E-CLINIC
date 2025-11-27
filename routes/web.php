@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Antrian\AntrianController;
 use App\Http\Controllers\Dokter\DokterController;
+use App\Http\Controllers\JadwalPraktik\JadwalPraktikController;
 use App\Http\Controllers\Pasien\PasienController;
 use App\Http\Controllers\Poliklinik\PoliklinikController;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('manage-pasien', [PasienController::class, 'indexManagePasien'])->name('manage_pasien.index');
     Route::get('manage-dokter', [DokterController::class, 'indexManageDokter'])->name('manage_dokter.index');
+    Route::get('list_jadwal',JadwalPraktikController::class)->name('jadwal_praktik.index');
 
 
     Route::get('poliklinik', [PoliklinikController::class, 'getListPoli'])->name('poliklinik.list');
