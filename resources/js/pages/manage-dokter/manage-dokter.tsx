@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import manage_dokter from '@/routes/manage_dokter';
 import { BreadcrumbItem } from '@/types';
-import { Dokter, Poliklinik } from '@/types/data';
+import { Poliklinik } from '@/types/data';
 import { Head, router } from '@inertiajs/react';
 
 import { Switch } from '@/components/ui/switch';
@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/table';
 import poliklinik from '@/routes/poliklinik';
 
-
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Manage Dokter', href: manage_dokter.index().url },
 ];
@@ -23,10 +22,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function ManageDokterPage({
     poli_list,
 }: {
-
     poli_list: Poliklinik[];
 }) {
-
     const handleToggle = (id: number, val: boolean) => {
         router.put(poliklinik.status(), {
             id,
@@ -99,7 +96,6 @@ export default function ManageDokterPage({
                         </TableBody>
                     </Table>
                 </div>
-         
             </div>
         </AppLayout>
     );

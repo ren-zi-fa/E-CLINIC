@@ -30,8 +30,9 @@ class JadwalPraktikController extends Controller
 
                 return $doctor;
             });
-       return Inertia::render('jadwal-praktik/jadwalPages',[
-        'jadwal'=>$jadwal
-       ]);
+
+        return Inertia::render('jadwal-praktik/jadwalPages', [
+            'jadwal' => $jadwal,
+        ]);
     }
 }

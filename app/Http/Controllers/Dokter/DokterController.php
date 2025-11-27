@@ -11,13 +11,14 @@ class DokterController extends Controller
     public function indexManageDokter()
     {
 
-        $poli =  DB::table('polikliniks')->get()->map(function ($item) {
+        $poli = DB::table('polikliniks')->get()->map(function ($item) {
             $item->is_open = (bool) $item->is_open;
 
             return $item;
         });
+
         return Inertia::render('manage-dokter/manage-dokter', [
-            'poli_list'=>$poli,
+            'poli_list' => $poli,
         ]);
     }
 }

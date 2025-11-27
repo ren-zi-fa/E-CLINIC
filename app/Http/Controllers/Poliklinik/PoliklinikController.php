@@ -24,25 +24,26 @@ class PoliklinikController extends Controller
         ]);
     }
 
-    public function updateStatus(Request $request){
-        $payload =   $request->validate([
-            'id'=>'required',
-            'status'=>'required'
+    public function updateStatus(Request $request)
+    {
+        $payload = $request->validate([
+            'id' => 'required',
+            'status' => 'required',
         ]);
-        if($payload['status'] === true){
+        if ($payload['status'] === true) {
             DB::table('polikliniks')
                 ->where('id', $payload['id'])
                 ->update([
-                    'is_open' =>false ,
-            ]);
+                    'is_open' => false,
+                ]);
 
-        }else if($payload['status'] === false) {
-               DB::table('polikliniks')
+        } elseif ($payload['status'] === false) {
+            DB::table('polikliniks')
                 ->where('id', $payload['id'])
                 ->update([
-                    'is_open' =>true ,
-         ]);
+                    'is_open' => true,
+                ]);
         }
-      
+
     }
 }
