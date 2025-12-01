@@ -27,6 +27,7 @@ export function NavMain({
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                             asChild
+                            className="lg:text-md text-sm"
                             isActive={page.url.startsWith(
                                 typeof item.href === 'string'
                                     ? item.href
@@ -48,6 +49,7 @@ export function NavMain({
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                             asChild
+                            className="lg:text-md text-sm"
                             isActive={page.url.startsWith(
                                 typeof item.href === 'string'
                                     ? item.href

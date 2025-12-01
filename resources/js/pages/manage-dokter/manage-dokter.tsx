@@ -1,18 +1,11 @@
 import AppLayout from '@/layouts/app-layout';
 import manage_dokter from '@/routes/manage_dokter';
 import { BreadcrumbItem } from '@/types';
-import { Poliklinik } from '@/types/data';
+import { Dokter, Poliklinik } from '@/types/data';
 import { Head, router } from '@inertiajs/react';
 
-import { Switch } from '@/components/ui/switch';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
+import ListDokter from '@/components/common/ListDokter';
+import StatusPoli from '@/components/common/StatusPoli';
 import poliklinik from '@/routes/poliklinik';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -21,8 +14,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function ManageDokterPage({
     poli_list,
+    dokters,
 }: {
     poli_list: Poliklinik[];
+    dokters: (Dokter & { id: number })[];
 }) {
     const handleToggle = (id: number, val: boolean) => {
         router.put(poliklinik.status(), {
@@ -34,68 +29,17 @@ export default function ManageDokterPage({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="dokter" />
-            <div className="mt-10 grid grid-cols-12">
-                <div className="col-span-4">
-                    <Table className="mr-6 w-[480px]">
-                        <TableHeader>
-                            <TableRow className="">
-                                <TableHead>Nama</TableHead>
-                                <TableHead>Kode</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="text-center">
-                                    Aksi
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-
-                        <TableBody>
-                            {poli_list.map((item) => {
-                                const isOpen = item.is_open;
-
-                                return (
-                                    <TableRow key={item.id} className="">
-                                        <TableCell className="font-medium">
-                                            {item.nama}
-                                        </TableCell>
-
-                                        <TableCell className="text-muted-foreground">
-                                            {item.kode}
-                                        </TableCell>
-
-                                        <TableCell
-                                            className={
-                                                'font-semibold ' +
-                                                (isOpen
-                                                    ? 'text-green-600'
-                                                    : 'text-red-600')
-                                            }
-                                        >
-                                            {isOpen ? 'Open' : 'Close'}
-                                        </TableCell>
-
-                                        <TableCell className="flex justify-center">
-                                            <Switch
-                                                id={`switch-${item.id}`}
-                                                checked={isOpen}
-                                                onCheckedChange={() =>
-                                                    handleToggle(
-                                                        item.id,
-                                                        isOpen,
-                                                    )
-                                                }
-                                                className={
-                                                    isOpen
-                                                        ? 'data-[state=checked]:bg-green-600'
-                                                        : 'data-[state=unchecked]:bg-red-600'
-                                                }
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
+            <div className="mx-4 mt-2">
+                <h1 className="mt-5 border-l-4 border-purple-500 pl-4 text-2xl font-bold">
+                    Daftar Poli
+                </h1>
+                <div className="rounded-2x col-span-4 p-4">
+                    <StatusPoli poli={poli_list} handleToggle={handleToggle} />
                 </div>
+                <h1 className="mt-5 mb-2 border-l-4 border-blue-500 pl-4 text-2xl font-bold">
+                    Daftar Dokter
+                </h1>
+                <ListDokter dokters={dokters} />
             </div>
         </AppLayout>
     );

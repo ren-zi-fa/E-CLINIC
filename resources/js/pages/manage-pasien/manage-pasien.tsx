@@ -29,7 +29,7 @@ export const columns: ColumnDef<Pasien>[] = [
     },
     {
         accessorKey: 'no_rm',
-        header: 'No rumah sakit',
+        header: 'RM',
     },
     {
         accessorKey: 'nama_pasien',

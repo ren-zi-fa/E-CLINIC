@@ -55,7 +55,6 @@ export function DataTable<TData, TValue>({
     data,
     next_page,
     prev_page,
-
     currentPage,
     firstPageUrl,
     lastPageUrl,
