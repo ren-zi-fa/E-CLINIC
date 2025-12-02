@@ -32,7 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('manage-dokter/{name}/edit',[DokterController::class,'edit'])->name('manage_dokter.edit');
     Route::get('manage-pasien', [PasienController::class, 'indexManagePasien'])->name('manage_pasien.index');
     Route::get('manage-dokter', [DokterController::class, 'indexManageDokter'])->name('manage_dokter.index');
-    Route::get('list_jadwal', JadwalPraktikController::class)->name('jadwal_praktik.index');
+    Route::get('list-jadwal', JadwalPraktikController::class)->name('jadwal_praktik.index');
 
     Route::get('poliklinik', [PoliklinikController::class, 'getListPoli'])->name('poliklinik.list');
     Route::put('/poliklinik/update_status', [PoliklinikController::class, 'updateStatus'])->name('poliklinik.status');

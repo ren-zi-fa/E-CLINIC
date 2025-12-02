@@ -27,10 +27,7 @@ class DoctorFactory extends Factory
         $selectedDays = fake()->randomElements($days, rand(2, 4));
 
         // Slot waktu tetap (sesuai permintaan)
-        $slots = [
-            '08:00 - 17:00',
-        ];
-
+        $slots = '08:00 - 17:00';
         $jadwal = [];
 
         // Isi hari yang terpilih dengan slot waktu
@@ -41,9 +38,10 @@ class DoctorFactory extends Factory
         // Hari yang tidak dipilih tetap "-"
         foreach ($days as $day) {
             if (! isset($jadwal[$day])) {
-                $jadwal[$day] = ['-'];
+                $jadwal[$day] = '-';
             }
         }
+
 
         return [
             'poliklinik_id' => $poliklinik->id,

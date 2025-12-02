@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import manage_dokter from '@/routes/manage_dokter';
 import { BreadcrumbItem } from '@/types';
+import { JadwalPraktik } from '@/types/data';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -16,15 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Edit Dokter', href: '#' },
 ];
 
-export type JadwalPraktik = {
-    senin: string;
-    selasa: string;
-    rabu: string;
-    kamis: string;
-    jumat: string;
-    sabtu: string;
-    minggu: string;
-};
+
 
 export type JadwalCheckbox = {
     [key in keyof JadwalPraktik]: boolean;
