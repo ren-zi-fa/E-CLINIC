@@ -25,7 +25,7 @@ class AntrianController extends Controller
         // ambil semua poliklinik
         $polikliniks = DB::table('polikliniks')
             ->select('nama')
-            ->orderBy('id', 'asc')  
+            ->orderBy('id', 'asc')
             ->get();
 
         // tentukan poli berdasarkan index tab
@@ -45,5 +45,4 @@ class AntrianController extends Controller
             'polikliniks' => $polikliniks,
         ]);
     }
-
 }

@@ -21,7 +21,7 @@ class DoctorFactory extends Factory
         $spesialis = fake()->randomElement($mapping[$poliklinik->id]);
 
         // Hari tersedia
-        $days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat','sabtu','minggu'];
+        $days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
 
         // Pilih hari secara acak
         $selectedDays = fake()->randomElements($days, rand(2, 4));
@@ -41,7 +41,6 @@ class DoctorFactory extends Factory
                 $jadwal[$day] = '-';
             }
         }
-
 
         return [
             'poliklinik_id' => $poliklinik->id,

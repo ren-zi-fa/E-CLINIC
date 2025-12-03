@@ -28,19 +28,16 @@ export default function ListAntrian({
 }: {
     antrian: AntrianItem[];
     title: string;
-
 }) {
     return (
         <div className="space-y-4">
-            <h1 className="text-xl text-center font-semibold">{title}</h1>
+            <h1 className="text-center text-xl font-semibold">{title}</h1>
             <div className="overflow-hidden rounded-md border shadow-lg">
-                <Table className="w-full ">
+                <Table className="w-full">
                     <TableHeader>
                         <TableRow>
                             <TableHead className="">No.Antrian</TableHead>
-                            <TableHead className="">
-                                No. Rekam Medis
-                            </TableHead>
+                            <TableHead className="">No. Rekam Medis</TableHead>
                             <TableHead className="">Nama Pasien</TableHead>
                             <TableHead>Poliklinik</TableHead>
                             <TableHead>Status</TableHead>

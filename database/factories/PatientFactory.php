@@ -17,6 +17,7 @@ class PatientFactory extends Factory
     public function definition(): array
     {
         $faker = \Faker\Factory::create('id_ID');
+
         return [
             'nama_pasien' => $faker->name(),
             'keluhan_sakit' => $faker->sentence(10),

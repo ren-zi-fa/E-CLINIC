@@ -60,7 +60,9 @@ export default function JadwalPage({ jadwal }: { jadwal: Jadwal[] }) {
 
                             return Object.entries(grouped).map(([poli, list]) =>
                                 list.map((d, i) => {
-                                    const jadwalArray = Object.values(d.jadwal_praktik);
+                                    const jadwalArray = Object.values(
+                                        d.jadwal_praktik,
+                                    );
                                     return (
                                         <TableRow
                                             key={`${poli}-${i}`}

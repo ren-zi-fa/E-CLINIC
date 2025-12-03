@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\DB;
 class PoliklinikService
 {
     public function getLiveMonitor()
-{
-    $startOfDay = now()->startOfDay();
-    $endOfDay = now()->endOfDay();
+    {
+        $startOfDay = now()->startOfDay();
+        $endOfDay = now()->endOfDay();
 
-    $rawData = DB::table('polikliniks')
+        $rawData = DB::table('polikliniks')
             ->leftJoin('doctors', 'doctors.poliklinik_id', '=', 'polikliniks.id')
             ->leftJoin('users', 'users.id', '=', 'doctors.user_id')
             ->leftJoin('visits_queue', function ($join) use ($startOfDay, $endOfDay) {
@@ -42,11 +42,11 @@ class PoliklinikService
             )
             ->get();
 
-    $hari = strtolower(now()->locale('id')->dayName);
-    $now = now();
-        
-    $filtered = $rawData->filter(function ($item) use ($hari, $now) {
-           
+        $hari = strtolower(now()->locale('id')->dayName);
+        $now = now();
+
+        $filtered = $rawData->filter(function ($item) use ($hari, $now) {
+
             if (! $item->doctor_id) {
                 return false;
             }
@@ -70,7 +70,8 @@ class PoliklinikService
             $endTime = Carbon::parse($end);
 
             return $now->between($startTime, $endTime);
-    });
+        });
+
         return $filtered->map(function ($item) {
             if (! $item->is_open) {
                 $item->status = 'TUTUP';

@@ -28,8 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('success/{pasien_id}', [PasienController::class, 'success'])->name('success');
     });
 
-    Route::put('manage-dokter/{id}/update',[DokterController::class,'update'])->name('manage_dokter.update');
-    Route::get('manage-dokter/{name}/edit',[DokterController::class,'edit'])->name('manage_dokter.edit');
+    Route::put('manage-dokter/{id}/update', [DokterController::class, 'update'])->name('manage_dokter.update');
+    Route::get('manage-dokter/{name}/edit', [DokterController::class, 'edit'])->name('manage_dokter.edit');
     Route::get('manage-pasien', [PasienController::class, 'indexManagePasien'])->name('manage_pasien.index');
     Route::get('manage-dokter', [DokterController::class, 'indexManageDokter'])->name('manage_dokter.index');
     Route::get('list-jadwal', JadwalPraktikController::class)->name('jadwal_praktik.index');
