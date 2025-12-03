@@ -3,13 +3,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
+import poliklinik from '@/routes/poliklinik';
 import { PatientRegisterRequired, Poliklinik } from '@/types/data';
 import { Transition } from '@headlessui/react';
 import { useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import InputError from '../input-error';
 import { Button } from '../ui/button';
-import poliklinik from '@/routes/poliklinik';
 
 type RegisterPasien = PatientRegisterRequired;
 

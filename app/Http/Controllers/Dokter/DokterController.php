@@ -19,19 +19,18 @@ class DokterController extends Controller
 
             return $item;
         });
-      $dokters = DB::table('doctors')
-                ->join('users', 'doctors.user_id', '=', 'users.id')
-                ->join('polikliniks', 'doctors.poliklinik_id', '=', 'polikliniks.id')
-                ->select(
-                    'doctors.id',
-                    'doctors.no_sip',
-                    'doctors.spesialisasi',
-                    'users.name',
-                    'polikliniks.nama as nama_poli'
-                )
-                ->orderBy('polikliniks.nama') 
-                ->get();
-
+        $dokters = DB::table('doctors')
+            ->join('users', 'doctors.user_id', '=', 'users.id')
+            ->join('polikliniks', 'doctors.poliklinik_id', '=', 'polikliniks.id')
+            ->select(
+                'doctors.id',
+                'doctors.no_sip',
+                'doctors.spesialisasi',
+                'users.name',
+                'polikliniks.nama as nama_poli'
+            )
+            ->orderBy('polikliniks.nama')
+            ->get();
 
         return Inertia::render('manage-dokter/manage-dokter', [
             'poli_list' => $poli,
@@ -67,14 +66,15 @@ class DokterController extends Controller
             }
         }
 
-    // Timpa kembali jadwal hasil transform
-    $user->dokter->jadwal_praktik = $flat;  
-    $polikliniks = DB::table('polikliniks')->select('nama')->get();
-    return Inertia::render('manage-dokter/edit-dokter', [
-        'dokter' => $user,
-        'polikliniks'=>$polikliniks
-    ]);
-}
+        // Timpa kembali jadwal hasil transform
+        $user->dokter->jadwal_praktik = $flat;
+        $polikliniks = DB::table('polikliniks')->select('nama')->get();
+
+        return Inertia::render('manage-dokter/edit-dokter', [
+            'dokter' => $user,
+            'polikliniks' => $polikliniks,
+        ]);
+    }
 
     public function update(Request $request, $id)
     {
@@ -83,7 +83,7 @@ class DokterController extends Controller
             'no_sip' => 'required|string|max:255|unique:doctors,no_sip,'.$id,
             'spesialisasi' => 'required|string|max:255',
             'jadwal_praktik' => 'required|array',
-            'poliklinik_id'=>'required'
+            'poliklinik_id' => 'required',
         ]);
         try {
             $doctor = Doctor::findOrFail($id);
@@ -94,7 +94,7 @@ class DokterController extends Controller
                 'no_sip' => $validated['no_sip'],
                 'spesialisasi' => $validated['spesialisasi'],
                 'jadwal_praktik' => $validated['jadwal_praktik'],
-                'poliklinik_id'=>$validated['poliklinik_id']
+                'poliklinik_id' => $validated['poliklinik_id'],
             ]);
 
             return to_route('manage_dokter.index')->with('success', 'dokter berhasil di update');
