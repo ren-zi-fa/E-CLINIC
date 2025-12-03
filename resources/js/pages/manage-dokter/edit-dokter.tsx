@@ -5,12 +5,20 @@ import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import manage_dokter from '@/routes/manage_dokter';
+import poliklinik from '@/routes/poliklinik';
 import { BreadcrumbItem } from '@/types';
-import { JadwalPraktik } from '@/types/data';
+import { JadwalPraktik, Poliklinik } from '@/types/data';
 import { Head, router, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Manage Dokter', href: manage_dokter.index().url },
@@ -47,7 +55,17 @@ const HARI_KERJA = [
 ] as const;
 
 export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
+    console.log(dokter);
     const data = dokter.dokter;
+    const [poliList, setPoliList] = useState<Poliklinik[]>([]);
+    useEffect(() => {
+        const fetchPoli = async () => {
+            const response = await fetch(poliklinik.list().url);
+            const res = await response.json();
+            setPoliList(res.polikliniks);
+        };
+        fetchPoli();
+    }, []);
 
     // Parse jadwal dari database menjadi jam mulai dan jam selesai
     const parseJadwal = (jadwalStr: string) => {
@@ -84,6 +102,7 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
     } = useForm({
         name: dokter.name,
         no_sip: data.no_sip,
+        poliklinik_id: data.poliklinik_id,
         spesialisasi: data.spesialisasi,
         jadwal_praktik: data.jadwal_praktik,
     });
@@ -197,6 +216,34 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
                                     className="mt-2"
                                     message={errors.spesialisasi}
                                 />
+                            </div>
+                            <div className="">
+                                <Label className="text-sm font-medium">
+                                    Poliklinik
+                                </Label>
+                                <Select
+                                    defaultValue={String(
+                                        dokter.dokter.poliklinik_id,
+                                    )} // tampilkan default saat render pertama
+                                    onValueChange={(value) =>
+                                        setData('poliklinik_id', Number(value))
+                                    }
+                                >
+                                    <SelectTrigger className="mt-1 w-full">
+                                        <SelectValue placeholder="Pilih Poliklinik" />
+                                    </SelectTrigger>
+
+                                    <SelectContent>
+                                        {poliList.map((item) => (
+                                            <SelectItem
+                                                key={item.id}
+                                                value={String(item.id)}
+                                            >
+                                                {item.nama}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
                     </Card>

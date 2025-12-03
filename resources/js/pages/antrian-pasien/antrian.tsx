@@ -120,20 +120,22 @@ export default function AntrianPasienIndex({
                     <Tabs
                         value={activeTab}
                         onValueChange={handleTabChange}
-                        className=""
-                        orientation="vertical"
+                        className="w-full"
+                        orientation="horizontal"
                     >
-                        <TabsList className="col-span-4">
-                            {polikliniks.map((item, i) => (
-                                <TabsTrigger
-                                    key={item.id}
-                                    value={String(i)}
-                                    className="w-full justify-start lg:w-auto"
-                                >
-                                    {item.nama}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
+                        <div className="mb-10 flex w-full justify-center">
+                            <TabsList className="flex w-full justify-center gap-2">
+                                {polikliniks.map((item, i) => (
+                                    <TabsTrigger
+                                        key={item.id}
+                                        value={String(i)}
+                                        className="px-6 py-2"
+                                    >
+                                        {item.nama}
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                        </div>
 
                         <div className="col-span-8">
                             {polikliniks.map((item, i) => (

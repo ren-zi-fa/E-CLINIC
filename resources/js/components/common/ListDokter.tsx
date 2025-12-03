@@ -13,12 +13,27 @@ export default function ListDokter({ dokters }: ListDokterProps) {
     return (
         <>
             <div className="flex justify-center">
-                <Card className="mt-2 grid w-full grid-cols-3 space-y-4 border p-4 shadow-sm">
+                <Card className="mt-2 grid w-full grid-cols-3 space-y-4 rounded border p-4 shadow-sm">
                     {dokters.map((dokter) => (
                         <div
                             key={dokter.id}
-                            className="flex items-center justify-between gap-3 border border-b px-4 pb-4"
+                            className="relative flex items-center justify-between gap-3 rounded border px-4 py-4"
                         >
+                            <button
+                                className="absolute top-2 right-2 rounded p-2 transition-colors hover:bg-accent/60"
+                                onClick={() =>
+                                    router.get(
+                                        manage_dokter.edit(dokter.name).url,
+                                    )
+                                }
+                            >
+                                <Pencil className="h-5 w-5 opacity-70" />
+                            </button>
+                            {/* Badge poli_name di kanan bawah */}
+                            <span className="absolute right-2 bottom-2 rounded-full bg-blue-400 px-2 py-1 text-xs font-semibold text-white shadow">
+                                {dokter.nama_poli}
+                            </span>
+
                             <div className="rounded-full border bg-purple-500 p-3 text-white">
                                 {dokter.name
                                     .split(' ')
@@ -26,6 +41,7 @@ export default function ListDokter({ dokters }: ListDokterProps) {
                                     .join('')
                                     .slice(0, 2)}
                             </div>
+
                             <div className="flex flex-1 flex-col">
                                 <p className="text-base font-semibold">
                                     {dokter.name}
@@ -35,16 +51,6 @@ export default function ListDokter({ dokters }: ListDokterProps) {
                                 </p>
                                 <p className="text-sm">{dokter.no_sip}</p>
                             </div>
-                            <button
-                                className="rounded p-2 transition-colors hover:bg-accent/60"
-                                onClick={() => {
-                                    router.get(
-                                        manage_dokter.edit(dokter.name).url,
-                                    );
-                                }}
-                            >
-                                <Pencil className="h-5 w-5 opacity-70" />
-                            </button>
                         </div>
                     ))}
                 </Card>

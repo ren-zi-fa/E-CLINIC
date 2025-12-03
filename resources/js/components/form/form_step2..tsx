@@ -9,6 +9,7 @@ import { useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import InputError from '../input-error';
 import { Button } from '../ui/button';
+import poliklinik from '@/routes/poliklinik';
 
 type RegisterPasien = PatientRegisterRequired;
 
@@ -35,7 +36,7 @@ export default function PoliklinikForm({ data }: { data: RegisterPasien }) {
 
     useEffect(() => {
         const fetchPoli = async () => {
-            const response = await fetch('/poliklinik');
+            const response = await fetch(poliklinik.list().url);
             const res = await response.json();
             setPoliList(res.polikliniks);
         };
