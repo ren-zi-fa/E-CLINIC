@@ -41,7 +41,7 @@ const navItemsUtama: NavItem[] = [
     },
     {
         title: 'Antrian Kunjungan',
-        href: antrian.index.url(),
+        href: antrian.byPoli.url({ query: { tab: '0' } }),
         icon: ClipboardList,
     },
     {

@@ -36,10 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('poliklinik', [PoliklinikController::class, 'getListPoli'])->name('poliklinik.list');
     Route::put('/poliklinik/update_status', [PoliklinikController::class, 'updateStatus'])->name('poliklinik.status');
-
-    /* antrian poliklinik */
-    Route::get('antrian', [AntrianController::class, 'index'])->name('antrian.index');
-    Route::get('antrian/poliklinik/{name_poli}', [AntrianController::class, 'showByPoli'])->name('antrian.byPoli');
+    Route::get('antrian', [AntrianController::class, 'showByPoli'])->name('antrian.byPoli');
 });
 
 require __DIR__.'/settings.php';

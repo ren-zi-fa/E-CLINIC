@@ -2,11 +2,13 @@ import AppLayout from '@/layouts/app-layout';
 import manage_dokter from '@/routes/manage_dokter';
 import { BreadcrumbItem } from '@/types';
 import { Dokter, Poliklinik } from '@/types/data';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 
 import ListDokter from '@/components/common/ListDokter';
 import StatusPoli from '@/components/common/StatusPoli';
 import poliklinik from '@/routes/poliklinik';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Manage Dokter', href: manage_dokter.index().url },
@@ -25,6 +27,21 @@ export default function ManageDokterPage({
             status: val,
         });
     };
+    const { props } = usePage<{ flash: { success: string } }>();
+    useEffect(() => {
+        if (!props.flash.success) return;
+
+        toast(props.flash.success, {
+            description: new Date().toLocaleString('id-ID', {
+                dateStyle: 'full',
+                timeStyle: 'medium',
+            }),
+            action: {
+                label: 'Tutup',
+                onClick: () => {},
+            },
+        });
+    }, [props.flash.success]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

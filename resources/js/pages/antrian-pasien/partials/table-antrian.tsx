@@ -7,9 +7,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import { usePoli } from '@/hooks/useCatgeoryPoli';
 import { AntrianItem } from '@/types/data';
-import { useEffect, useState } from 'react';
 
 const getStatusBadgeClass = (status: string) => {
     switch (status) {
@@ -24,33 +22,29 @@ const getStatusBadgeClass = (status: string) => {
     }
 };
 
-export default function DataTable() {
-    const [antrian, setAntrian] = useState<AntrianItem[]>();
-    const { poli: poliCatgeory } = usePoli();
+export default function ListAntrian({
+    title,
+    antrian,
+}: {
+    antrian: AntrianItem[];
+    title: string;
 
-    console.log(antrian);
-    useEffect(() => {
-        const fetchAntrianByPoli = async () => {
-            const result = await fetch(`/antrian/poliklinik/${poliCatgeory}`);
-            const response = await result.json();
-            setAntrian(response.antrian);
-        };
-        fetchAntrianByPoli();
-    }, [poliCatgeory]);
+}) {
     return (
         <div className="space-y-4">
+            <h1 className="text-xl text-center font-semibold">{title}</h1>
             <div className="overflow-hidden rounded-md border shadow-lg">
-                <Table className="w-full table-fixed">
+                <Table className="w-full ">
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-32">No.Antrian</TableHead>
-                            <TableHead className="w-32">
+                            <TableHead className="">No.Antrian</TableHead>
+                            <TableHead className="">
                                 No. Rekam Medis
                             </TableHead>
-                            <TableHead className="w-42">Nama Pasien</TableHead>
+                            <TableHead className="">Nama Pasien</TableHead>
                             <TableHead>Poliklinik</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead className="w-20">Waktu Daftar</TableHead>
+                            <TableHead className="">Waktu Daftar</TableHead>
                         </TableRow>
                     </TableHeader>
 

@@ -66,10 +66,11 @@ public function edit(Request $request, $name)
     }
 
     // Timpa kembali jadwal hasil transform
-    $user->dokter->jadwal_praktik = $flat;
-
+    $user->dokter->jadwal_praktik = $flat;  
+    $polikliniks = DB::table('polikliniks')->select('nama')->get();
     return Inertia::render('manage-dokter/edit-dokter', [
         'dokter' => $user,
+        'polikliniks'=>$polikliniks
     ]);
 }
 
@@ -81,8 +82,6 @@ public function edit(Request $request, $name)
             'spesialisasi' => 'required|string|max:255',
             'jadwal_praktik' => 'required|array',
         ]);
-
-    
         try {
             $doctor = Doctor::findOrFail($id);
             $doctor->user()->update([
@@ -94,7 +93,7 @@ public function edit(Request $request, $name)
                 'jadwal_praktik' => $validated['jadwal_praktik'],
             ]);
 
-            return to_route('manage_dokter.index');
+            return to_route('manage_dokter.index')->with('success','dokter berhasil di update');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal memperbarui data dokter: ' . $e->getMessage());
         }

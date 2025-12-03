@@ -9,15 +9,13 @@ import AppLayout from '@/layouts/app-layout';
 import manage_dokter from '@/routes/manage_dokter';
 import { BreadcrumbItem } from '@/types';
 import { JadwalPraktik } from '@/types/data';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Manage Dokter', href: manage_dokter.index().url },
     { title: 'Edit Dokter', href: '#' },
 ];
-
-
 
 export type JadwalCheckbox = {
     [key in keyof JadwalPraktik]: boolean;
@@ -48,8 +46,8 @@ const HARI_KERJA = [
     { key: 'minggu', label: 'Minggu' },
 ] as const;
 
-export default function EditDokterPage(dokter: { dokter: DokterWithUser }) {
-    const data = dokter.dokter.dokter;
+export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
+    const data = dokter.dokter;
 
     // Parse jadwal dari database menjadi jam mulai dan jam selesai
     const parseJadwal = (jadwalStr: string) => {
@@ -84,7 +82,7 @@ export default function EditDokterPage(dokter: { dokter: DokterWithUser }) {
         errors,
         submit,
     } = useForm({
-        name: dokter.dokter.name,
+        name: dokter.name,
         no_sip: data.no_sip,
         spesialisasi: data.spesialisasi,
         jadwal_praktik: data.jadwal_praktik,
@@ -118,9 +116,9 @@ export default function EditDokterPage(dokter: { dokter: DokterWithUser }) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(dataSubmit);
         submit(DokterController.update(data.id));
     };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="edit dokter" />
@@ -142,14 +140,17 @@ export default function EditDokterPage(dokter: { dokter: DokterWithUser }) {
                                 <Input
                                     id="nama_dokter"
                                     name="name"
-                                    defaultValue={dokter.dokter.name}
+                                    defaultValue={dokter.name}
                                     onChange={(e) =>
                                         setData('name', e.target.value)
                                     }
                                     required
                                     className="mt-1"
                                 />
-                                <InputError className="mt-2" message="" />
+                                <InputError
+                                    className="mt-2"
+                                    message={errors.name}
+                                />
                             </div>
 
                             <div className="">
@@ -169,7 +170,10 @@ export default function EditDokterPage(dokter: { dokter: DokterWithUser }) {
                                     required
                                     className="mt-1"
                                 />
-                                <InputError className="mt-2" message="" />
+                                <InputError
+                                    className="mt-2"
+                                    message={errors.no_sip}
+                                />
                             </div>
 
                             <div className="">
@@ -189,7 +193,10 @@ export default function EditDokterPage(dokter: { dokter: DokterWithUser }) {
                                     required
                                     className="mt-1"
                                 />
-                                <InputError className="mt-2" message="" />
+                                <InputError
+                                    className="mt-2"
+                                    message={errors.spesialisasi}
+                                />
                             </div>
                         </div>
                     </Card>
@@ -262,6 +269,8 @@ export default function EditDokterPage(dokter: { dokter: DokterWithUser }) {
                                                 </Label>
                                                 <Input
                                                     type="time"
+                                                    min="08:00"
+                                                    max="17:00"
                                                     value={
                                                         jadwalState[key]
                                                             ?.jamSelesai ||
@@ -285,6 +294,12 @@ export default function EditDokterPage(dokter: { dokter: DokterWithUser }) {
                                             Tidak aktif pada hari ini
                                         </div>
                                     )}
+                                    <InputError
+                                        className="mt-2"
+                                        message={
+                                            errors[`jadwal_praktik.${key}`]
+                                        }
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -296,11 +311,15 @@ export default function EditDokterPage(dokter: { dokter: DokterWithUser }) {
                             type="button"
                             variant="outline"
                             className="flex-1 bg-red-600 text-white"
-                            onClick={() => window.history.back()}
+                            onClick={() =>
+                                router.get(manage_dokter.index().url)
+                            }
                         >
                             Batal
                         </Button>
-                        <Button className="flex-1">Simpan Perubahan</Button>
+                        <Button disabled={processing} className="flex-1">
+                            {processing ? 'prosess...' : 'Simpan Perubahan'}
+                        </Button>{' '}
                     </div>
                 </form>
             </div>

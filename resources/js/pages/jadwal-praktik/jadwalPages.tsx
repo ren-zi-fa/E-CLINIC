@@ -41,6 +41,8 @@ export default function JadwalPage({ jadwal }: { jadwal: Jadwal[] }) {
                             <TableHead>Rabu</TableHead>
                             <TableHead>Kamis</TableHead>
                             <TableHead>Jumat</TableHead>
+                            <TableHead>Sabtu</TableHead>
+                            <TableHead>Minggu</TableHead>
                         </TableRow>
                     </TableHeader>
 
@@ -48,53 +50,46 @@ export default function JadwalPage({ jadwal }: { jadwal: Jadwal[] }) {
                         {(() => {
                             const grouped = jadwal.reduce<
                                 Record<string, Dokter[]>
-                            >(
-                                (acc, d) => {
-                                    if (!acc[d.nama_poli])
-                                        acc[d.nama_poli] = [];
-                                    acc[d.nama_poli].push(d);
-                                    return acc;
-                                },
-                                {} as Record<string, Dokter[]>,
-                            );
+                            >((acc, d) => {
+                                if (!acc[d.nama_poli]) acc[d.nama_poli] = [];
+                                acc[d.nama_poli].push(d);
+                                return acc;
+                            }, {});
+
+                            let nomor = 1;
 
                             return Object.entries(grouped).map(([poli, list]) =>
-                                list.map((d, i) => (
-                                    <TableRow
-                                        key={`${poli}-${i}`}
-                                        className="[&>*]:border-r"
-                                    >
-                                        <TableCell>{i + 1}</TableCell>
-                                        <TableCell>{d.name}</TableCell>
-                                        <TableCell>{d.no_sip}</TableCell>
-                                        <TableCell>{d.spesialisasi}</TableCell>
-
-                                        {i === 0 && (
-                                            <TableCell
-                                                rowSpan={list.length}
-                                                className="text-center font-semibold"
-                                            >
-                                                {poli}
+                                list.map((d, i) => {
+                                    const jadwalArray = Object.values(d.jadwal_praktik);
+                                    return (
+                                        <TableRow
+                                            key={`${poli}-${i}`}
+                                            className="[&>*]:border-r"
+                                        >
+                                            <TableCell>{nomor++}</TableCell>
+                                            <TableCell>{d.name}</TableCell>
+                                            <TableCell>{d.no_sip}</TableCell>
+                                            <TableCell>
+                                                {d.spesialisasi}
                                             </TableCell>
-                                        )}
 
-                                        <TableCell>
-                                            {d.jadwal_praktik.senin}
-                                        </TableCell>
-                                        <TableCell>
-                                            {d.jadwal_praktik.selasa}
-                                        </TableCell>
-                                        <TableCell>
-                                            {d.jadwal_praktik.rabu}
-                                        </TableCell>
-                                        <TableCell>
-                                            {d.jadwal_praktik.kamis}
-                                        </TableCell>
-                                        <TableCell>
-                                            {d.jadwal_praktik.jumat}
-                                        </TableCell>
-                                    </TableRow>
-                                )),
+                                            {i === 0 && (
+                                                <TableCell
+                                                    rowSpan={list.length}
+                                                    className="text-center font-semibold"
+                                                >
+                                                    {poli}
+                                                </TableCell>
+                                            )}
+
+                                            {jadwalArray.map((jadwal, idx) => (
+                                                <TableCell key={idx}>
+                                                    {jadwal}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    );
+                                }),
                             );
                         })()}
                     </TableBody>
