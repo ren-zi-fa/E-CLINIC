@@ -21,7 +21,7 @@ export default function ManageDokterPage({
     poli_list: Poliklinik[];
     dokters: (Dokter & { id: number; poli_name: string })[];
 }) {
-    console.log(dokters);
+ 
     const handleToggle = (id: number, val: boolean) => {
         router.put(poliklinik.status(), {
             id,

@@ -94,3 +94,22 @@ export interface PaginateData<T> {
     to: number;
     total: number;
 }
+
+export type JadwalCheckbox = {
+    [key in keyof JadwalPraktik]: boolean;
+};
+
+export interface DokterRelasi {
+    id: number;
+    user_id: number;
+    spesialisasi: string;
+    no_sip: string;
+    poliklinik_id: number;
+    jadwal_praktik: JadwalPraktik;
+}
+
+export interface DokterWithUser {
+    id: number;
+    name: string;
+    dokter: DokterRelasi;
+}

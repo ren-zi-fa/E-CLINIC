@@ -13,10 +13,11 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
+import { parseJadwal } from '@/lib/helper';
 import manage_dokter from '@/routes/manage_dokter';
 import poliklinik from '@/routes/poliklinik';
 import { BreadcrumbItem } from '@/types';
-import { JadwalPraktik, Poliklinik } from '@/types/data';
+import { DokterWithUser, JadwalPraktik, Poliklinik } from '@/types/data';
 import { Head, router, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
@@ -24,25 +25,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Manage Dokter', href: manage_dokter.index().url },
     { title: 'Edit Dokter', href: '#' },
 ];
-
-export type JadwalCheckbox = {
-    [key in keyof JadwalPraktik]: boolean;
-};
-
-export interface DokterRelasi {
-    id: number;
-    user_id: number;
-    spesialisasi: string;
-    no_sip: string;
-    poliklinik_id: number;
-    jadwal_praktik: JadwalPraktik;
-}
-
-export interface DokterWithUser {
-    id: number;
-    name: string;
-    dokter: DokterRelasi;
-}
 
 const HARI_KERJA = [
     { key: 'senin', label: 'Senin' },
@@ -55,7 +37,6 @@ const HARI_KERJA = [
 ] as const;
 
 export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
-    console.log(dokter);
     const data = dokter.dokter;
     const [poliList, setPoliList] = useState<Poliklinik[]>([]);
     useEffect(() => {
@@ -66,17 +47,6 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
         };
         fetchPoli();
     }, []);
-
-    // Parse jadwal dari database menjadi jam mulai dan jam selesai
-    const parseJadwal = (jadwalStr: string) => {
-        if (jadwalStr === '-') {
-            return { aktif: false, jamMulai: '08:00', jamSelesai: '17:00' };
-        }
-        const times = jadwalStr.split(', ').map((s) => s.trim());
-        const [jamMulai, jamSelesai1] = times[0].split(' - ');
-        const jamSelesai = times[1]?.split(' - ')[1] || jamSelesai1;
-        return { aktif: true, jamMulai, jamSelesai };
-    };
 
     const initialJadwalState = HARI_KERJA.reduce(
         (acc, { key }) => {
