@@ -121,7 +121,6 @@ export default function ManagePasienPage({
     data: PaginateData<Pasien>;
     stats: Stats;
 }) {
- 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pasien" />
