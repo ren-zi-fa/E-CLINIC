@@ -192,7 +192,7 @@ class PasienController extends Controller
             ->with('success', "Berhasil mencetak antrian dengan nomor antrian {$data['nomor_antrian']} ");
     }
 
-       public function search(Request $request)
+    public function search(Request $request)
     {
         $query = $request->query('query');
 
@@ -219,6 +219,6 @@ class PasienController extends Controller
                 'usia' => $pasien->usia,
             ],
         ]);
-    
+
     }
 }

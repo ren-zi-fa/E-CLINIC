@@ -41,7 +41,7 @@ export default function RegisterPasienBaru() {
         <div className="mx-auto w-full gap-4 rounded-2xl border border-muted-foreground/20 p-5 shadow-sm lg:flex-row">
             <form
                 onSubmit={handleSubmit}
-                className="space-y-6 rounded-lg bg-white p-6 "
+                className="space-y-6 rounded-lg bg-white p-6"
             >
                 {/* Grid 2 kolom untuk Nama, NIK, No Telepon */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -175,12 +175,12 @@ export default function RegisterPasienBaru() {
                             className="flex items-center gap-4"
                             required
                         >
-                            <div className="flex items-center space-x-2 mt-2">
+                            <div className="mt-2 flex items-center space-x-2">
                                 <RadioGroupItem value="L" id="r1" />
                                 <Label htmlFor="r1">Laki-laki</Label>
                             </div>
                             {/* Opsi Perempuan */}
-                            <div className="flex items-center space-x-2 mt-2">
+                            <div className="mt-2 flex items-center space-x-2">
                                 <RadioGroupItem value="P" id="r2" />
                                 <Label htmlFor="r2">Perempuan</Label>
                             </div>
@@ -217,7 +217,7 @@ export default function RegisterPasienBaru() {
                 <div>
                     <Button
                         disabled={processing}
-                        className="mt-5 w-full rounded-md "
+                        className="mt-5 w-full rounded-md"
                         size="lg"
                     >
                         {processing ? 'Processing...' : 'Lanjut'}
