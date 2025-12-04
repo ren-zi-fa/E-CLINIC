@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Pasien;
 
 use App\Http\Controllers\Controller;
+use App\Models\Patient;
 use App\Models\Poliklinik;
 use App\Services\PatientRegistrationService;
 use App\Services\PatientService;
@@ -189,5 +190,35 @@ class PasienController extends Controller
 
         return to_route('pasienDaftar.index')
             ->with('success', "Berhasil mencetak antrian dengan nomor antrian {$data['nomor_antrian']} ");
+    }
+
+       public function search(Request $request)
+    {
+        $query = $request->query('query');
+
+        $pasien = null;
+        if ($query) {
+            $pasien = Patient::where('no_nik', $query)
+                ->orWhere('no_rm', $query)
+                ->first();
+        }
+        if (! $pasien) {
+            return response()->json(['message' => 'Pasien tidak ditemukan'], 404);
+        }
+
+        return response()->json([
+            'pasien' => [
+                'nama_pasien' => $pasien->nama_pasien,
+                'no_nik' => $pasien->no_nik,
+                'alamat' => $pasien->alamat,
+                'no_telp' => $pasien->no_telp,
+                'no_rm' => $pasien->no_rm,
+                'no_bpjs' => $pasien->no_bpjs,
+                'pembayaran' => $pasien->pembayaran,
+                'jenis_kelamin' => $pasien->jenis_kelamin,
+                'usia' => $pasien->usia,
+            ],
+        ]);
+    
     }
 }

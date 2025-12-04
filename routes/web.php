@@ -19,6 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('pasien-daftar')->name('pasienDaftar.')->group(function () {
         Route::get('/', [PasienController::class, 'index'])->name('index');
+        Route::get('/search', [PasienController::class, 'search'])->name('search');
         Route::post('step-1', [PasienController::class, 'handleStep1'])->name('handleStep1');
         Route::post('step-1-exist', [PasienController::class, 'handleStep1ExistingPatient'])->name('handleStep1ExistingPatient');
         Route::get('step-2', [PasienController::class, 'indexStep2'])->name('indexstep2');

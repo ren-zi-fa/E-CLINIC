@@ -38,11 +38,20 @@ export default function RegisterPasienBaru() {
         submit(PasienController.handleStep1());
     };
     return (
-        <div className="mx-auto w-2xl max-w-5xl gap-4 rounded-2xl border border-muted-foreground/20 p-5 shadow-sm lg:flex-row">
-            <form onSubmit={handleSubmit} className="mt-4 space-y-6">
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <div className="grid gap-2">
-                        <Label htmlFor="nama_pasien">Nama Pasien</Label>
+        <div className="mx-auto w-full gap-4 rounded-2xl border border-muted-foreground/20 p-5 shadow-sm lg:flex-row">
+            <form
+                onSubmit={handleSubmit}
+                className="space-y-6 rounded-lg bg-white p-6 "
+            >
+                {/* Grid 2 kolom untuk Nama, NIK, No Telepon */}
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <div>
+                        <Label
+                            htmlFor="nama_pasien"
+                            className="mb-1 block text-sm text-gray-700"
+                        >
+                            Nama Pasien
+                        </Label>
                         <Input
                             id="nama_pasien"
                             name="nama_pasien"
@@ -52,43 +61,21 @@ export default function RegisterPasienBaru() {
                             }
                             placeholder="Masukkan nama pasien"
                             required
+                            className="w-full rounded-md border-gray-300"
                         />
                         <InputError
                             className="mt-2"
                             message={errors.nama_pasien}
                         />
                     </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="jenis_kelamin">Jenis Kelamin</Label>
 
-                        <RadioGroup
-                            id="jenis_kelamin"
-                            onValueChange={(value: 'P' | 'L') =>
-                                setData('jenis_kelamin', value)
-                            }
-                            value={data.jenis_kelamin}
-                            className="flex items-center gap-4"
-                            required
+                    <div>
+                        <Label
+                            htmlFor="no_nik"
+                            className="mb-1 block text-sm text-gray-700"
                         >
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="L" id="r1" />
-                                <Label htmlFor="r1">Laki-laki</Label>
-                            </div>
-
-                            {/* Opsi Perempuan */}
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="P" id="r2" />
-                                <Label htmlFor="r2">Perempuan</Label>
-                            </div>
-                        </RadioGroup>
-                        <InputError
-                            className="mt-2"
-                            message={errors.jenis_kelamin}
-                        />
-                    </div>
-                    {/* Nomor NIK */}
-                    <div className="grid gap-2">
-                        <Label htmlFor="no_nik">Nomor KTP/ NIK Pasien</Label>
+                            Nomor KTP / NIK Pasien
+                        </Label>
                         <Input
                             id="no_nik"
                             name="no_nik"
@@ -96,13 +83,18 @@ export default function RegisterPasienBaru() {
                             onChange={(e) => setData('no_nik', e.target.value)}
                             placeholder="Masukkan nomor KTP"
                             required
+                            className="w-full rounded-md border-gray-300"
                         />
                         <InputError className="mt-2" message={errors.no_nik} />
                     </div>
 
-                    {/* Nomor Telepon */}
-                    <div className="grid gap-2">
-                        <Label htmlFor="no_telp">Nomor Telepon</Label>
+                    <div>
+                        <Label
+                            htmlFor="no_telp"
+                            className="mb-1 block text-sm text-gray-700"
+                        >
+                            Nomor Telepon
+                        </Label>
                         <Input
                             id="no_telp"
                             name="no_telp"
@@ -110,13 +102,19 @@ export default function RegisterPasienBaru() {
                             onChange={(e) => setData('no_telp', e.target.value)}
                             placeholder="08xxxxxxxxxx"
                             required
+                            className="w-full rounded-md border-gray-300"
                         />
                         <InputError className="mt-2" message={errors.no_telp} />
                     </div>
                 </div>
-                <div className="grid gap-2">
-                    <div className="flex flex-col gap-3">
-                        <Label htmlFor="date" className="px-1">
+
+                {/* Grid 2 kolom untuk Tanggal Lahir & Jenis Kelamin */}
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <div className="flex flex-col">
+                        <Label
+                            htmlFor="date"
+                            className="mb-1 text-sm text-gray-700"
+                        >
                             Tanggal Lahir
                         </Label>
                         <Popover open={open} onOpenChange={setOpen}>
@@ -124,7 +122,7 @@ export default function RegisterPasienBaru() {
                                 <Button
                                     variant="outline"
                                     id="date"
-                                    className="w-48 justify-between font-normal"
+                                    className="w-full justify-between rounded-md border-gray-300 font-normal hover:bg-gray-50"
                                 >
                                     {date
                                         ? date.toLocaleDateString('id-ID')
@@ -145,13 +143,11 @@ export default function RegisterPasienBaru() {
                                     onSelect={(selectedDate) => {
                                         setDate(selectedDate);
                                         setOpen(false);
-
                                         if (selectedDate) {
                                             const age =
                                                 calculateAge(selectedDate);
-
-                                            setData((previousData) => ({
-                                                ...previousData,
+                                            setData((prev) => ({
+                                                ...prev,
                                                 usia: age,
                                                 tanggal_lahir: format(
                                                     selectedDate,
@@ -163,29 +159,68 @@ export default function RegisterPasienBaru() {
                                 />
                             </PopoverContent>
                         </Popover>
+                        <InputError className="mt-2" message={errors.usia} />
                     </div>
-                    <InputError className="mt-2" message={errors.usia} />
+
+                    <div>
+                        <Label htmlFor="jenis_kelamin" className="">
+                            Jenis Kelamin
+                        </Label>
+                        <RadioGroup
+                            id="jenis_kelamin"
+                            onValueChange={(value: 'P' | 'L') =>
+                                setData('jenis_kelamin', value)
+                            }
+                            value={data.jenis_kelamin}
+                            className="flex items-center gap-4"
+                            required
+                        >
+                            <div className="flex items-center space-x-2 mt-2">
+                                <RadioGroupItem value="L" id="r1" />
+                                <Label htmlFor="r1">Laki-laki</Label>
+                            </div>
+                            {/* Opsi Perempuan */}
+                            <div className="flex items-center space-x-2 mt-2">
+                                <RadioGroupItem value="P" id="r2" />
+                                <Label htmlFor="r2">Perempuan</Label>
+                            </div>
+                        </RadioGroup>
+                        <InputError
+                            className="mt-2"
+                            message={errors.jenis_kelamin}
+                        />
+                    </div>
                 </div>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="alamat">Alamat Saat Ini</Label>
+                {/* Alamat */}
+                <div>
+                    <Label
+                        htmlFor="alamat"
+                        className="mb-1 block text-sm text-gray-700"
+                    >
+                        Alamat Saat Ini
+                    </Label>
                     <Textarea
                         id="alamat"
                         name="alamat"
                         value={data.alamat}
                         onChange={(e) => setData('alamat', e.target.value)}
                         placeholder="Masukkan alamat lengkap"
+                        rows={4}
+                        className="w-full resize-none rounded-md border-gray-300"
                         required
                     />
                     <InputError className="mt-2" message={errors.alamat} />
                 </div>
-                <div className="flex items-center gap-4">
+
+                {/* Button Submit */}
+                <div>
                     <Button
                         disabled={processing}
-                        className="mt-5 w-full"
+                        className="mt-5 w-full rounded-md "
                         size="lg"
                     >
-                        {processing ? 'prosess...' : 'Lanjut'}
+                        {processing ? 'Processing...' : 'Lanjut'}
                     </Button>
                 </div>
             </form>

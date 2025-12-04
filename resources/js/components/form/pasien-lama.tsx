@@ -2,6 +2,7 @@
 
 import PasienController from '@/actions/App/Http/Controllers/Pasien/PasienController';
 import { calculateAge } from '@/lib/calcAge';
+import pasienDaftar from '@/routes/pasienDaftar';
 import { PatientRegisterRequired } from '@/types/data';
 import { useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
@@ -27,7 +28,7 @@ export default function RegisterPasienLama() {
         no_nik: '',
         alamat: '',
         usia: 0,
-        jenis_kelamin: 'P',
+        jenis_kelamin: '',
         no_telp: '',
     });
 
@@ -47,7 +48,9 @@ export default function RegisterPasienLama() {
 
         try {
             const res = await fetch(
-                `/pasien-daftar/search?query=${encodeURIComponent(searchQuery)}`,
+                pasienDaftar.search({
+                    query: { query: encodeURIComponent(searchQuery) },
+                }).url,
             );
 
             if (!res.ok) {
@@ -98,7 +101,7 @@ export default function RegisterPasienLama() {
     };
 
     return (
-        <div className="mx-auto w-2xl max-w-5xl gap-4 rounded-2xl border border-muted-foreground/20 p-5 shadow-sm lg:flex-row">
+        <div className="mx-auto w-full gap-4 rounded-2xl border border-muted-foreground/20 p-5 shadow-sm lg:flex-row">
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="mb-4 grid grid-cols-1 gap-2">
                     <Label htmlFor="search">Cari Pasien Lama</Label>

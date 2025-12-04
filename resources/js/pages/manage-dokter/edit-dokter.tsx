@@ -357,7 +357,7 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
                         <Button
                             type="button"
                             variant="outline"
-                            className="flex-1 bg-red-600 text-white"
+                            className="hover: flex-1 bg-red-600 text-white hover:bg-red-500"
                             onClick={() =>
                                 router.get(manage_dokter.index().url)
                             }

@@ -34,7 +34,7 @@ export type PatientRegisterRequired = {
     nama_pasien: string;
     alamat: string;
     no_telp: string;
-    jenis_kelamin: 'P' | 'L';
+    jenis_kelamin: string;
     usia: number;
     poliklinik_id: number;
     keluhan_sakit: string;
