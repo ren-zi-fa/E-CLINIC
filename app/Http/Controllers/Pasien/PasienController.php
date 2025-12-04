@@ -9,7 +9,6 @@ use App\Services\PatientRegistrationService;
 use App\Services\PatientService;
 use App\Services\PoliklinikService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class PasienController extends Controller
@@ -39,52 +38,12 @@ class PasienController extends Controller
 
     public function indexManagepasien(Request $request)
     {
-        $perPage = $request->input('per_page', 20);
-        $search = $request->input('search');
-        $sortGender = $request->input('sort_gender');
+       $result = $this->patientService->getPaginatedPatients($request);
 
-        $data = DB::table('patients')
-            ->select('id', 'no_rm', 'nama_pasien', 'jenis_kelamin', 'usia', 'no_telp', 'alamat')
-
-            ->when($sortGender, function ($q) {
-
-                $q->orderByRaw("FIELD(jenis_kelamin, 'P', 'L') ASC");
-            })
-            ->orderBy('id', 'asc')
-            ->when($search, function ($q) use ($search) {
-                $q->where(function ($sub) use ($search) {
-                    $sub->where('nama_pasien', 'like', "%{$search}%")
-                        ->orWhere('no_rm', 'like', "%{$search}%")
-                        ->orWhere('alamat', 'like', "%{$search}%");
-                });
-            })
-
-            ->paginate($perPage)
-            ->appends([
-                'search' => $search,
-                'per_page' => $perPage,
-                'sort_gender' => $sortGender,
-            ]);
-
-        $data->getCollection()->transform(function ($item, $key) use ($data) {
-            $first = $data->firstItem() ?: 0;
-            $item->no = $first + $key;
-
-            return $item;
-        });
-        $stats = $this->patientService->getPasienStats();
-        $data_stats = [
-            'total_pasien' => $stats['total_pasien'],
-            'perempuan' => $stats['perempuan'],
-            'laki_laki' => $stats['laki_laki'],
-            'dewasa' => $stats['dewasa'],
-            'anak_anak' => $stats['anak_anak'],
-        ];
-
-        return Inertia::render('manage-pasien/manage-pasien', [
-            'data' => $data,
-            'stats' => $data_stats,
-        ]);
+     return Inertia::render('manage-pasien/manage-pasien', [
+        'data' => $result['patients'],
+        'stats' => $result['stats'],
+    ]);
     }
 
     public function indexStep2()

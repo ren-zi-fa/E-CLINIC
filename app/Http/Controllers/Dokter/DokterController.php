@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dokter;
 use App\Http\Controllers\Controller;
 use App\Models\Doctor;
 use App\Models\User;
+use App\Utils\FormatterCostum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -47,27 +48,10 @@ class DokterController extends Controller
             ->where('name', $name)
             ->firstOrFail();
 
-        // Ubah jadwal_praktik array → string
         $jadwal = json_decode($user->dokter->jadwal_praktik, true);
 
-        $flat = [];
-        foreach ($jadwal as $day => $value) {
-            if (is_array($value)) {
-                if (count($value) === 0) {
-                    $flat[$day] = '-';
-                } elseif (count($value) === 1) {
-                    $flat[$day] = $value[0];
-                } else {
-                    // Gabungkan menjadi satu string
-                    $flat[$day] = implode(', ', $value);
-                }
-            } else {
-                $flat[$day] = $value;
-            }
-        }
+        $user->dokter->jadwal_praktik = FormatterCostum::flatten($jadwal);
 
-        // Timpa kembali jadwal hasil transform
-        $user->dokter->jadwal_praktik = $flat;
         $polikliniks = DB::table('polikliniks')->select('nama')->get();
 
         return Inertia::render('manage-dokter/edit-dokter', [

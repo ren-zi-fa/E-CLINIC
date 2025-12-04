@@ -88,7 +88,6 @@ class PatientRegistrationService
             $data['no_rm'] = $this->generateNoRm();
             $patient->update([
                 'nama_pasien' => $data['nama_pasien'],
-
                 'keluhan_sakit' => $data['keluhan_sakit'],
                 'alamat' => $data['alamat'],
                 'no_telp' => $data['no_telp'],

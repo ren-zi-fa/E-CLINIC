@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 
 class PatientService
 {
@@ -27,4 +29,40 @@ class PatientService
             'anak_anak' => $stats->anak_anak,
         ];
     }
+
+    public function getPaginatedPatients(Request $request)
+    {
+            $perPage = $request->input('per_page', 20);
+            $search = $request->input('search');
+            $sortGender = $request->input('sort_gender');
+
+            $query = DB::table('patients')
+                ->select('id', 'no_rm', 'nama_pasien', 'jenis_kelamin', 'usia', 'no_telp', 'alamat')
+                ->when($sortGender, function ($q) {
+                    $q->orderByRaw("FIELD(jenis_kelamin, 'P', 'L') ASC");
+                })
+                ->orderBy('id', 'asc')
+                ->when($search, function ($q) use ($search) {
+                    $q->where(function ($sub) use ($search) {
+                        $sub->where('nama_pasien', 'like', "%{$search}%")
+                            ->orWhere('no_rm', 'like', "%{$search}%")
+                            ->orWhere('alamat', 'like', "%{$search}%");
+                    });
+                });
+
+            $patients = $query->paginate($perPage)
+                ->appends($request->only(['search', 'per_page', 'sort_gender']));
+
+            $patients->getCollection()->transform(fn ($item, $key) => tap($item, function ($i) use ($patients, $key) {
+                $i->no = ($patients->firstItem() ?: 0) + $key;
+            }));
+
+            $stats = $this->getPasienStats();
+
+            return [
+                'patients' => $patients,
+                'stats' => $stats,
+            ];
+    }
+
 }
