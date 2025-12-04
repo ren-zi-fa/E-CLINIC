@@ -38,12 +38,12 @@ class PasienController extends Controller
 
     public function indexManagepasien(Request $request)
     {
-       $result = $this->patientService->getPaginatedPatients($request);
+        $result = $this->patientService->getPaginatedPatients($request);
 
-     return Inertia::render('manage-pasien/manage-pasien', [
-        'data' => $result['patients'],
-        'stats' => $result['stats'],
-    ]);
+        return Inertia::render('manage-pasien/manage-pasien', [
+            'data' => $result['patients'],
+            'stats' => $result['stats'],
+        ]);
     }
 
     public function indexStep2()
