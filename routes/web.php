@@ -12,7 +12,7 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
@@ -31,8 +31,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::put('manage-dokter/{id}/update', [DokterController::class, 'update'])->name('manage_dokter.update');
     Route::get('manage-dokter/{name}/edit', [DokterController::class, 'edit'])->name('manage_dokter.edit');
+    Route::get('manage-dokter/tambah', [DokterController::class, 'tambah'])->name('manage_dokter.tambah');
+    Route::post('manage-dokter/tambah', [DokterController::class, 'insert'])->name('manage_dokter.insert');
+
     Route::get('manage-pasien', [PasienController::class, 'indexManagePasien'])->name('manage_pasien.index');
     Route::get('manage-dokter', [DokterController::class, 'indexManageDokter'])->name('manage_dokter.index');
+    Route::get('dokter', [DokterController::class, 'search'])->name('manage_dokter.search');
     Route::get('list-jadwal', JadwalPraktikController::class)->name('jadwal_praktik.index');
 
     Route::get('poliklinik', [PoliklinikController::class, 'getListPoli'])->name('poliklinik.list');

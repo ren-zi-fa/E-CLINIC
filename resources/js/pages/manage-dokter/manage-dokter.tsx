@@ -6,7 +6,9 @@ import { Head, router, usePage } from '@inertiajs/react';
 
 import ListDokter from '@/components/common/ListDokter';
 import StatusPoli from '@/components/common/StatusPoli';
+import { Button } from '@/components/ui/button';
 import poliklinik from '@/routes/poliklinik';
+import { Plus } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -56,6 +58,11 @@ export default function ManageDokterPage({
                 <h1 className="mt-5 mb-2 border-l-4 border-blue-500 pl-4 text-2xl font-bold">
                     Daftar Dokter
                 </h1>
+                <div className="flex justify-center ">
+                    <Button  className='w-xl' onClick={()=>router.get(manage_dokter.tambah().url)}>
+                        <Plus /> Dokter
+                    </Button>
+                </div>
                 <ListDokter dokters={dokters} />
             </div>
         </AppLayout>

@@ -13,7 +13,7 @@ export default function ListDokter({ dokters }: ListDokterProps) {
     return (
         <>
             <div className="flex justify-center">
-                <Card className="mt-2 grid w-full grid-cols-3 space-y-4 rounded border p-4 shadow-sm">
+                <Card className="mt-2 grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 space-y-4 rounded border p-4 shadow-sm">
                     {dokters.map((dokter) => (
                         <div
                             key={dokter.id}
