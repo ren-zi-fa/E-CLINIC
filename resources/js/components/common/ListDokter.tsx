@@ -2,7 +2,6 @@ import manage_dokter from '@/routes/manage_dokter';
 import { Dokter } from '@/types/data';
 import { router } from '@inertiajs/react';
 import { Pencil } from 'lucide-react';
-import { Card } from '../ui/card';
 
 type Doktery = (Dokter & { id: number })[];
 interface ListDokterProps {
@@ -13,7 +12,7 @@ export default function ListDokter({ dokters }: ListDokterProps) {
     return (
         <>
             <div className="flex justify-center">
-                <Card className="mt-2 grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 space-y-4 rounded border p-4 shadow-sm">
+                <div className="mt-2 grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 space-y-4 rounded gap-2 ">
                     {dokters.map((dokter) => (
                         <div
                             key={dokter.id}
@@ -53,7 +52,7 @@ export default function ListDokter({ dokters }: ListDokterProps) {
                             </div>
                         </div>
                     ))}
-                </Card>
+                </div>
             </div>
         </>
     );

@@ -7,9 +7,10 @@ import { Head, router, usePage } from '@inertiajs/react';
 import ListDokter from '@/components/common/ListDokter';
 import StatusPoli from '@/components/common/StatusPoli';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import poliklinik from '@/routes/poliklinik';
 import { Plus } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -44,6 +45,15 @@ export default function ManageDokterPage({
             },
         });
     }, [props.flash.success]);
+    const [search, setSearch] = useState('');
+
+    const filtered = dokters.filter(
+        (d) =>
+            d.name.toLowerCase().includes(search.toLowerCase()) ||
+            d.spesialisasi.toLowerCase().includes(search.toLowerCase()) ||
+            d.nama_poli.toLowerCase().includes(search.toLowerCase()) ||
+            d.no_sip.includes(search),
+    );
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -58,12 +68,24 @@ export default function ManageDokterPage({
                 <h1 className="mt-5 mb-2 border-l-4 border-blue-500 pl-4 text-2xl font-bold">
                     Daftar Dokter
                 </h1>
-                <div className="flex justify-center ">
-                    <Button  className='w-xl' onClick={()=>router.get(manage_dokter.tambah().url)}>
+                <div className="my-4 flex justify-between">
+                    <Button
+                        className=""
+                        onClick={() => router.get(manage_dokter.tambah().url)}
+                    >
                         <Plus /> Dokter
                     </Button>
+
+                    <Input
+                        type="text"
+                        placeholder="Cari dokter..."
+                        className="w-1/2 rounded-md border px-3 py-2"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
                 </div>
-                <ListDokter dokters={dokters} />
+
+                <ListDokter dokters={filtered} />
             </div>
         </AppLayout>
     );
