@@ -16,7 +16,7 @@ type AlertDeleteProps = {
     title?: string;
     description?: string;
     onConfirm?: () => void;
-    children?: ReactNode;
+    children: ReactNode;
 };
 
 export function AlertDelete({
@@ -28,11 +28,7 @@ export function AlertDelete({
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                {children ? (
-                    children
-                ) : (
-                    <Button variant="outline">Delete</Button>
-                )}
+               {children}
             </AlertDialogTrigger>
 
             <AlertDialogContent>

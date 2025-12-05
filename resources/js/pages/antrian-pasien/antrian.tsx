@@ -69,6 +69,7 @@ export default function AntrianPasienIndex({
         },
         [polikliniks],
     );
+    console.log(polikliniks);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -145,6 +146,7 @@ export default function AntrianPasienIndex({
                                     className="w-full"
                                 >
                                     <ListAntrian
+                                        status={item.is_open}
                                         title={item.nama}
                                         antrian={antrians}
                                     />

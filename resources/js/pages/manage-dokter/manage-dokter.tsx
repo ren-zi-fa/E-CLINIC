@@ -5,7 +5,8 @@ import { Dokter, Poliklinik } from '@/types/data';
 import { Head, router, usePage } from '@inertiajs/react';
 
 import ListDokter from '@/components/common/ListDokter';
-import StatusPoli from '@/components/common/StatusPoli';
+
+import ListPoli from '@/components/common/ListPoli';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import poliklinik from '@/routes/poliklinik';
@@ -22,8 +23,9 @@ export default function ManageDokterPage({
     dokters,
 }: {
     poli_list: Poliklinik[];
-    dokters: (Dokter & { id: number; poli_name: string })[];
+    dokters: (Dokter & { id: number })[];
 }) {
+  
     const handleToggle = (id: number, val: boolean) => {
         router.put(poliklinik.status(), {
             id,
@@ -53,7 +55,7 @@ export default function ManageDokterPage({
         (d) =>
             d.name.toLowerCase().includes(search.toLowerCase()) ||
             d.spesialisasi.toLowerCase().includes(search.toLowerCase()) ||
-            d.nama_poli.toLowerCase().includes(search.toLowerCase()) ||
+            d.nama_poliklinik.toLowerCase().includes(search.toLowerCase()) ||
             d.no_sip.includes(search),
     );
 
@@ -65,7 +67,7 @@ export default function ManageDokterPage({
                     Daftar Poli
                 </h1>
                 <div className="rounded-2x col-span-4 p-4">
-                    <StatusPoli poli={poli_list} handleToggle={handleToggle} />
+                    <ListPoli poli={poli_list} handleToggle={handleToggle} />
                 </div>
                 <h1 className="mt-5 mb-2 border-l-4 border-blue-500 pl-4 text-2xl font-bold">
                     Daftar Dokter

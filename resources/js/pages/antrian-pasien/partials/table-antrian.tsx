@@ -25,13 +25,21 @@ const getStatusBadgeClass = (status: string) => {
 export default function ListAntrian({
     title,
     antrian,
+    status,
 }: {
     antrian: AntrianItem[];
     title: string;
+    status: boolean;
 }) {
     return (
         <div className="space-y-4">
-            <h1 className="text-center text-xl font-semibold">{title}</h1>
+            <div className="flex flex-col items-center gap-2 justify-center">
+                <h1 className="text-xl font-semibold">{title}</h1>
+                <h2 className={status ? 'text-green-600' : 'text-red-600'}>
+                    {status ? 'Buka' : 'Tutup'}
+                </h2>
+            </div>
+
             <div className="overflow-hidden rounded-md border shadow-lg">
                 <Table className="w-full">
                     <TableHeader>

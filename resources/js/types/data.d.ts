@@ -71,14 +71,6 @@ export type PoliklinikMonitor = {
     status: 'BUKA' | 'PENUH' | 'TUTUP';
 };
 
-export type Dokter = {
-    name: string;
-    spesialisasi: string;
-    no_sip: string;
-    jadwal_praktik: JadwalPraktik;
-    nama_poli: string;
-};
-
 export interface PaginateData<T> {
     current_page: number;
     data: T[];
@@ -95,22 +87,12 @@ export interface PaginateData<T> {
     total: number;
 }
 
-export type JadwalCheckbox = {
-    [key in keyof JadwalPraktik]: boolean;
-};
-
-export interface DokterRelasi {
-    id: number;
-    user_id: number;
-    spesialisasi: string;
-    no_sip: string;
-    poliklinik_id: number;
-    jadwal_praktik: JadwalPraktik;
-}
-
-export interface DokterWithUser {
+type Dokter = {
     id: number;
     name: string;
-    dokter: DokterRelasi;
-}
-
+    poliklinik_id;
+    nama_poliklinik: string;
+    no_sip: string;
+    jadwal_praktik: JadwalPraktik;
+    spesialisasi: string;
+};

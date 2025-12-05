@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::put('manage-dokter/{id}/update', [DokterController::class, 'update'])->name('manage_dokter.update');
-    Route::get('manage-dokter/{name}/edit', [DokterController::class, 'edit'])->name('manage_dokter.edit');
+    Route::get('manage-dokter/{idDokter}/edit', [DokterController::class, 'edit'])->name('manage_dokter.edit');
     Route::get('manage-dokter/tambah', [DokterController::class, 'tambah'])->name('manage_dokter.tambah');
     Route::post('manage-dokter/tambah', [DokterController::class, 'insert'])->name('manage_dokter.insert');
 
@@ -38,9 +38,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('manage-dokter', [DokterController::class, 'indexManageDokter'])->name('manage_dokter.index');
     Route::get('dokter', [DokterController::class, 'search'])->name('manage_dokter.search');
     Route::delete('dokter/{dokter}', [DokterController::class, 'destroy'])->name('manage_dokter.destroy');
+    Route::get('dokter/{id}', [DokterController::class, 'show'])->name('manage_dokter.show');
     Route::get('list-jadwal', JadwalPraktikController::class)->name('jadwal_praktik.index');
 
     Route::get('poliklinik', [PoliklinikController::class, 'getListPoli'])->name('poliklinik.list');
+    Route::get('poliklinik/{id}', [PoliklinikController::class, 'getPoliById'])->name('poliklinik.edit');
     Route::put('/poliklinik/update_status', [PoliklinikController::class, 'updateStatus'])->name('poliklinik.status');
     Route::get('antrian', [AntrianController::class, 'showByPoli'])->name('antrian.byPoli');
 });

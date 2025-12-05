@@ -24,6 +24,22 @@ class PoliklinikController extends Controller
         ]);
     }
 
+public function getPoliById($id)
+{
+    $poli = DB::table('polikliniks')
+        ->select('nama', 'kode')
+        ->where('id', $id)
+        ->first();
+
+    if (!$poli) {
+        abort(404, 'poli tidak ditemukan');
+    }
+
+    return response()->json([
+        'poli' => $poli,
+    ]);
+}
+
     public function updateStatus(Request $request)
     {
         $payload = $request->validate(['id' => 'required', 'status' => 'required']);

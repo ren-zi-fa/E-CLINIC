@@ -104,10 +104,13 @@ export default function TambahDokter() {
             if (field === 'aktif') updated[hari].aktif = value as boolean;
             else updated[hari][field] = value as string;
 
-            const jadwalBaru = { ...dataInsert.jadwal_praktik };
-            jadwalBaru[hari] = updated[hari].aktif
-                ? `${updated[hari].jamMulai} - ${updated[hari].jamSelesai}`
-                : '-';
+            const jadwalBaru: Record<string, string> = {};
+            Object.keys(updated).forEach((h) => {
+                jadwalBaru[h] = updated[h].aktif
+                    ? `${updated[h].jamMulai} - ${updated[h].jamSelesai}`
+                    : '-';
+            });
+
             setData('jadwal_praktik', jadwalBaru);
 
             return updated;

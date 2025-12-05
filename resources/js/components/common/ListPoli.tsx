@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Poliklinik } from '@/types/data';
-import { router } from '@inertiajs/react';
-import { Pencil, Stethoscope } from 'lucide-react';
+import { Stethoscope } from 'lucide-react';
+import EditPoli from './EditPoli';
 
-export default function StatusPoli({
+export default function ListPoli({
     poli,
     handleToggle,
 }: {
@@ -12,7 +12,7 @@ export default function StatusPoli({
     handleToggle: (id: number, val: boolean) => void;
 }) {
     return (
-        <div className="mr-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <div className="mr-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5">
             {poli.map((item) => {
                 const isOpen = item.is_open;
 
@@ -33,14 +33,7 @@ export default function StatusPoli({
                                             : 'text-red-600'
                                     }`}
                                 />
-                                <button
-                                    className="rounded p-2 transition-colors hover:bg-accent/60"
-                                    onClick={() =>
-                                        router.visit(`/dokter/${item.id}/edit`)
-                                    }
-                                >
-                                    <Pencil className="h-5 w-5 opacity-70" />
-                                </button>
+                                <EditPoli  id_poli={item.id}/>
                             </div>
                         </CardHeader>
 

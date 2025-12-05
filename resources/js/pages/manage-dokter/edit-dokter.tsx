@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import DokterController from '@/actions/App/Http/Controllers/Dokter/DokterController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -17,7 +19,7 @@ import { parseJadwal } from '@/lib/helper';
 import manage_dokter from '@/routes/manage_dokter';
 import poliklinik from '@/routes/poliklinik';
 import { BreadcrumbItem } from '@/types';
-import { DokterWithUser, JadwalPraktik, Poliklinik } from '@/types/data';
+import { Dokter, Poliklinik } from '@/types/data';
 import { Head, router, useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
@@ -36,8 +38,8 @@ const HARI_KERJA = [
     { key: 'minggu', label: 'Minggu' },
 ] as const;
 
-export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
-    const data = dokter.dokter;
+export default function EditDokterPage({ dokter }: { dokter: Dokter }) {
+    console.log(dokter);
     const [poliList, setPoliList] = useState<Poliklinik[]>([]);
     useEffect(() => {
         const fetchPoli = async () => {
@@ -50,9 +52,7 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
 
     const initialJadwalState = HARI_KERJA.reduce(
         (acc, { key }) => {
-            acc[key] = parseJadwal(
-                data.jadwal_praktik[key as keyof JadwalPraktik],
-            );
+            acc[key] = parseJadwal(dokter.jadwal_praktik[key]);
             return acc;
         },
         {} as Record<
@@ -71,10 +71,10 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
         submit,
     } = useForm({
         name: dokter.name,
-        no_sip: data.no_sip,
-        poliklinik_id: data.poliklinik_id,
-        spesialisasi: data.spesialisasi,
-        jadwal_praktik: data.jadwal_praktik,
+        no_sip: dokter.no_sip,
+        poliklinik_id: dokter.poliklinik_id,
+        spesialisasi: dokter.spesialisasi,
+        jadwal_praktik: dokter.jadwal_praktik,
     });
 
     const handleJadwalChange = (
@@ -90,12 +90,11 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
                 updated[hari][field] = value as string;
             }
 
-            const jadwalBaru = { ...dataSubmit.jadwal_praktik };
+            let jadwalBaru = { ...(dataSubmit.jadwal_praktik as any) };
             if (updated[hari].aktif) {
-                jadwalBaru[hari as keyof JadwalPraktik] =
-                    `${updated[hari].jamMulai} - ${updated[hari].jamSelesai}`;
+                jadwalBaru = `${updated[hari].jamMulai} - ${updated[hari].jamSelesai}`;
             } else {
-                jadwalBaru[hari as keyof JadwalPraktik] = '-';
+                jadwalBaru = '-';
             }
             setData('jadwal_praktik', jadwalBaru);
 
@@ -105,7 +104,7 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        submit(DokterController.update(data.id));
+        submit(DokterController.update(dokter.id));
     };
 
     return (
@@ -152,7 +151,7 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
                                 <Input
                                     id="no_sip"
                                     name="no_sip"
-                                    defaultValue={data.no_sip}
+                                    defaultValue={dokter.no_sip}
                                     onChange={(e) =>
                                         setData('no_sip', e.target.value)
                                     }
@@ -175,7 +174,7 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
                                 <Input
                                     id="spesialisasi"
                                     name="spesialisasi"
-                                    defaultValue={data.spesialisasi}
+                                    defaultValue={dokter.spesialisasi}
                                     onChange={(e) =>
                                         setData('spesialisasi', e.target.value)
                                     }
@@ -192,9 +191,7 @@ export default function EditDokterPage({ dokter }: { dokter: DokterWithUser }) {
                                     Poliklinik
                                 </Label>
                                 <Select
-                                    defaultValue={String(
-                                        dokter.dokter.poliklinik_id,
-                                    )} // tampilkan default saat render pertama
+                                    defaultValue={String(dokter.poliklinik_id)} // tampilkan default saat render pertama
                                     onValueChange={(value) =>
                                         setData('poliklinik_id', Number(value))
                                     }

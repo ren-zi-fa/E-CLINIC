@@ -30,7 +30,7 @@ class DokterController extends Controller
                 'doctors.no_sip',
                 'doctors.spesialisasi',
                 'users.name',
-                'polikliniks.nama as nama_poli'
+                'polikliniks.nama as nama_poliklinik'
             )
             ->orderBy('polikliniks.nama')
             ->get();
@@ -75,18 +75,29 @@ public function insert(Request $request)
     return redirect()->route('manage_dokter.index')->with('success', 'Dokter berhasil ditambahkan');
 }
 
-    public function edit(Request $request, $name)
+    public function edit(Request $request, $idDokter)
     {
-        $user = User::select('id', 'name')
-            ->with(['dokter' => function ($q) {
-                $q->select('id', 'user_id', 'spesialisasi', 'no_sip', 'poliklinik_id', 'jadwal_praktik');
-            }])
-            ->where('name', $name)
-            ->firstOrFail();
+        $user = DB::table('doctors')
+            ->join('users', 'doctors.user_id', '=', 'users.id')
+            ->join('polikliniks','doctors.poliklinik_id','=','polikliniks.id')
+            ->select(
+                'doctors.id',
+                'users.name',
+                'doctors.no_sip',
+                'doctors.jadwal_praktik',
+                'doctors.spesialisasi',
+                'polikliniks.nama as nama_poliklinik',
+                'polikliniks.id as poliklinik_id',  
+            )
+            ->where('doctors.id', $idDokter)
+            ->first();
 
-        $jadwal = json_decode($user->dokter->jadwal_praktik, true);
+        if (!$user) {
+            abort(404, 'Dokter tidak ditemukan');
+        }
 
-        $user->dokter->jadwal_praktik = FormatterCostum::flatten($jadwal);
+        $jadwal = json_decode($user->jadwal_praktik, true);
+        $user->jadwal_praktik = FormatterCostum::flatten($jadwal);
 
         $polikliniks = DB::table('polikliniks')->select('nama')->get();
 
@@ -94,6 +105,7 @@ public function insert(Request $request)
             'dokter' => $user,
             'polikliniks' => $polikliniks,
         ]);
+
     }
 
     public function update(Request $request, $id)
@@ -102,7 +114,7 @@ public function insert(Request $request)
             'name' => 'required|string|max:255',
             'no_sip' => 'required|string|max:255|unique:doctors,no_sip,'.$id,
             'spesialisasi' => 'required|string|max:255',
-            'jadwal_praktik' => 'required|array',
+            'jadwal_praktik' => 'required',
             'poliklinik_id' => 'required',
         ]);
         try {
@@ -140,7 +152,7 @@ public function insert(Request $request)
             'doctors.no_sip',
             'doctors.spesialisasi',
             'users.name',
-            'polikliniks.nama as nama_poli'
+            'polikliniks.nama as nama_poliklinik'
         )
         ->where('users.name', 'LIKE', "%{$query}%")
         ->orWhere('doctors.no_sip', 'LIKE', "%{$query}%")
@@ -163,8 +175,26 @@ public function insert(Request $request)
             return redirect()->back()->with([
                 'success' => 'Dokter deleted',
                 'success_time' => now()->timestamp,
-                 ]);
+            ]);
 
+     }
+
+     public function show($id)
+     {
+         $dokters = DB::table('doctors')
+            ->join('users', 'doctors.user_id', '=', 'users.id')
+            ->join('polikliniks', 'doctors.poliklinik_id', '=', 'polikliniks.id')
+            ->select(
+                'doctors.id',
+                'doctors.no_sip',
+                'doctors.spesialisasi',
+                'users.name',
+                'polikliniks.nama as nama_poliklinik'
+            )
+            ->where('doctors.user_id','=',$id)->first();
+            return response()->json([
+                    'data' => $dokters,
+                ]);
      }
 
 
