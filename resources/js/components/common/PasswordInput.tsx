@@ -31,7 +31,7 @@ export function PasswordInput({
                     onChange={onChange}
                     placeholder={placeholder}
                     className="pr-10"
-                    autoComplete='new-password'
+                    autoComplete="new-password"
                 />
 
                 <button

@@ -113,4 +113,3 @@ export interface DokterWithUser {
     name: string;
     dokter: DokterRelasi;
 }
-

@@ -9,8 +9,8 @@ use App\Utils\FormatterCostum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Inertia\Inertia;
 use Illuminate\Validation\Rules;
+use Inertia\Inertia;
 
 class DokterController extends Controller
 {
@@ -41,39 +41,41 @@ class DokterController extends Controller
         ]);
     }
 
-    public function tambah(){
+    public function tambah()
+    {
         return Inertia::render('manage-dokter/tambah-dokter');
     }
-    
-public function insert(Request $request)
-{
-    $payload = $request->validate([
-        'name' => 'required|string|max:255',
-        'spesialisasi' => 'required|string|max:255',
-        'poliklinik_id' => 'required|integer|exists:polikliniks,id',
-        'no_sip' => 'required|string|max:255',
-        'jadwal_praktik' => 'required|array',
-        'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    ]);
 
-    DB::transaction(function () use ($payload) {
-        $user = User::create([
-            'name' => $payload['name'],
-            'password' =>Hash::make($payload['password']), 
-            'email'=>$payload['email']
+    public function insert(Request $request)
+    {
+        $payload = $request->validate([
+            'name' => 'required|string|max:255',
+            'spesialisasi' => 'required|string|max:255',
+            'poliklinik_id' => 'required|integer|exists:polikliniks,id',
+            'no_sip' => 'required|string|max:255',
+            'jadwal_praktik' => 'required|array',
+            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        Doctor::create([
-            'user_id' => $user->id,
-            'spesialisasi' => $payload['spesialisasi'],
-            'poliklinik_id' => $payload['poliklinik_id'],
-            'no_sip' => $payload['no_sip'],
-            'jadwal_praktik' => json_encode($payload['jadwal_praktik']),
-        ]);
-    });
-    return redirect()->route('manage_dokter.index')->with('success', 'Dokter berhasil ditambahkan');
-}
+        DB::transaction(function () use ($payload) {
+            $user = User::create([
+                'name' => $payload['name'],
+                'password' => Hash::make($payload['password']),
+                'email' => $payload['email'],
+            ]);
+
+            Doctor::create([
+                'user_id' => $user->id,
+                'spesialisasi' => $payload['spesialisasi'],
+                'poliklinik_id' => $payload['poliklinik_id'],
+                'no_sip' => $payload['no_sip'],
+                'jadwal_praktik' => json_encode($payload['jadwal_praktik']),
+            ]);
+        });
+
+        return redirect()->route('manage_dokter.index')->with('success', 'Dokter berhasil ditambahkan');
+    }
 
     public function edit(Request $request, $name)
     {
@@ -123,49 +125,46 @@ public function insert(Request $request)
         }
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->query('search');
 
-   public function search(Request $request)
-{
-    $query = $request->query('search');
+        if (! $query) {
+            return response()->json(['message' => 'parameter search kosong'], 400);
+        }
 
-    if (! $query) {
-        return response()->json(['message' => 'parameter search kosong'], 400);
+        $dokter = DB::table('doctors')
+            ->join('users', 'doctors.user_id', '=', 'users.id')
+            ->join('polikliniks', 'doctors.poliklinik_id', '=', 'polikliniks.id')
+            ->select(
+                'doctors.id',
+                'doctors.no_sip',
+                'doctors.spesialisasi',
+                'users.name',
+                'polikliniks.nama as nama_poli'
+            )
+            ->where('users.name', 'LIKE', "%{$query}%")
+            ->orWhere('doctors.no_sip', 'LIKE', "%{$query}%")
+            ->orWhere('doctors.spesialisasi', 'LIKE', "%{$query}%")
+            ->first();
+
+        if (! $dokter) {
+            return response()->json(['message' => 'dokter tidak ditemukan'], 404);
+        }
+
+        return response()->json([
+            'dokter' => $dokter,
+        ]);
     }
 
-    $dokter = DB::table('doctors')
-        ->join('users', 'doctors.user_id', '=', 'users.id')
-        ->join('polikliniks', 'doctors.poliklinik_id', '=', 'polikliniks.id')
-        ->select(
-            'doctors.id',
-            'doctors.no_sip',
-            'doctors.spesialisasi',
-            'users.name',
-            'polikliniks.nama as nama_poli'
-        )
-        ->where('users.name', 'LIKE', "%{$query}%")
-        ->orWhere('doctors.no_sip', 'LIKE', "%{$query}%")
-        ->orWhere('doctors.spesialisasi', 'LIKE', "%{$query}%")
-        ->first();
+    public function destroy(Doctor $dokter)
+    {
+        $dokter->delete();
 
-    if (! $dokter) {
-        return response()->json(['message' => 'dokter tidak ditemukan'], 404);
+        return redirect()->back()->with([
+            'success' => 'Dokter deleted',
+            'success_time' => now()->timestamp,
+        ]);
+
     }
-
-    return response()->json([
-        'dokter' => $dokter,
-    ]);
-}
-
-     public function destroy(Doctor $dokter)
-     {
-            $dokter->delete();
-
-            return redirect()->back()->with([
-                'success' => 'Dokter deleted',
-                'success_time' => now()->timestamp,
-                 ]);
-
-     }
-
-
 }
