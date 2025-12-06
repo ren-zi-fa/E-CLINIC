@@ -1,7 +1,9 @@
 import manage_dokter from '@/routes/manage_dokter';
 import { Dokter } from '@/types/data';
 import { router } from '@inertiajs/react';
-import { Pencil } from 'lucide-react';
+import { Eye, Pencil, Trash } from 'lucide-react';
+import { Button } from '../ui/button';
+import { AlertDelete } from './AlertDelete';
 
 type Doktery = (Dokter & { id: number })[];
 interface ListDokterProps {
@@ -12,22 +14,52 @@ export default function ListDokter({ dokters }: ListDokterProps) {
     return (
         <>
             <div className="flex justify-center">
-                <div className="mt-2 grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 space-y-4 rounded gap-2 ">
+                <div className="mt-2 grid w-full grid-cols-1 gap-2 space-y-4 rounded md:grid-cols-2 lg:grid-cols-3">
                     {dokters.map((dokter) => (
                         <div
                             key={dokter.id}
                             className="relative flex items-center justify-between gap-3 rounded border px-4 py-4"
                         >
-                            <button
-                                className="absolute top-2 right-2 rounded p-2 transition-colors hover:bg-accent/60"
-                                onClick={() =>
-                                    router.get(
-                                        manage_dokter.edit(dokter.name).url,
-                                    )
-                                }
-                            >
-                                <Pencil className="h-5 w-5 opacity-70" />
-                            </button>
+                            <div className="absolute top-2 right-2 space-x-1">
+                                <Button
+                                    variant="outline"
+                                    className="rounded p-1 transition-colors hover:bg-accent/60"
+                                    onClick={() =>
+                                        router.get(
+                                            manage_dokter.edit(dokter.name).url,
+                                        )
+                                    }
+                                >
+                                    <Pencil className="h-5 w-5 opacity-70" />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="rounded p-1 transition-colors hover:bg-accent/60"
+                                    onClick={() =>
+                                        router.get(
+                                            manage_dokter.edit(dokter.name).url,
+                                        )
+                                    }
+                                >
+                                    <Eye className="h-5 w-5 opacity-70" />
+                                </Button>
+                                <AlertDelete
+                                    title="Hapus Dokter?"
+                                    description="Data dokter ini akan hilang selamanya."
+                                    onConfirm={() =>
+                                        router.delete(
+                                            manage_dokter.destroy(dokter.id),
+                                        )
+                                    }
+                                >
+                                    <Button
+                                        variant="outline"
+                                        className="rounded p-1 transition-colors hover:bg-accent/60"
+                                    >
+                                        <Trash className="h-5 w-5 opacity-70" />
+                                    </Button>
+                                </AlertDelete>
+                            </div>
                             {/* Badge poli_name di kanan bawah */}
                             <span className="absolute right-2 bottom-2 rounded-full bg-blue-400 px-2 py-1 text-xs font-semibold text-white shadow">
                                 {dokter.nama_poli}

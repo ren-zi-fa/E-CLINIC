@@ -156,4 +156,16 @@ public function insert(Request $request)
     ]);
 }
 
+     public function destroy(Doctor $dokter)
+     {
+            $dokter->delete();
+
+            return redirect()->back()->with([
+                'success' => 'Dokter deleted',
+                'success_time' => now()->timestamp,
+                 ]);
+
+     }
+
+
 }

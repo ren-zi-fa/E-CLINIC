@@ -30,7 +30,9 @@ export default function ManageDokterPage({
             status: val,
         });
     };
-    const { props } = usePage<{ flash: { success: string } }>();
+    const { props } = usePage<{
+        flash: { success: string; success_time: number };
+    }>();
     useEffect(() => {
         if (!props.flash.success) return;
 
@@ -44,7 +46,7 @@ export default function ManageDokterPage({
                 onClick: () => {},
             },
         });
-    }, [props.flash.success]);
+    }, [props.flash.success_time]);
     const [search, setSearch] = useState('');
 
     const filtered = dokters.filter(
@@ -58,7 +60,7 @@ export default function ManageDokterPage({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="dokter" />
-            <div className="mx-4 mt-2">
+            <div className="mx-4 my-2">
                 <h1 className="mt-5 border-l-4 border-purple-500 pl-4 text-2xl font-bold">
                     Daftar Poli
                 </h1>
